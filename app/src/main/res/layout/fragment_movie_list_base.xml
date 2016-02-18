@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.atlantbh.mymoviesapp.activities.MovieListBaseFragment">
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:minHeight="10dp"
+        android:minWidth="30dp"
+        android:textColor="@color/white"
+        android:background="@color/black"/>
+</RelativeLayout>
