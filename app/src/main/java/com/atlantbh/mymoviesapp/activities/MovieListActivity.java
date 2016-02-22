@@ -1,6 +1,8 @@
 package com.atlantbh.mymoviesapp.activities;
 
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.atlantbh.mymoviesapp.adapters.MovieListPagerAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.model.Movie;
@@ -28,17 +31,14 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class MovieListActivity extends AppCompatActivity {
-    private boolean isLoading;
-    private int page;
     private MovieAdapter movieAdapter;
+    private MovieListPagerAdapter pagerAdapter;
+    private ViewPager vpMovieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
-
-        isLoading = false;
-        page = 1;
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -46,7 +46,13 @@ public class MovieListActivity extends AppCompatActivity {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
+        pagerAdapter = new MovieListPagerAdapter(getSupportFragmentManager());
+        vpMovieList = (ViewPager) findViewById(R.id.vpMovieList);
+        vpMovieList.setAdapter(pagerAdapter);
+        TabLayout tlMovieTabs = (TabLayout) findViewById(R.id.tlMovieTabs);
+        tlMovieTabs.setupWithViewPager(vpMovieList);
 
+        /*
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -144,32 +150,7 @@ public class MovieListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private void loadData() {
-        page++;
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-
-        Call<MovieList> call2 = movieAPI.loadMoviesByPage(page);
-        call2.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Response<MovieList> response, Retrofit retrofit) {
-                final MovieList movieList = response.body();
-
-                movieAdapter.addItems(movieList);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        */
     }
 
     @Override

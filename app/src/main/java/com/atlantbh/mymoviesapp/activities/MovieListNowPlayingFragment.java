@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.R;
 
-public class MovieListPopularFragment extends MovieListBaseFragment {
+public class MovieListNowPlayingFragment extends MovieListBaseFragment {
     @Override
     public String getCategory() {
-        return "popular";
+        return "now_playing";
     }
 
-    public MovieListPopularFragment() {}
+    public MovieListNowPlayingFragment() {}
 
     public MovieListBaseFragment newInstance() {
-        MovieListBaseFragment fragment = new MovieListPopularFragment();
+        MovieListBaseFragment fragment = new MovieListNowPlayingFragment();
         return fragment;
     }
 
