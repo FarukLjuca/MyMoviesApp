@@ -59,7 +59,7 @@ public class MovieList {
         call.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Response<MovieList> response, Retrofit retrofit) {
-                final MovieList movieList = response.body();
+                MovieList movieList = response.body();
                 movieAdapter.addItems(movieList);
             }
 

@@ -1,33 +1,55 @@
 package com.atlantbh.mymoviesapp.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.atlantbh.mymoviesapp.activities.MovieListActivity;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.R;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MovieAdapter extends BaseAdapter {
-    private Context _context;
-    private MovieList _movieList;
+    private Context context;
+    private MovieList movieList;
+    private Activity activity;
+
+    // Binding to views
+    @Bind(R.id.ivMoviePoster)
+    ImageView imageView;
+    @Bind(R.id.rbMovieRating)
+    RatingBar ratingBar;
+    @Bind(R.id.tvMovieRating)
+    TextView ratingText;
+    @Bind(R.id.tvTitle)
+    TextView title;
+    @Bind(R.id.tvOverview)
+    TextView overview;
 
     public Context getContext() {
-        return _context;
+        return context;
     }
 
     public MovieList getMovieList() {
-        return _movieList;
+        return movieList;
     }
 
-    public MovieAdapter(Context context, MovieList movieList) {
-        _movieList = movieList;
-        _context = context;
+    public MovieAdapter(Activity activity, MovieList movieList) {
+        this.movieList = movieList;
+        this.activity = activity;
+        this.context = activity;
     }
 
     @Override
@@ -55,25 +77,23 @@ public class MovieAdapter extends BaseAdapter {
         else {
             view = convertView;
         }
+        ButterKnife.bind(this, view);
 
         Movie currentMovie = getMovieList().getMovies().get(position);
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.ivImage);
         Picasso.with(getContext())
-                .load("https://image.tmdb.org/t/p/w185" + currentMovie.getPosterPath())
+                .load("https://image.tmdb.org/t/p/w342" + currentMovie.getPosterPath())
                 .into(imageView);
-
-        TextView title = (TextView) view.findViewById(R.id.tvTitle);
+        ratingBar.setRating(currentMovie.getVoteAverage() / 2);
+        ratingText.setText(Float.toString(currentMovie.getVoteAverage()));
         title.setText(currentMovie.getOriginalTitle());
-
-        TextView overview = (TextView) view.findViewById(R.id.tvOverview);
         overview.setText(currentMovie.getOverview());
 
         return view;
     }
 
     public void addItems(MovieList movieList) {
-        _movieList.getMovies().addAll(movieList.getMovies());
+        this.movieList.getMovies().addAll(movieList.getMovies());
         notifyDataSetChanged();
     }
 }

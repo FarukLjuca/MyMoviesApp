@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout-land\\fragment_movie_list_base.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout-land\\fragment_movie_list_base.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout-land\\activity_movie_list.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\src\\main\\res\\layout-land\\activity_movie_list.xml"
+    }
+]

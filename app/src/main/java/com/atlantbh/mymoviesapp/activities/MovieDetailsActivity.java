@@ -130,8 +130,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     String stringGenres = runtimeString + " |";
                     List<Genre> genreList = movie.getGenres();
                     for (int i = 0; i < genreList.size(); i++) {
-                        if (i >= 3)
-                            break; //TODO: This will only work on some screen size, find permanent solution for this could be to not let it go multiple lines, for title could be to make font smaller so it fits
                         stringGenres += " " + genreList.get(i).getName();
                     }
                     runtimeAndGenres.setText(stringGenres);
