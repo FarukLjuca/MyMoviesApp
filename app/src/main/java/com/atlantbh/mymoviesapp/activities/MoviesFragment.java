@@ -3,6 +3,7 @@ package com.atlantbh.mymoviesapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +32,14 @@ public abstract class MoviesFragment extends Fragment {
     private Context currentContext;
     private View currentView;
 
+    private int index = 0;
+    private int top = 0;
+    private boolean isListView = true;
+
     private MovieAdapter movieAdapter;
 
     private String category;
 
-    // Bindigs to views
     GridView gridView;
     ListView listView;
 
@@ -44,12 +48,30 @@ public abstract class MoviesFragment extends Fragment {
     public abstract String getCategory();
 
     @Override
+    public void onPause() {
+        /*
+        if(listView != null) {
+            int index = listView.getFirstVisiblePosition();
+            View v = listView.getChildAt(0);
+            int top = (v == null) ? 0 : (v.getTop() - listView.getPaddingTop());
+        }
+        else if (gridView != null) {
+            int index = gridView.getFirstVisiblePosition();
+            View v = gridView.getChildAt(0);
+            int top = (v == null) ? 0 : (v.getTop() - gridView.getPaddingTop());
+        }
+        */
+
+        super.onPause();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         currentContext = container.getContext();
         currentView = inflater.inflate(R.layout.fragment_movie_list_base, container, false);
+        category = getCategory();
         listView = (ListView) currentView.findViewById(R.id.lvContainer);
         gridView = (GridView) currentView.findViewById(R.id.gvContainer);
-        category = getCategory();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org")
@@ -99,6 +121,8 @@ public abstract class MoviesFragment extends Fragment {
                             }
                         }
                     });
+
+                    //listView.setSelectionFromTop(index, top);
                 } else if (gridView != null) {
                     movieAdapter = new MovieAdapter(getActivity(), movieList);
                     gridView.setAdapter(movieAdapter);
@@ -135,6 +159,8 @@ public abstract class MoviesFragment extends Fragment {
                             }
                         }
                     });
+
+                    //gridView.setSelectionFromTop(index, top);
                 }
             }
 
@@ -143,12 +169,6 @@ public abstract class MoviesFragment extends Fragment {
                 Toast.makeText(currentContext, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
         return currentView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 }

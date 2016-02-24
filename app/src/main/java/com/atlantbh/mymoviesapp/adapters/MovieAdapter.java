@@ -2,6 +2,8 @@ package com.atlantbh.mymoviesapp.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
+import android.test.suitebuilder.annotation.MediumTest;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.activities.MovieListActivity;
+import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.R;
@@ -27,16 +30,7 @@ public class MovieAdapter extends BaseAdapter {
     private Activity activity;
 
     // Binding to views
-    @Bind(R.id.ivMoviePoster)
-    ImageView imageView;
-    @Bind(R.id.rbMovieRating)
-    RatingBar ratingBar;
-    @Bind(R.id.tvMovieRating)
-    TextView ratingText;
-    @Bind(R.id.tvTitle)
-    TextView title;
-    @Bind(R.id.tvOverview)
-    TextView overview;
+
 
     public Context getContext() {
         return context;
@@ -64,30 +58,40 @@ public class MovieAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return getMovieList().getMovies().get(position).getId();
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
+        ViewHolder holder;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.movie_card, parent, false);
+            holder = new ViewHolder();
+            holder.imageView = (ImageView) view.findViewById(R.id.ivMoviePoster);
+            holder.overview = (TextView) view.findViewById(R.id.tvOverview);
+            holder.ratingBar = (RatingBar) view.findViewById(R.id.rbMovieRating);
+            holder.ratingText = (TextView) view.findViewById(R.id.tvMovieRating);
+            holder.title = (TextView) view.findViewById(R.id.tvTitle);
+            view.setTag(holder);
+            SetFonts(holder);
         }
         else {
-            view = convertView;
+            holder = (ViewHolder) view.getTag();
         }
-        ButterKnife.bind(this, view);
+        //ButterKnife.bind(this, view);
+
 
         Movie currentMovie = getMovieList().getMovies().get(position);
 
         Picasso.with(getContext())
                 .load("https://image.tmdb.org/t/p/w342" + currentMovie.getPosterPath())
-                .into(imageView);
-        ratingBar.setRating(currentMovie.getVoteAverage() / 2);
-        ratingText.setText(Float.toString(currentMovie.getVoteAverage()));
-        title.setText(currentMovie.getOriginalTitle());
-        overview.setText(currentMovie.getOverview());
+                .placeholder(R.drawable.actor_placeholder_curved).into(holder.imageView);
+        holder.ratingBar.setRating(currentMovie.getVoteAverage() / 2);
+        holder.ratingText.setText(String.format("%.1f", currentMovie.getVoteAverage()));
+        holder.title.setText(currentMovie.getOriginalTitle());
+        holder.overview.setText(currentMovie.getOverview());
 
         return view;
     }
@@ -95,5 +99,20 @@ public class MovieAdapter extends BaseAdapter {
     public void addItems(MovieList movieList) {
         this.movieList.getMovies().addAll(movieList.getMovies());
         notifyDataSetChanged();
+    }
+
+    private void SetFonts(ViewHolder holder) {
+        holder.ratingText.setTypeface(FontHelper.getFont(getContext(), "RobotoRegular"));
+        holder.title.setTypeface(FontHelper.getFont(getContext(), "RobotoMedium"));
+        holder.overview.setTypeface(FontHelper.getFont(getContext(), "RobotoRegular"));
+    }
+
+
+    class ViewHolder{
+        ImageView imageView;
+        RatingBar ratingBar;
+        TextView ratingText;
+        TextView title;
+        TextView overview;
     }
 }

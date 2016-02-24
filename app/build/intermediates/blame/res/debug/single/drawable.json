@@ -148,6 +148,10 @@
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\drawable\\abc_textfield_search_material.xml"
     },
     {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\side_nav_bar.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\drawable\\side_nav_bar.xml"
+    },
+    {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\drawable\\abc_btn_radio_material.xml"
     },

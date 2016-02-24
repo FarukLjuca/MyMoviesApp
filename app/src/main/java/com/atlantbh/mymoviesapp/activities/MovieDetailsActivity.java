@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.atlantbh.mymoviesapp.api.ActorAPI;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
+import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.ActorList;
 import com.atlantbh.mymoviesapp.model.Genre;
 import com.atlantbh.mymoviesapp.model.Movie;
@@ -188,7 +189,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.details_menu, menu);
         return true;
     }
 
@@ -196,14 +197,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Toast t;
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                t = Toast.makeText(this, R.string.app_name, Toast.LENGTH_SHORT);
-                t.show();
-                return true;
-
             case R.id.itSearch:
                 return true;
-
+            case android.R.id.home:
+                finish();
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -219,12 +217,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void SetFonts() {
-        Typeface avenirRegular = Typeface.createFromAsset(getAssets(), "fonts/AvenirNextLTPro-Regular.otf");
-        Typeface robotoRegular = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
-        Typeface robotoMedium = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Medium.ttf");
-
-        title.setTypeface(avenirRegular);
-        releaseYear.setTypeface(robotoMedium);
-        runtimeAndGenres.setTypeface(robotoRegular);
+        title.setTypeface(FontHelper.getFont(this, "AvenirRegular"));
+        releaseYear.setTypeface(FontHelper.getFont(this, "RobotoMedium"));
+        runtimeAndGenres.setTypeface(FontHelper.getFont(this, "RobotoRegular"));
     }
 }

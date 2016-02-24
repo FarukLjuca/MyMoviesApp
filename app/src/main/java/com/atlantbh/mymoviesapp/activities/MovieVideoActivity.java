@@ -42,20 +42,6 @@ public class MovieVideoActivity extends YouTubeFailureRecoveryActivity {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            myToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), MovieDetailsActivity.class);
-                    intent.putExtra("movieId", movieId);
-                    startActivity(intent);
-                }
-            });
-        }
-        else {
-            //TODO: Kada je manja verzija od 21 uraditi na drugi nacin nekako ovo
-        }
-
         Intent intent = getIntent();
         movieId = intent.getLongExtra("movieId", -1);
 
@@ -105,21 +91,18 @@ public class MovieVideoActivity extends YouTubeFailureRecoveryActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Toast t;
         switch (item.getItemId()) {
             case R.id.action_settings:
-                t = Toast.makeText(this, R.string.app_name, Toast.LENGTH_SHORT);
-                t.show();
                 return true;
 
             case R.id.itSearch:
-                t = Toast.makeText(this, R.string.search, Toast.LENGTH_SHORT);
-                t.show();
+                return true;
+
+            case android.R.id.home:
+                finish();
                 return true;
 
             default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
     }

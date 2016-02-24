@@ -16,20 +16,20 @@
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\fragment_movie_list_base.xml"
     },
     {
-        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_movie_details.xml",
-        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\activity_movie_details.xml"
-    },
-    {
         "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_simple.xml"
     },
     {
-        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
-        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_action_bar_up_container.xml"
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_movie_details.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\activity_movie_details.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view.xml",
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_activity_chooser_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_action_bar_up_container.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_time.xml",
@@ -44,12 +44,12 @@
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\src\\main\\res\\layout\\movie_card.xml"
     },
     {
-        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
-        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
-    },
-    {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_dialog_title_material.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_dialog_title_material.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_alert_dialog_button_bar_material.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
@@ -88,12 +88,12 @@
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_content_include.xml"
     },
     {
-        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\design_menu_item_action_area.xml",
-        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\layout\\design_menu_item_action_area.xml"
-    },
-    {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_search_view.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\design_menu_item_action_area.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\design\\23.1.1\\res\\layout\\design_menu_item_action_area.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_part_chronometer.xml",
@@ -268,6 +268,10 @@
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_activity_chooser_view_list_item.xml"
     },
     {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\nav_header_main.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\nav_header_main.xml"
+    },
+    {
         "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_lines.xml",
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\notification_template_lines.xml"
     },
@@ -282,6 +286,10 @@
     {
         "merged": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
         "source": "C:\\Users\\Faruk\\Documents\\Android Studio Projects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_list_menu_item_checkbox.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\content_movie_list.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\content_movie_list.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_item_layout.xml",
@@ -386,6 +394,10 @@
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\app_bar_main.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\app_bar_main.xml"
     },
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
