@@ -4,10 +4,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.atlantbh.mymoviesapp.activities.MoviesFragment;
-import com.atlantbh.mymoviesapp.activities.NowPlayingMoviesFragment;
-import com.atlantbh.mymoviesapp.activities.PopularMoviesFragment;
-import com.atlantbh.mymoviesapp.activities.TopRatedMoviesFragment;
+import com.atlantbh.mymoviesapp.fragments.MoviesFragment;
+import com.atlantbh.mymoviesapp.fragments.NowPlayingMoviesFragment;
+import com.atlantbh.mymoviesapp.fragments.PopularMoviesFragment;
+import com.atlantbh.mymoviesapp.fragments.TopRatedMoviesFragment;
 
 public class MoviePagerAdapter extends FragmentPagerAdapter {
     public MoviePagerAdapter(FragmentManager fragmentManager) {

@@ -27,9 +27,6 @@ import butterknife.ButterKnife;
 public class MovieAdapter extends BaseAdapter {
     private Context context;
     private MovieList movieList;
-    private Activity activity;
-
-    // Binding to views
 
 
     public Context getContext() {
@@ -40,10 +37,14 @@ public class MovieAdapter extends BaseAdapter {
         return movieList;
     }
 
-    public MovieAdapter(Activity activity, MovieList movieList) {
+    public void setMovieList(MovieList movieList) {
         this.movieList = movieList;
-        this.activity = activity;
-        this.context = activity;
+        notifyDataSetChanged();
+    }
+
+    public MovieAdapter(Context context, MovieList movieList) {
+        this.movieList = movieList;
+        this.context = context;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MovieAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return getMovieList().getMovies().get(position).getId();
+        return 0;
     }
 
     @Override
@@ -80,8 +81,6 @@ public class MovieAdapter extends BaseAdapter {
         else {
             holder = (ViewHolder) view.getTag();
         }
-        //ButterKnife.bind(this, view);
-
 
         Movie currentMovie = getMovieList().getMovies().get(position);
 
@@ -102,11 +101,10 @@ public class MovieAdapter extends BaseAdapter {
     }
 
     private void SetFonts(ViewHolder holder) {
-        holder.ratingText.setTypeface(FontHelper.getFont(getContext(), "RobotoRegular"));
-        holder.title.setTypeface(FontHelper.getFont(getContext(), "RobotoMedium"));
-        holder.overview.setTypeface(FontHelper.getFont(getContext(), "RobotoRegular"));
+        holder.ratingText.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
+        holder.title.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
+        holder.overview.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
     }
-
 
     class ViewHolder{
         ImageView imageView;

@@ -13,7 +13,7 @@ import java.util.Locale;
 public class Movie implements Serializable {
 
     @SerializedName("id")
-    private Long _id;
+    private Integer _id;
 
     @SerializedName("poster_path")
     private String _posterPath;
@@ -42,7 +42,7 @@ public class Movie implements Serializable {
     @SerializedName("vote_count")
     private int _voteCount;
 
-    public Long getId() { return _id; }
+    public Integer getId() { return _id; }
     public String getBackdropPath() { return _backdropPath; }
     public String getPosterPath() { return _posterPath; }
     public String getOverview() { return _overview; }
@@ -51,8 +51,7 @@ public class Movie implements Serializable {
     public List<Genre> getGenres() { return _genres; }
     public Date getReleaseDate() throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        Date date = format.parse(_releaseDate);
-        return date;
+        return format.parse(_releaseDate);
     }
     public float getVoteAverage() { return _voteAverage; }
     public int getVoteCount() { return _voteCount; }

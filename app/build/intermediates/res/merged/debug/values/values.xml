@@ -292,6 +292,7 @@
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="invalidParse">Invalid parseing of date, please contact app developer for further details.</string>
+    <string name="knownFor">Known for</string>
     <string name="movie_category_now_playing">now_playing</string>
     <string name="movie_category_popular">popular</string>
     <string name="movie_category_top_rated">top_rated</string>
@@ -300,6 +301,7 @@
     <string name="notYetRated">Not Yet Rated</string>
     <string name="search">Search</string>
     <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="tvSeries">TV Series</string>
     <string name="videos">Videos</string>
     <string name="yourRating">Your\nRating</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
@@ -1262,6 +1264,11 @@
         <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
+    <style name="BasicText">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/textcustomgray</item>
+        <item name="android:lines">7</item>
+    </style>
     <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/my_rating_selector</item>
         <item name="android:maxHeight">24dp</item>
@@ -1413,6 +1420,13 @@
         <item name="android:paddingLeft">@dimen/abc_action_bar_overflow_padding_start_material</item>
         <item name="android:paddingRight">@dimen/abc_action_bar_overflow_padding_end_material</item>
     </style>
+    <style name="Subcontent">
+        <item name="android:layout_margin">10dp</item>
+    </style>
+    <style name="Subtitle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
     <style name="TextAppearance.AppCompat" parent="Base.TextAppearance.AppCompat"/>
     <style name="TextAppearance.AppCompat.Body1" parent="Base.TextAppearance.AppCompat.Body1"/>
     <style name="TextAppearance.AppCompat.Body2" parent="Base.TextAppearance.AppCompat.Body2"/>
@@ -1529,6 +1543,11 @@
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>
     <style name="ThemeOverlay.AppCompat.Dark.ActionBar" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Light" parent="Base.ThemeOverlay.AppCompat.Light"/>
+    <style name="Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
     <style name="Widget.AppCompat.ActionBar" parent="Base.Widget.AppCompat.ActionBar">
     </style>
     <style name="Widget.AppCompat.ActionBar.Solid" parent="Base.Widget.AppCompat.ActionBar.Solid">

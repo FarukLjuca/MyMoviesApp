@@ -1,5 +1,10 @@
 package com.atlantbh.mymoviesapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.view.View;
+import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
@@ -16,12 +21,13 @@ import retrofit.Retrofit;
 
 public class MovieList {
     @SerializedName("results")
-    private List<Movie> _movies;
+    private List<Movie> movies;
     private int page;
     private boolean isLoading;
+    private boolean isLast;
 
     public List<Movie> getMovies() {
-        return _movies;
+        return movies;
     }
 
     public boolean getIsLoading() {
@@ -68,5 +74,43 @@ public class MovieList {
 
             }
         });
+    }
+
+    public void LoadDataToPage(final MovieAdapter movieAdapter, String category, int page, final View view, final int position) {
+        while (this.page <= page + 1) {
+            if (this.page == page + 1) isLast = true;
+            this.page++;
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+            Call<MovieList> call = movieAPI.loadMoviesByPage(category, page);
+            call.enqueue(new Callback<MovieList>() {
+                @Override
+                public void onResponse(Response<MovieList> response, Retrofit retrofit) {
+                    MovieList movieList = response.body();
+                    movieAdapter.addItems(movieList);
+                    if (isLast) {
+                        if (view instanceof ListView) {
+                            ListView listView = (ListView) view;
+                            listView.smoothScrollToPosition(position);
+                        }
+                        else if (view instanceof GridView) {
+                            GridView gridView = (GridView) view;
+                            gridView.smoothScrollToPosition(position);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
+        }
     }
 }

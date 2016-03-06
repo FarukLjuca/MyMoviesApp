@@ -1,12 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.ActorDetailsActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbMainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppToolbar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <ScrollView
+        android:layout_below="@id/tbMainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivActorBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:focusableInTouchMode="true"
+                android:adjustViewBounds="true" />
+
+            <RelativeLayout
+                android:id="@+id/rlActorSubcontent"
+                android:layout_below="@id/ivActorBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Subcontent">
+
+                <ImageView
+                    android:id="@+id/ivActorPoster"
+                    android:layout_width="120dp"
+                    android:layout_height="180dp"
+                    android:adjustViewBounds="true" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:textColor="@color/textdarkgray"
+                    android:textSize="18sp"
+                    android:layout_toRightOf="@id/ivActorPoster"
+                    android:layout_alignTop="@id/ivActorPoster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    style="@style/Title"/>
+
+                <TextView
+                    android:id="@+id/tvActorSubtitle"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:textColor="@color/customred"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@id/tvTitle"
+                    android:layout_alignLeft="@id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <RelativeLayout
+                    android:id="@+id/rlBiographyAndInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvActorSubtitle"
+                    android:layout_alignLeft="@id/tvActorSubtitle">
+
+                    <ImageView
+                        android:id="@+id/ivActorInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="5dp"
+                        android:onClick="Info_Click"
+                        android:src="@drawable/ic_info_outline_black_36dp"
+                        android:tint="@color/infoblue" />
+
+                    <TextView
+                        android:id="@+id/tvActorBiography"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/ivActorInfo"
+                        style="@style/BasicText"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_below="@id/rlActorSubcontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/knownFor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Subtitle"/>
+                
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvActorMovies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="220dp" />
+
+                <TextView
+                    android:text="@string/tvSeries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Subtitle"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvActorTvSeries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="220dp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
