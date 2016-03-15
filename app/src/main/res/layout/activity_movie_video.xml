@@ -7,7 +7,7 @@
 
     <!--TODO: for older versions make a prototype or something with less functionalities, or figure out how to make it properly-->
     <Toolbar
-        android:id="@+id/my_toolbar"
+        android:id="@+id/tbDetailsToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"

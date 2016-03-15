@@ -1,9 +1,6 @@
 package com.atlantbh.mymoviesapp.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
-import android.test.suitebuilder.annotation.MediumTest;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +9,11 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.atlantbh.mymoviesapp.activities.MovieListActivity;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.R;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 public class MovieAdapter extends BaseAdapter {
     private Context context;
@@ -89,14 +80,15 @@ public class MovieAdapter extends BaseAdapter {
                 .placeholder(R.drawable.actor_placeholder_curved).into(holder.imageView);
         holder.ratingBar.setRating(currentMovie.getVoteAverage() / 2);
         holder.ratingText.setText(String.format("%.1f", currentMovie.getVoteAverage()));
-        holder.title.setText(currentMovie.getOriginalTitle());
-        holder.overview.setText(currentMovie.getOverview());
+        holder.title.setText(currentMovie.getTitle());
+        holder.overview.setText(currentMovie.getBasicText());
 
         return view;
     }
 
     public void addItems(MovieList movieList) {
-        this.movieList.getMovies().addAll(movieList.getMovies());
+        if (this.movieList != null && this.movieList.getMovies() != null && movieList != null)
+            this.movieList.getMovies().addAll(movieList.getMovies());
         notifyDataSetChanged();
     }
 

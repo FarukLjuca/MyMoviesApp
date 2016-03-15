@@ -1,6 +1,6 @@
 package com.atlantbh.mymoviesapp.activities;
 
-import android.os.Parcelable;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -36,7 +36,7 @@ public class MovieListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbDetailsToolbar);
         setSupportActionBar(myToolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -87,7 +87,7 @@ public class MovieListActivity extends AppCompatActivity
         if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_share) {
 
         }

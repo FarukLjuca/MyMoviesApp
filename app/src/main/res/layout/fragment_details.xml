@@ -1,0 +1,263 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.atlantbh.mymoviesapp.fragments.DetailsFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/rlDetailsMovie"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/ivDetailsBackdrop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop" />
+
+            <com.atlantbh.mymoviesapp.helpers.BottomCropImageView
+                android:id="@+id/ivDetailsBackdropBlur"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_alignBottom="@+id/ivDetailsBackdrop" />
+
+            <ImageView
+                android:id="@+id/ivDetailsFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/ivDetailsBackdrop"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_favorite_border_white_48dp" />
+
+            <LinearLayout
+                android:id="@+id/llTitleAndReleaseYear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/ivDetailsFavorite"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/ivDetailsFavorite"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvDetailsTitle"
+                    style="@style/Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvDetailsYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:singleLine="true"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvDetailsSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/llTitleAndReleaseYear"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/ivDetailsFavorite"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/ivDetailsPoster"
+                android:layout_width="120dp"
+                android:layout_height="180dp"
+                android:layout_below="@id/ivDetailsBackdrop"
+                android:layout_margin="10dp"
+                android:adjustViewBounds="true" />
+
+            <RelativeLayout
+                android:id="@+id/rlOverviewAndInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ivDetailsBackdrop"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:layout_toRightOf="@id/ivDetailsPoster">
+
+                <ImageView
+                    android:id="@+id/ivDetailsInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="10dp"
+                    android:onClick="Info_Click"
+                    android:src="@drawable/ic_info_outline_black_36dp"
+                    android:tint="@color/infoblue" />
+
+                <TextView
+                    android:id="@+id/tvDetailsBasicText"
+                    style="@style/BasicText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/ivDetailsInfo" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDetailsVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rlOverviewAndInfo"
+                android:layout_toRightOf="@id/ivDetailsPoster"
+                android:onClick="Video_Click">
+
+                <ImageView
+                    android:id="@+id/ivDetailsPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/video_icon" />
+
+                <TextView
+                    android:id="@+id/tvDetailsVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@id/ivDetailsPlay"
+                    android:text="@string/videos"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_chevron_right_black_36dp"
+                    android:tint="@color/lightgray" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/vwDetailsVideoLine"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_above="@id/rlDetailsVideo"
+                android:layout_alignLeft="@id/rlDetailsVideo"
+                android:layout_alignRight="@id/rlDetailsVideo"
+                android:background="@color/lightgray" />
+
+            <View
+                android:id="@+id/vwDetailsHorizontalLine1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/ivDetailsPoster"
+                android:layout_marginLeft="20dp"
+                android:background="@color/lightgray" />
+
+            <RelativeLayout
+                android:id="@+id/rlDetailsRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vwDetailsHorizontalLine1">
+
+                <View
+                    android:id="@+id/vwFakeView"
+                    android:layout_width="1dp"
+                    android:layout_height="64dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/lightgray" />
+
+                <RatingBar
+                    android:id="@+id/rbDetailsRating"
+                    style="@style/MyRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:isIndicator="true"
+                    android:numStars="5" />
+
+                <TextView
+                    android:id="@+id/tvDetailsVoteAverage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toLeftOf="@id/vwFakeView"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvDetailsVoteCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvDetailsVoteAverage"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/vwFakeView"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvDetailsYourRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/vwFakeView"
+                    android:text="@string/yourRating"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/ivDetailsChevronRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_chevron_right_black_36dp"
+                    android:tint="@color/lightgray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@id/ivDetailsChevronRating"
+                    android:layout_toRightOf="@id/tvDetailsYourRating"
+                    android:text="@string/notYetRated"
+                    android:textAlignment="center"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rlDetailsMovie"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/white"
+            android:paddingBottom="20dp">
+
+            <TextView
+                android:id="@+id/tvDetailsCast"
+                style="@style/Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cast" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvDetailsCast"
+                android:layout_width="wrap_content"
+                android:layout_height="220dp"
+                android:layout_below="@id/tvDetailsCast" />
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

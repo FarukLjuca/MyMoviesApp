@@ -396,13 +396,13 @@
                     "endOffset": 158
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 4,
+                        "startLine": 2,
                         "startColumn": 4,
-                        "startOffset": 229,
+                        "startOffset": 55,
                         "endColumn": 107,
-                        "endOffset": 332
+                        "endOffset": 158
                     }
                 }
             },
@@ -415,13 +415,13 @@
                     "endOffset": 266
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 5,
+                        "startLine": 3,
                         "startColumn": 4,
-                        "startOffset": 337,
+                        "startOffset": 163,
                         "endColumn": 107,
-                        "endOffset": 440
+                        "endOffset": 266
                     }
                 }
             },
@@ -434,13 +434,13 @@
                     "endOffset": 389
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 6,
+                        "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 445,
+                        "startOffset": 271,
                         "endColumn": 122,
-                        "endOffset": 563
+                        "endOffset": 389
                     }
                 }
             },
@@ -453,13 +453,13 @@
                     "endOffset": 496
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 7,
+                        "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 568,
+                        "startOffset": 394,
                         "endColumn": 106,
-                        "endOffset": 670
+                        "endOffset": 496
                     }
                 }
             },
@@ -472,13 +472,13 @@
                     "endOffset": 610
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 8,
+                        "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 675,
+                        "startOffset": 501,
                         "endColumn": 113,
-                        "endOffset": 784
+                        "endOffset": 610
                     }
                 }
             },
@@ -491,13 +491,13 @@
                     "endOffset": 698
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 9,
+                        "startLine": 7,
                         "startColumn": 4,
-                        "startOffset": 789,
+                        "startOffset": 615,
                         "endColumn": 87,
-                        "endOffset": 872
+                        "endOffset": 698
                     }
                 }
             },
@@ -510,13 +510,13 @@
                     "endOffset": 801
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 10,
+                        "startLine": 8,
                         "startColumn": 4,
-                        "startOffset": 877,
+                        "startOffset": 703,
                         "endColumn": 102,
-                        "endOffset": 975
+                        "endOffset": 801
                     }
                 }
             },
@@ -529,13 +529,13 @@
                     "endOffset": 928
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 11,
+                        "startLine": 9,
                         "startColumn": 4,
-                        "startOffset": 980,
+                        "startOffset": 806,
                         "endColumn": 126,
-                        "endOffset": 1102
+                        "endOffset": 928
                     }
                 }
             },
@@ -548,13 +548,13 @@
                     "endOffset": 1008
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 12,
+                        "startLine": 10,
                         "startColumn": 4,
-                        "startOffset": 1107,
+                        "startOffset": 933,
                         "endColumn": 79,
-                        "endOffset": 1182
+                        "endOffset": 1008
                     }
                 }
             },
@@ -567,13 +567,13 @@
                     "endOffset": 1088
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 13,
+                        "startLine": 11,
                         "startColumn": 4,
-                        "startOffset": 1187,
+                        "startOffset": 1013,
                         "endColumn": 79,
-                        "endOffset": 1262
+                        "endOffset": 1088
                     }
                 }
             },
@@ -586,13 +586,13 @@
                     "endOffset": 1174
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 14,
+                        "startLine": 12,
                         "startColumn": 4,
-                        "startOffset": 1267,
+                        "startOffset": 1093,
                         "endColumn": 85,
-                        "endOffset": 1348
+                        "endOffset": 1174
                     }
                 }
             },
@@ -605,13 +605,13 @@
                     "endOffset": 1278
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 15,
+                        "startLine": 13,
                         "startColumn": 4,
-                        "startOffset": 1353,
+                        "startOffset": 1179,
                         "endColumn": 103,
-                        "endOffset": 1452
+                        "endOffset": 1278
                     }
                 }
             },
@@ -624,13 +624,13 @@
                     "endOffset": 1384
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 16,
+                        "startLine": 14,
                         "startColumn": 4,
-                        "startOffset": 1457,
+                        "startOffset": 1283,
                         "endColumn": 105,
-                        "endOffset": 1558
+                        "endOffset": 1384
                     }
                 }
             },
@@ -643,13 +643,13 @@
                     "endOffset": 1482
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 17,
+                        "startLine": 15,
                         "startColumn": 4,
-                        "startOffset": 1563,
+                        "startOffset": 1389,
                         "endColumn": 97,
-                        "endOffset": 1656
+                        "endOffset": 1482
                     }
                 }
             },
@@ -662,13 +662,13 @@
                     "endOffset": 1589
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 18,
+                        "startLine": 16,
                         "startColumn": 4,
-                        "startOffset": 1661,
+                        "startOffset": 1487,
                         "endColumn": 106,
-                        "endOffset": 1763
+                        "endOffset": 1589
                     }
                 }
             },
@@ -681,13 +681,13 @@
                     "endOffset": 1695
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 19,
+                        "startLine": 17,
                         "startColumn": 4,
-                        "startOffset": 1768,
+                        "startOffset": 1594,
                         "endColumn": 105,
-                        "endOffset": 1869
+                        "endOffset": 1695
                     }
                 }
             },
@@ -700,13 +700,13 @@
                     "endOffset": 1801
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 20,
+                        "startLine": 18,
                         "startColumn": 4,
-                        "startOffset": 1874,
+                        "startOffset": 1700,
                         "endColumn": 105,
-                        "endOffset": 1975
+                        "endOffset": 1801
                     }
                 }
             },
@@ -719,13 +719,13 @@
                     "endOffset": 1921
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 21,
+                        "startLine": 19,
                         "startColumn": 4,
-                        "startOffset": 1980,
+                        "startOffset": 1806,
                         "endColumn": 119,
-                        "endOffset": 2095
+                        "endOffset": 1921
                     }
                 }
             },
@@ -738,13 +738,13 @@
                     "endOffset": 2017
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 22,
+                        "startLine": 20,
                         "startColumn": 4,
-                        "startOffset": 2100,
+                        "startOffset": 1926,
                         "endColumn": 95,
-                        "endOffset": 2191
+                        "endOffset": 2017
                     }
                 }
             },
@@ -757,13 +757,13 @@
                     "endOffset": 2118
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\values-zu\\values-zu.xml",
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.0\\res\\values-zu\\values-zu.xml",
                     "position": {
-                        "startLine": 23,
+                        "startLine": 21,
                         "startColumn": 4,
-                        "startOffset": 2196,
+                        "startOffset": 2022,
                         "endColumn": 100,
-                        "endOffset": 2292
+                        "endOffset": 2118
                     }
                 }
             }

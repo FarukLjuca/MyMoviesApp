@@ -26,7 +26,6 @@ import com.atlantbh.mymoviesapp.api.ActorAPI;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
-import com.atlantbh.mymoviesapp.model.credits.MovieCredits;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -57,8 +56,10 @@ public class ActorDetailsActivity extends AppCompatActivity {
     TextView actorBiography;
     @Bind(R.id.rvActorMovies)
     RecyclerView actorMovies;
-    @Bind(R.id.rvActorTvSeries)
-    RecyclerView actorTvSeries;
+    @Bind(R.id.rvActorTv)
+    RecyclerView actorTv;
+    @Bind(R.id.ivActorInfo)
+    ImageView actorInfo;
 
     private Context getContext() { return ActorDetailsActivity.this; }
 
@@ -123,34 +124,45 @@ public class ActorDetailsActivity extends AppCompatActivity {
                     if (actor.getBiography() != null) {
                         actorBiography.setText(actor.getBiography().replace("\n", " "));
                     }
+                    actorBiography.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Layout l = actorBiography.getLayout();
+                            if (l != null) {
+                                int lines = l.getLineCount();
+                                if (lines > 0)
+                                    if (l.getEllipsisCount(lines-1) == 0) {
+                                        actorInfo.setColorFilter(R.color.lightgray);
+                                    }
+                            }
+                        }
+                    });
 
-                    RecyclerView movieCredits = (RecyclerView) findViewById(R.id.rvActorMovies);
-                    movieCredits.setHasFixedSize(true);
+                    actorMovies.setHasFixedSize(true);
                     RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                    movieCredits.setLayoutManager(movieCreditsLayoutManager);
+                    actorMovies.setLayoutManager(movieCreditsLayoutManager);
                     RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Credits credits) {
-                            Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                            Intent intent = new Intent(getContext(), DetailsActivity.class);
                             intent.putExtra("movieId", credits.getId());
                             startActivity(intent);
                         }
                     });
-                    movieCredits.setAdapter(movieCreditsAdapter);
+                    actorMovies.setAdapter(movieCreditsAdapter);
 
-                    RecyclerView tvCredits = (RecyclerView) findViewById(R.id.rvActorTvSeries);
-                    tvCredits.setHasFixedSize(true);
+                    actorTv.setHasFixedSize(true);
                     RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                    tvCredits.setLayoutManager(tvCreditsLayoutManager);
+                    actorTv.setLayoutManager(tvCreditsLayoutManager);
                     RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Credits credits) {
-                            Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
-                            intent.putExtra("movieId", credits.getId());
+                            Intent intent = new Intent(getContext(), DetailsActivity.class);
+                            intent.putExtra("tvId", credits.getId());
                             startActivity(intent);
                         }
                     });
-                    tvCredits.setAdapter(tvCreditsAdapter);
+                    actorTv.setAdapter(tvCreditsAdapter);
                 }
 
                 @Override

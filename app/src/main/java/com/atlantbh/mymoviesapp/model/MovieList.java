@@ -1,16 +1,14 @@
 package com.atlantbh.mymoviesapp.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.Call;
@@ -34,10 +32,6 @@ public class MovieList {
         return isLoading;
     }
 
-    public int getPage() {
-        return page;
-    }
-
     public void setIsLoading(boolean isLoading) {
         this.isLoading = isLoading;
     }
@@ -49,6 +43,9 @@ public class MovieList {
     public MovieList() {
         setPage(1);
         setIsLoading(false);
+        if (movies == null) {
+            movies = new ArrayList<>();
+        }
     }
 
     public void LoadData(final MovieAdapter movieAdapter, String category) {
@@ -67,6 +64,7 @@ public class MovieList {
             public void onResponse(Response<MovieList> response, Retrofit retrofit) {
                 MovieList movieList = response.body();
                 movieAdapter.addItems(movieList);
+                movieAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -112,5 +110,9 @@ public class MovieList {
                 }
             });
         }
+    }
+
+    public void addMovie(Movie movie) {
+        this.movies.add(movie);
     }
 }

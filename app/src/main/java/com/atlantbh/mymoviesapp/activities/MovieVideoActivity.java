@@ -2,11 +2,9 @@ package com.atlantbh.mymoviesapp.activities;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -23,7 +21,7 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class MovieVideoActivity extends YouTubeFailureRecoveryActivity {
-    private long movieId;
+    private int movieId;
     private String videoKey;
 
     private YouTubePlayer YPlayer;
@@ -35,7 +33,7 @@ public class MovieVideoActivity extends YouTubeFailureRecoveryActivity {
         setContentView(R.layout.activity_movie_video);
 
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbDetailsToolbar);
         setActionBar(myToolbar);
         ActionBar ab = getActionBar();
         if (ab != null) {
@@ -43,7 +41,7 @@ public class MovieVideoActivity extends YouTubeFailureRecoveryActivity {
         }
 
         Intent intent = getIntent();
-        movieId = intent.getLongExtra("movieId", -1);
+        movieId = intent.getIntExtra("movieId", -1);
 
         if (movieId != -1) {
             Retrofit retrofit = new Retrofit.Builder()
