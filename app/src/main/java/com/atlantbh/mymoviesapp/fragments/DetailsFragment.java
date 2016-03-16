@@ -3,6 +3,8 @@ package com.atlantbh.mymoviesapp.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.ActorDetailsActivity;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
+import com.atlantbh.mymoviesapp.activities.MovieListActivity;
 import com.atlantbh.mymoviesapp.activities.MovieVideoActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
@@ -32,16 +35,20 @@ import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Detailable;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.Tv;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import retrofit.Call;
 import retrofit.Callback;
@@ -113,31 +120,40 @@ public class DetailsFragment extends Fragment {
         if (movieId == -1 && tvId == -1) {
             Toast.makeText(getContext(), "Movie ili Tv Id nije poslan, dakle bundle nije poslan", Toast.LENGTH_SHORT).show();
         } else if (movieId != -1) {
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
+            if (isOnline()) {
+                Gson gson = new GsonBuilder()
+                        .setDateFormat("yyyy-MM-dd")
+                        .create();
 
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://api.themoviedb.org")
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
 
-            MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+                MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
-            Call<Movie> call = movieAPI.loadMovieById(movieId);
-            call.enqueue(new Callback<Movie>() {
-                @Override
-                public void onResponse(Response<Movie> response, Retrofit retrofit) {
-                    Detailable detailable = response.body();
-                    SetContent(detailable);
+                Call<Movie> call = movieAPI.loadMovieById(movieId);
+                call.enqueue(new Callback<Movie>() {
+                    @Override
+                    public void onResponse(Response<Movie> response, Retrofit retrofit) {
+                        Detailable detailable = response.body();
+                        SetContent(detailable);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+            else {
+                Realm realm = Realm.getInstance(getContext());
+                RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
+                for (RealmMovie realmMovie : realmResults) {
+                    SetContent(new Movie(realmMovie));
                 }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-        } else if (tvId != -1) {
+            }
+        } else {
             getActivity().findViewById(R.id.rlDetailsVideo).setVisibility(View.GONE);
             getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
             basicText.setLines(10);
@@ -237,12 +253,19 @@ public class DetailsFragment extends Fragment {
                 }
             }
         });
-        ((DetailsActivity) getActivity()).setTvOverview(basicText);
-        ((DetailsActivity) getActivity()).setOverview(detailable.getBasicText());
+
+        if (getActivity() instanceof DetailsActivity) {
+            ((DetailsActivity) getActivity()).setTvOverview(basicText);
+            ((DetailsActivity) getActivity()).setOverview(detailable.getBasicText());
+        }
+        else if (getActivity() instanceof MovieListActivity) {
+            ((MovieListActivity) getActivity()).setTvOverview(basicText);
+            ((MovieListActivity) getActivity()).setOverview(detailable.getBasicText());
+        }
 
         rating.setRating(detailable.getVoteAverage() / 2);
-        voteAverage.setText(Float.toString(detailable.getVoteAverage()));
-        voteCount.setText(detailable.getVoteCount());
+        voteAverage.setText(String.valueOf(round(detailable.getVoteAverage(), 1)));
+        voteCount.setText(Integer.toString(detailable.getVoteCount()));
 
         RecyclerView cast = (RecyclerView) getActivity().findViewById(R.id.rvDetailsCast);
         cast.setHasFixedSize(true);
@@ -259,9 +282,22 @@ public class DetailsFragment extends Fragment {
         cast.setAdapter(castAdapter);
     }
 
+    public static BigDecimal round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd;
+    }
+
     private void SetFonts() {
         title.setTypeface(FontHelper.getFont(getContext(), FontHelper.AVENIR_REGULAR));
         year.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         subtitle.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
 }

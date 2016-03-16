@@ -6,11 +6,14 @@ import android.widget.ListView;
 
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -45,6 +48,17 @@ public class MovieList {
         setIsLoading(false);
         if (movies == null) {
             movies = new ArrayList<>();
+        }
+    }
+
+    public MovieList(RealmResults<RealmMovie> realmResults) {
+        setPage(1);
+        setIsLoading(false);
+        if (movies == null) {
+            movies = new ArrayList<>();
+            for (RealmMovie movie : realmResults) {
+                movies.add(new Movie(movie));
+            }
         }
     }
 

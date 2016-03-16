@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
@@ -44,7 +45,7 @@ public abstract class MoviesFragment extends Fragment {
     public static final int CATEGORY_NOW_PLAYING = 1;
     public static final int CATEGORY_TOP_RATED = 2;
 
-    private static List<RealmMovie> optimizedMovieList;
+    private static List<RealmMovie> optimizedMovieList = new ArrayList<>();
 
     private static int pass = 0;
 
@@ -120,30 +121,53 @@ public abstract class MoviesFragment extends Fragment {
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 
-            MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+            final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
             Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(), 1);
             call.enqueue(new Callback<MovieList>() {
                 @Override
                 public void onResponse(Response<MovieList> response, Retrofit retrofit) {
                     final MovieList movieList = response.body();
-                    optimizedMovieList = new ArrayList<>();
 
-                    for (Movie movie : movieList.getMovies()) {
+                    for (int i = 0; i < movieList.getMovies().size(); i++) {
                         int index = -1;
-                        for (int i = 0; i < optimizedMovieList.size(); i++) {
-                            if (optimizedMovieList.get(i).getId() == movie.getId()) {
+                        for (int j = 0; j < optimizedMovieList.size(); j++) {
+                            if (optimizedMovieList.get(j).getId() == movieList.getMovies().get(i).getId()) {
                                 index = i;
                                 break;
                             }
                         }
 
                         if (index == -1) {
-                            RealmMovie realmMovie = new RealmMovie(movie);
+                            RealmMovie realmMovie = new RealmMovie(movieList.getMovies().get(i));
                             realmMovie.setCategory(getCategory());
+
+                            switch (getCategory()) {
+                                case Movie.POPULAR:
+                                    realmMovie.setIndexPopular(i);
+                                    break;
+                                case Movie.NOW_PAYING:
+                                    realmMovie.setIndexNowPlaying(i);
+                                    break;
+                                case Movie.TOP_RATED:
+                                    realmMovie.setIndexTopRated(i);
+                                    break;
+                            }
+
                             optimizedMovieList.add(realmMovie);
                         } else {
                             optimizedMovieList.get(index).setCategory(Movie.mergeCategories(optimizedMovieList.get(index).getCategory(), getCategory()));
+                            switch (getCategory()) {
+                                case Movie.POPULAR:
+                                    optimizedMovieList.get(index).setIndexPopular(i);
+                                    break;
+                                case Movie.NOW_PAYING:
+                                    optimizedMovieList.get(index).setIndexNowPlaying(i);
+                                    break;
+                                case Movie.TOP_RATED:
+                                    optimizedMovieList.get(index).setIndexTopRated(i);
+                                    break;
+                            }
                         }
                     }
 
@@ -151,6 +175,9 @@ public abstract class MoviesFragment extends Fragment {
 
                     setAdapterViews(savedInstanceState, movieList);
 
+                    if (pass == 1) {
+                        Realm.deleteRealm(new RealmConfiguration.Builder(getContext()).build());
+                    }
                     if (pass == 3) {
                         Runnable runnable = new Runnable() {
                             @Override
@@ -161,8 +188,6 @@ public abstract class MoviesFragment extends Fragment {
                                 realm.copyToRealmOrUpdate(optimizedMovieList);
                                 realm.commitTransaction();
                                 realm.close();
-
-                                Log.v("IsMainThread", String.valueOf(Looper.getMainLooper() == Looper.myLooper()));
                             }
                         };
                         Thread thread = new Thread(runnable);
@@ -179,36 +204,16 @@ public abstract class MoviesFragment extends Fragment {
         } else {
             Realm realm = Realm.getInstance(getContext());
 
-            MovieList movieList = null;
-            if (optimizedMovieList == null) {
-                RealmResults<RealmMovie> realmResult = realm.where(RealmMovie.class).findAll();
-                optimizedMovieList = new ArrayList<>(realmResult);
-            }
+            RealmResults movieList = null;
 
-            if (getCategory() == CATEGORY_POPULAR) {
-                movieList = new MovieList();
-                for (RealmMovie movie : optimizedMovieList) {
-                    if (Movie.isPopular(movie.getCategory())) {
-                        movieList.addMovie(new Movie(movie));
-                    }
-                }
-            } else if (getCategory() == CATEGORY_NOW_PLAYING) {
-                movieList = new MovieList();
-                for (RealmMovie movie : optimizedMovieList) {
-                    if (Movie.isPopular(movie.getCategory())) {
-                        movieList.addMovie(new Movie(movie));
-                    }
-                }
-            } else if (getCategory() == CATEGORY_TOP_RATED) {
-                movieList = new MovieList();
-                for (RealmMovie movie : optimizedMovieList) {
-                    if (Movie.isPopular(movie.getCategory())) {
-                        movieList.addMovie(new Movie(movie));
-                    }
-                }
-            }
+            if (getCategory() == CATEGORY_POPULAR)
+                movieList = realm.where(RealmMovie.class).notEqualTo("indexPopular", -1).findAllSorted("indexPopular");
+            else if (getCategory() == CATEGORY_NOW_PLAYING)
+                movieList = realm.where(RealmMovie.class).notEqualTo("indexNowPlaying", -1).findAllSorted("indexNowPlaying");
+            else if (getCategory() == CATEGORY_TOP_RATED)
+                movieList = realm.where(RealmMovie.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
 
-            setAdapterViews(savedInstanceState, movieList);
+            setAdapterViews(savedInstanceState, new MovieList(movieList));
         }
     }
 
@@ -293,10 +298,20 @@ public abstract class MoviesFragment extends Fragment {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(currentContext, DetailsActivity.class);
-                    Movie movie = movieList.getMovies().get(position);
-                    intent.putExtra("movieId", movie.getId());
-                    startActivity(intent);
+                    if (detailsContainer != null) {
+                        Bundle arguments = new Bundle();
+                        arguments.putInt(DetailsFragment.MOVIE_ID, (int) id);
+                        DetailsFragment fragment = new DetailsFragment();
+                        fragment.setArguments(arguments);
+                        getFragmentManager().beginTransaction()
+                                .add(R.id.rlDetailsContainer, fragment)
+                                .commit();
+                    } else {
+                        Intent intent = new Intent(currentContext, DetailsActivity.class);
+                        Movie movie = movieList.getMovies().get(position);
+                        intent.putExtra("movieId", movie.getId());
+                        startActivity(intent);
+                    }
                 }
             });
 

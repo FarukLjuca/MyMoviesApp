@@ -4,6 +4,7 @@ import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,15 +27,6 @@ public class Movie implements Detailable {
     private String overview;
     @SerializedName("title")
     private String title;
-
-    public Movie(Integer id, String posterPath, String overview, String title, Float voteAverage) {
-        this.id = id;
-        this.posterPath = posterPath;
-        this.overview = overview;
-        this.title = title;
-        this.voteAverage = voteAverage;
-    }
-
     @SerializedName("runtime")
     private int runtime;
     @SerializedName("genres")
@@ -54,6 +46,11 @@ public class Movie implements Detailable {
         setVoteAverage(movie.getVoteAverage());
         setTitle(movie.getTitle());
         setPosterPath(movie.getPosterPath());
+        setBackdropPath(movie.getBackdropPath());
+        setRuntime(movie.getRuntime());
+        setVoteCount(movie.getVoteCount());
+        setReleaseDate(movie.getReleaseDate());
+        setRuntime(movie.getRuntime());
     }
 
     @Override
@@ -171,9 +168,10 @@ public class Movie implements Detailable {
         result += "h ";
         result += runtime - (runtime / 60) * 60;
         result += "m |";
-
-        for (int i = 0; i < genres.size(); i++) {
-            result += " " + genres.get(i).getName();
+        if (genres != null) {
+            for (int i = 0; i < genres.size(); i++) {
+                result += " " + genres.get(i).getName();
+            }
         }
         return result;
     }
@@ -194,17 +192,5 @@ public class Movie implements Detailable {
         }
 
         return result;
-    }
-
-    public static boolean isPopular (int category) {
-        return (category == POPULAR || category == POPULAR_AND_NOW_PLAYING || category == POPULAR_AND_TOP_RATED || category == POPULAR_AND_NOW_PLAYING_AND_TOP_RATED);
-    }
-
-    public static boolean isNowPlaying (int category) {
-        return (category == NOW_PAYING || category == NOW_PLAYING_AND_TOP_RATED || category == POPULAR_AND_TOP_RATED || category == POPULAR_AND_NOW_PLAYING_AND_TOP_RATED);
-    }
-
-    public static boolean isTopRated (int category) {
-        return (category == TOP_RATED || category == POPULAR_AND_TOP_RATED || category == NOW_PLAYING_AND_TOP_RATED || category == POPULAR_AND_NOW_PLAYING_AND_TOP_RATED);
     }
 }

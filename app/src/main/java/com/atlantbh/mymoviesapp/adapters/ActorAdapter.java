@@ -69,7 +69,11 @@ public class ActorAdapter extends RecyclerView.Adapter<ActorAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return actors.getActors().size();
+        int result = 0;
+        if (actors != null && actors.getActors() != null) {
+            result = actors.getActors().size();
+        }
+        return result;
     }
 
     public interface OnItemClickListener {

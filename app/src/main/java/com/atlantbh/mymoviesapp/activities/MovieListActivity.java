@@ -1,6 +1,9 @@
 package com.atlantbh.mymoviesapp.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -8,20 +11,31 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
+import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DetailsFragment.OnFragmentInteractionListener {
+
+    private int movieId;
+    private int tvId;
+
+    private String overview;
+    private TextView tvOverview;
 
     private MoviePagerAdapter pagerAdapter;
 
@@ -78,7 +92,6 @@ public class MovieListActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -95,5 +108,46 @@ public class MovieListActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    public void Video_Click(View view) {
+        Intent intent = new Intent(getContext(), MovieVideoActivity.class);
+        intent.putExtra("movieId", movieId);
+        startActivity(intent);
+    }
+
+    public void Info_Click(View view) {
+        Layout l = tvOverview.getLayout();
+        if (l != null) {
+            int lines = l.getLineCount();
+            if (lines > 0)
+                if (l.getEllipsisCount(lines-1) > 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Detailed overview")
+                            .setMessage(overview)
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+                }
+        }
+    }
+
+    public Context getContext() {
+        return this;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setTvOverview(TextView tvOverview) {
+        this.tvOverview = tvOverview;
     }
 }

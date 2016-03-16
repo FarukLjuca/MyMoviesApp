@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:background="@color/gray"
+    tools:context=".fragments.MoviesFragment">
+
+    <GridView
+        android:id="@+id/gvContainer"
+        android:scrollbars="none"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5dp"
+        android:verticalSpacing="5dp"
+        android:numColumns="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:id="@+id/rlDetailsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"/>
+</LinearLayout>
