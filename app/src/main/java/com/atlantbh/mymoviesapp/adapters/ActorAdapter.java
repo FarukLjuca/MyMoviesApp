@@ -12,9 +12,9 @@ import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.ActorList;
 import com.atlantbh.mymoviesapp.R;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ActorAdapter extends RecyclerView.Adapter<ActorAdapter.ViewHolder> {
     private Context context;
@@ -59,10 +59,10 @@ public class ActorAdapter extends RecyclerView.Adapter<ActorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.actorName.setText(actors.get(position).getName());
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w185/" + actors.get(position).getProfilePath())
                 .placeholder(R.drawable.actor_placeholder_curved)
-                .transform(new RoundedCornersTransformation(10, 0))
+                .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0))
                 .into(holder.actorImage);
         holder.bind(actors.get(position), listener);
     }

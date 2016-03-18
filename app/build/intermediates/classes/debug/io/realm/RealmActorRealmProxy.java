@@ -31,7 +31,7 @@ public class RealmActorRealmProxy extends RealmActor
 
         public final long idIndex;
         public final long nameIndex;
-        public final long posterPathIndex;
+        public final long profilePathIndex;
 
         RealmActorColumnInfo(String path, Table table) {
             final Map<String, Long> indicesMap = new HashMap<String, Long>(3);
@@ -41,8 +41,8 @@ public class RealmActorRealmProxy extends RealmActor
             this.nameIndex = getValidColumnIndex(path, table, "RealmActor", "name");
             indicesMap.put("name", this.nameIndex);
 
-            this.posterPathIndex = getValidColumnIndex(path, table, "RealmActor", "posterPath");
-            indicesMap.put("posterPath", this.posterPathIndex);
+            this.profilePathIndex = getValidColumnIndex(path, table, "RealmActor", "profilePath");
+            indicesMap.put("profilePath", this.profilePathIndex);
 
             setIndicesMap(indicesMap);
         }
@@ -54,7 +54,7 @@ public class RealmActorRealmProxy extends RealmActor
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add("id");
         fieldNames.add("name");
-        fieldNames.add("posterPath");
+        fieldNames.add("profilePath");
         FIELD_NAMES = Collections.unmodifiableList(fieldNames);
     }
 
@@ -94,19 +94,19 @@ public class RealmActorRealmProxy extends RealmActor
 
     @Override
     @SuppressWarnings("cast")
-    public String getPosterPath() {
+    public String getProfilePath() {
         realm.checkIfValid();
-        return (java.lang.String) row.getString(columnInfo.posterPathIndex);
+        return (java.lang.String) row.getString(columnInfo.profilePathIndex);
     }
 
     @Override
-    public void setPosterPath(String value) {
+    public void setProfilePath(String value) {
         realm.checkIfValid();
         if (value == null) {
-            row.setNull(columnInfo.posterPathIndex);
+            row.setNull(columnInfo.profilePathIndex);
             return;
         }
-        row.setString(columnInfo.posterPathIndex, value);
+        row.setString(columnInfo.profilePathIndex, value);
     }
 
     public static Table initTable(ImplicitTransaction transaction) {
@@ -114,7 +114,7 @@ public class RealmActorRealmProxy extends RealmActor
             Table table = transaction.getTable("class_RealmActor");
             table.addColumn(ColumnType.INTEGER, "id", Table.NOT_NULLABLE);
             table.addColumn(ColumnType.STRING, "name", Table.NULLABLE);
-            table.addColumn(ColumnType.STRING, "posterPath", Table.NULLABLE);
+            table.addColumn(ColumnType.STRING, "profilePath", Table.NULLABLE);
             table.addSearchIndex(table.getColumnIndex("id"));
             table.setPrimaryKey("id");
             return table;
@@ -159,14 +159,14 @@ public class RealmActorRealmProxy extends RealmActor
             if (!table.isColumnNullable(columnInfo.nameIndex)) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Field 'name' is required. Either set @Required to field 'name' or migrate using io.realm.internal.Table.convertColumnToNullable().");
             }
-            if (!columnTypes.containsKey("posterPath")) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'posterPath' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
+            if (!columnTypes.containsKey("profilePath")) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'profilePath' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
             }
-            if (columnTypes.get("posterPath") != ColumnType.STRING) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'String' for field 'posterPath' in existing Realm file.");
+            if (columnTypes.get("profilePath") != ColumnType.STRING) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'String' for field 'profilePath' in existing Realm file.");
             }
-            if (!table.isColumnNullable(columnInfo.posterPathIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'posterPath' is required. Either set @Required to field 'posterPath' or migrate using io.realm.internal.Table.convertColumnToNullable().");
+            if (!table.isColumnNullable(columnInfo.profilePathIndex)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'profilePath' is required. Either set @Required to field 'profilePath' or migrate using io.realm.internal.Table.convertColumnToNullable().");
             }
             return columnInfo;
         } else {
@@ -215,11 +215,11 @@ public class RealmActorRealmProxy extends RealmActor
                 obj.setName((String) json.getString("name"));
             }
         }
-        if (json.has("posterPath")) {
-            if (json.isNull("posterPath")) {
-                obj.setPosterPath(null);
+        if (json.has("profilePath")) {
+            if (json.isNull("profilePath")) {
+                obj.setProfilePath(null);
             } else {
-                obj.setPosterPath((String) json.getString("posterPath"));
+                obj.setProfilePath((String) json.getString("profilePath"));
             }
         }
         return obj;
@@ -246,12 +246,12 @@ public class RealmActorRealmProxy extends RealmActor
                 } else {
                     obj.setName((String) reader.nextString());
                 }
-            } else if (name.equals("posterPath")) {
+            } else if (name.equals("profilePath")) {
                 if (reader.peek() == JsonToken.NULL) {
                     reader.skipValue();
-                    obj.setPosterPath(null);
+                    obj.setProfilePath(null);
                 } else {
-                    obj.setPosterPath((String) reader.nextString());
+                    obj.setProfilePath((String) reader.nextString());
                 }
             } else {
                 reader.skipValue();
@@ -293,13 +293,13 @@ public class RealmActorRealmProxy extends RealmActor
         cache.put(newObject, (RealmObjectProxy) realmObject);
         realmObject.setId(newObject.getId());
         realmObject.setName(newObject.getName());
-        realmObject.setPosterPath(newObject.getPosterPath());
+        realmObject.setProfilePath(newObject.getProfilePath());
         return realmObject;
     }
 
     static RealmActor update(Realm realm, RealmActor realmObject, RealmActor newObject, Map<RealmObject, RealmObjectProxy> cache) {
         realmObject.setName(newObject.getName());
-        realmObject.setPosterPath(newObject.getPosterPath());
+        realmObject.setProfilePath(newObject.getProfilePath());
         return realmObject;
     }
 
@@ -317,8 +317,8 @@ public class RealmActorRealmProxy extends RealmActor
         stringBuilder.append(getName() != null ? getName() : "null");
         stringBuilder.append("}");
         stringBuilder.append(",");
-        stringBuilder.append("{posterPath:");
-        stringBuilder.append(getPosterPath() != null ? getPosterPath() : "null");
+        stringBuilder.append("{profilePath:");
+        stringBuilder.append(getProfilePath() != null ? getProfilePath() : "null");
         stringBuilder.append("}");
         stringBuilder.append("]");
         return stringBuilder.toString();

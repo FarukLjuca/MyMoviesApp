@@ -14,10 +14,6 @@ import io.realm.annotations.PrimaryKey;
 public class RealmMovie extends RealmObject {
     @PrimaryKey
     private int id;
-    private int indexPopular;
-    private int indexNowPlaying;
-    private int indexTopRated;
-    private int category;
     private String posterPath;
     private String overview;
     private String title;
@@ -60,11 +56,46 @@ public class RealmMovie extends RealmObject {
                 actors.add(new RealmActor(actor.getId(), actor.getName(), actor.getProfilePath()));
             }
         }
+    }
 
-        setIndexPopular(-1);
-        setIndexNowPlaying(-1);
-        setIndexTopRated(-1);
-        setCategory(-1);
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Float getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(Float voteAverage) {
+        this.voteAverage = voteAverage;
     }
 
     public String getBackdropPath() {
@@ -105,78 +136,6 @@ public class RealmMovie extends RealmObject {
 
     public void setActors(RealmList<RealmActor> actors) {
         this.actors = actors;
-    }
-
-    public int getCategory() {
-        return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getIndexPopular() {
-        return indexPopular;
-    }
-
-    public void setIndexPopular(int indexPopular) {
-        this.indexPopular = indexPopular;
-    }
-
-    public int getIndexNowPlaying() {
-        return indexNowPlaying;
-    }
-
-    public void setIndexNowPlaying(int indexNowPlaying) {
-        this.indexNowPlaying = indexNowPlaying;
-    }
-
-    public int getIndexTopRated() {
-        return indexTopRated;
-    }
-
-    public void setIndexTopRated(int indexTopRated) {
-        this.indexTopRated = indexTopRated;
-    }
-
-    public Float getVoteAverage() {
-        return voteAverage;
-    }
-
-    public void setVoteAverage(Float voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
-    }
-
-    public String getPosterPath() {
-        return posterPath;
-    }
-
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getRuntime() {

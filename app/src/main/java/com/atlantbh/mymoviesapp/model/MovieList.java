@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -51,12 +52,12 @@ public class MovieList {
         }
     }
 
-    public MovieList(RealmResults<RealmMovie> realmResults) {
+    public MovieList(RealmResults<RealmMovieBasic> realmResults) {
         setPage(1);
         setIsLoading(false);
         if (movies == null) {
             movies = new ArrayList<>();
-            for (RealmMovie movie : realmResults) {
+            for (RealmMovieBasic movie : realmResults) {
                 movies.add(new Movie(movie));
             }
         }

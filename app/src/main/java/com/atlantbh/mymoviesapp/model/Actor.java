@@ -2,12 +2,10 @@ package com.atlantbh.mymoviesapp.model;
 
 import com.atlantbh.mymoviesapp.model.credits.MovieCredits;
 import com.atlantbh.mymoviesapp.model.credits.TvCredits;
+import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.google.gson.annotations.SerializedName;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class Actor {
     @SerializedName("id")
@@ -24,6 +22,12 @@ public class Actor {
     private MovieCredits movieCredits;
     @SerializedName("tv_credits")
     private TvCredits tvCredits;
+
+    public Actor(RealmActor actor) {
+        id = actor.getId();
+        name = actor.getName();
+        profilePath = actor.getProfilePath();
+    }
 
     public int getId() { return id; }
     public String getName() { return name; }
@@ -81,14 +85,14 @@ public class Actor {
             }
         }
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < jobTitles.size(); i++) {
             if (i != 0) {
-                result += " - ";
+                result.append(" - ");
             }
-            result += jobTitles.get(i);
+            result.append(jobTitles.get(i));
         }
 
-        return result;
+        return result.toString();
     }
 }

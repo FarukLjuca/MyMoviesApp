@@ -12,11 +12,11 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
 import com.atlantbh.mymoviesapp.model.credits.MovieCredits;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MovieCreditsAdapter extends RecyclerView.Adapter<MovieCreditsAdapter.ViewHolder> {
     private Context context;
@@ -66,10 +66,10 @@ public class MovieCreditsAdapter extends RecyclerView.Adapter<MovieCreditsAdapte
             title += " (" + simpleDate.format(movieCredits.getCreditsMovieCast().get(position).getReleaseDate()) + ")";
         }
         holder.title.setText(title);
-        Picasso.with(context)
+        Glide.with(context)
                 .load("https://image.tmdb.org/t/p/w185/" + movieCredits.getCreditsMovieCast().get(position).getPosterPath())
                 .placeholder(R.drawable.actor_placeholder_curved)
-                .transform(new RoundedCornersTransformation(10, 0))
+                .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0))
                 .into(holder.poster);
         holder.bind(movieCredits.getCreditsMovieCast().get(position), listener);
     }

@@ -1,6 +1,5 @@
 package com.atlantbh.mymoviesapp.model.realm;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -8,14 +7,14 @@ public class RealmActor extends RealmObject {
     @PrimaryKey
     private int id;
     private String name;
-    private String posterPath;
+    private String profilePath;
 
     public RealmActor() {}
 
     public RealmActor(int id, String name, String profilePath) {
         setId(id);
         setName(name);
-        setPosterPath(posterPath);
+        setProfilePath(profilePath);
     }
 
     public int getId() {
@@ -34,11 +33,11 @@ public class RealmActor extends RealmObject {
         this.name = name;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    public String getProfilePath() {
+        return profilePath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
+    public void setProfilePath(String profilePath) {
+        this.profilePath = profilePath;
     }
 }

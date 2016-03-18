@@ -16,10 +16,10 @@
 
             <ImageView
                 android:id="@+id/ivDetailsBackdrop"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"/>
 
             <com.atlantbh.mymoviesapp.helpers.BottomCropImageView
                 android:id="@+id/ivDetailsBackdropBlur"

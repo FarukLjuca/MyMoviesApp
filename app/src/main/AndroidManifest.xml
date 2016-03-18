@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.DetailsActivity" />
-        <activity android:name=".activities.ActorDetailsActivity" />
+        <activity android:name=".activities.ActorActivity" />
         <activity
-            android:name=".activities.MovieVideoActivity"
+            android:name=".activities.VideoActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activities.SettingsActivity"
@@ -31,6 +31,9 @@
         <service
             android:name=".offline.OfflineSyncService"
             android:exported="false"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="8fc51e8e71bd737ccdce4f93029f758816dc69fe" />
     </application>
 
 </manifest>

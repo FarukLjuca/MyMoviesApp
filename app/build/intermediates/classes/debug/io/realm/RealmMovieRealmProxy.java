@@ -32,10 +32,6 @@ public class RealmMovieRealmProxy extends RealmMovie
     static final class RealmMovieColumnInfo extends ColumnInfo {
 
         public final long idIndex;
-        public final long indexPopularIndex;
-        public final long indexNowPlayingIndex;
-        public final long indexTopRatedIndex;
-        public final long categoryIndex;
         public final long posterPathIndex;
         public final long overviewIndex;
         public final long titleIndex;
@@ -48,21 +44,9 @@ public class RealmMovieRealmProxy extends RealmMovie
         public final long runtimeIndex;
 
         RealmMovieColumnInfo(String path, Table table) {
-            final Map<String, Long> indicesMap = new HashMap<String, Long>(15);
+            final Map<String, Long> indicesMap = new HashMap<String, Long>(11);
             this.idIndex = getValidColumnIndex(path, table, "RealmMovie", "id");
             indicesMap.put("id", this.idIndex);
-
-            this.indexPopularIndex = getValidColumnIndex(path, table, "RealmMovie", "indexPopular");
-            indicesMap.put("indexPopular", this.indexPopularIndex);
-
-            this.indexNowPlayingIndex = getValidColumnIndex(path, table, "RealmMovie", "indexNowPlaying");
-            indicesMap.put("indexNowPlaying", this.indexNowPlayingIndex);
-
-            this.indexTopRatedIndex = getValidColumnIndex(path, table, "RealmMovie", "indexTopRated");
-            indicesMap.put("indexTopRated", this.indexTopRatedIndex);
-
-            this.categoryIndex = getValidColumnIndex(path, table, "RealmMovie", "category");
-            indicesMap.put("category", this.categoryIndex);
 
             this.posterPathIndex = getValidColumnIndex(path, table, "RealmMovie", "posterPath");
             indicesMap.put("posterPath", this.posterPathIndex);
@@ -109,10 +93,6 @@ public class RealmMovieRealmProxy extends RealmMovie
         EMPTY_REALM_LIST_ACTORS = new RealmList<RealmActor>();
         List<String> fieldNames = new ArrayList<String>();
         fieldNames.add("id");
-        fieldNames.add("indexPopular");
-        fieldNames.add("indexNowPlaying");
-        fieldNames.add("indexTopRated");
-        fieldNames.add("category");
         fieldNames.add("posterPath");
         fieldNames.add("overview");
         fieldNames.add("title");
@@ -141,58 +121,6 @@ public class RealmMovieRealmProxy extends RealmMovie
     public void setId(int value) {
         realm.checkIfValid();
         row.setLong(columnInfo.idIndex, value);
-    }
-
-    @Override
-    @SuppressWarnings("cast")
-    public int getIndexPopular() {
-        realm.checkIfValid();
-        return (int) row.getLong(columnInfo.indexPopularIndex);
-    }
-
-    @Override
-    public void setIndexPopular(int value) {
-        realm.checkIfValid();
-        row.setLong(columnInfo.indexPopularIndex, value);
-    }
-
-    @Override
-    @SuppressWarnings("cast")
-    public int getIndexNowPlaying() {
-        realm.checkIfValid();
-        return (int) row.getLong(columnInfo.indexNowPlayingIndex);
-    }
-
-    @Override
-    public void setIndexNowPlaying(int value) {
-        realm.checkIfValid();
-        row.setLong(columnInfo.indexNowPlayingIndex, value);
-    }
-
-    @Override
-    @SuppressWarnings("cast")
-    public int getIndexTopRated() {
-        realm.checkIfValid();
-        return (int) row.getLong(columnInfo.indexTopRatedIndex);
-    }
-
-    @Override
-    public void setIndexTopRated(int value) {
-        realm.checkIfValid();
-        row.setLong(columnInfo.indexTopRatedIndex, value);
-    }
-
-    @Override
-    @SuppressWarnings("cast")
-    public int getCategory() {
-        realm.checkIfValid();
-        return (int) row.getLong(columnInfo.categoryIndex);
-    }
-
-    @Override
-    public void setCategory(int value) {
-        realm.checkIfValid();
-        row.setLong(columnInfo.categoryIndex, value);
     }
 
     @Override
@@ -397,10 +325,6 @@ public class RealmMovieRealmProxy extends RealmMovie
         if (!transaction.hasTable("class_RealmMovie")) {
             Table table = transaction.getTable("class_RealmMovie");
             table.addColumn(ColumnType.INTEGER, "id", Table.NOT_NULLABLE);
-            table.addColumn(ColumnType.INTEGER, "indexPopular", Table.NOT_NULLABLE);
-            table.addColumn(ColumnType.INTEGER, "indexNowPlaying", Table.NOT_NULLABLE);
-            table.addColumn(ColumnType.INTEGER, "indexTopRated", Table.NOT_NULLABLE);
-            table.addColumn(ColumnType.INTEGER, "category", Table.NOT_NULLABLE);
             table.addColumn(ColumnType.STRING, "posterPath", Table.NULLABLE);
             table.addColumn(ColumnType.STRING, "overview", Table.NULLABLE);
             table.addColumn(ColumnType.STRING, "title", Table.NULLABLE);
@@ -427,11 +351,11 @@ public class RealmMovieRealmProxy extends RealmMovie
     public static RealmMovieColumnInfo validateTable(ImplicitTransaction transaction) {
         if (transaction.hasTable("class_RealmMovie")) {
             Table table = transaction.getTable("class_RealmMovie");
-            if (table.getColumnCount() != 15) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field count does not match - expected 15 but was " + table.getColumnCount());
+            if (table.getColumnCount() != 11) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field count does not match - expected 11 but was " + table.getColumnCount());
             }
             Map<String, ColumnType> columnTypes = new HashMap<String, ColumnType>();
-            for (long i = 0; i < 15; i++) {
+            for (long i = 0; i < 11; i++) {
                 columnTypes.put(table.getColumnName(i), table.getColumnType(i));
             }
 
@@ -451,42 +375,6 @@ public class RealmMovieRealmProxy extends RealmMovie
             }
             if (!table.hasSearchIndex(table.getColumnIndex("id"))) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Index not defined for field 'id' in existing Realm file. Either set @Index or migrate using io.realm.internal.Table.removeSearchIndex().");
-            }
-            if (!columnTypes.containsKey("indexPopular")) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexPopular' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
-            }
-            if (columnTypes.get("indexPopular") != ColumnType.INTEGER) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexPopular' in existing Realm file.");
-            }
-            if (table.isColumnNullable(columnInfo.indexPopularIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexPopular' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexPopular' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
-            }
-            if (!columnTypes.containsKey("indexNowPlaying")) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexNowPlaying' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
-            }
-            if (columnTypes.get("indexNowPlaying") != ColumnType.INTEGER) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexNowPlaying' in existing Realm file.");
-            }
-            if (table.isColumnNullable(columnInfo.indexNowPlayingIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexNowPlaying' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexNowPlaying' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
-            }
-            if (!columnTypes.containsKey("indexTopRated")) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexTopRated' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
-            }
-            if (columnTypes.get("indexTopRated") != ColumnType.INTEGER) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexTopRated' in existing Realm file.");
-            }
-            if (table.isColumnNullable(columnInfo.indexTopRatedIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexTopRated' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexTopRated' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
-            }
-            if (!columnTypes.containsKey("category")) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'category' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
-            }
-            if (columnTypes.get("category") != ColumnType.INTEGER) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'category' in existing Realm file.");
-            }
-            if (table.isColumnNullable(columnInfo.categoryIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'category' does support null values in the existing Realm file. Use corresponding boxed type for field 'category' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
             }
             if (!columnTypes.containsKey("posterPath")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'posterPath' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
@@ -560,9 +448,9 @@ public class RealmMovieRealmProxy extends RealmMovie
             if (!transaction.hasTable("class_RealmGenre")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing class 'class_RealmGenre' for field 'genres'");
             }
-            Table table_12 = transaction.getTable("class_RealmGenre");
-            if (!table.getLinkTarget(columnInfo.genresIndex).hasSameSchema(table_12)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid RealmList type for field 'genres': '" + table.getLinkTarget(columnInfo.genresIndex).getName() + "' expected - was '" + table_12.getName() + "'");
+            Table table_8 = transaction.getTable("class_RealmGenre");
+            if (!table.getLinkTarget(columnInfo.genresIndex).hasSameSchema(table_8)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid RealmList type for field 'genres': '" + table.getLinkTarget(columnInfo.genresIndex).getName() + "' expected - was '" + table_8.getName() + "'");
             }
             if (!columnTypes.containsKey("actors")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'actors'");
@@ -573,9 +461,9 @@ public class RealmMovieRealmProxy extends RealmMovie
             if (!transaction.hasTable("class_RealmActor")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing class 'class_RealmActor' for field 'actors'");
             }
-            Table table_13 = transaction.getTable("class_RealmActor");
-            if (!table.getLinkTarget(columnInfo.actorsIndex).hasSameSchema(table_13)) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid RealmList type for field 'actors': '" + table.getLinkTarget(columnInfo.actorsIndex).getName() + "' expected - was '" + table_13.getName() + "'");
+            Table table_9 = transaction.getTable("class_RealmActor");
+            if (!table.getLinkTarget(columnInfo.actorsIndex).hasSameSchema(table_9)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid RealmList type for field 'actors': '" + table.getLinkTarget(columnInfo.actorsIndex).getName() + "' expected - was '" + table_9.getName() + "'");
             }
             if (!columnTypes.containsKey("runtime")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'runtime' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
@@ -624,34 +512,6 @@ public class RealmMovieRealmProxy extends RealmMovie
                 throw new IllegalArgumentException("Trying to set non-nullable field id to null.");
             } else {
                 obj.setId((int) json.getInt("id"));
-            }
-        }
-        if (json.has("indexPopular")) {
-            if (json.isNull("indexPopular")) {
-                throw new IllegalArgumentException("Trying to set non-nullable field indexPopular to null.");
-            } else {
-                obj.setIndexPopular((int) json.getInt("indexPopular"));
-            }
-        }
-        if (json.has("indexNowPlaying")) {
-            if (json.isNull("indexNowPlaying")) {
-                throw new IllegalArgumentException("Trying to set non-nullable field indexNowPlaying to null.");
-            } else {
-                obj.setIndexNowPlaying((int) json.getInt("indexNowPlaying"));
-            }
-        }
-        if (json.has("indexTopRated")) {
-            if (json.isNull("indexTopRated")) {
-                throw new IllegalArgumentException("Trying to set non-nullable field indexTopRated to null.");
-            } else {
-                obj.setIndexTopRated((int) json.getInt("indexTopRated"));
-            }
-        }
-        if (json.has("category")) {
-            if (json.isNull("category")) {
-                throw new IllegalArgumentException("Trying to set non-nullable field category to null.");
-            } else {
-                obj.setCategory((int) json.getInt("category"));
             }
         }
         if (json.has("posterPath")) {
@@ -755,34 +615,6 @@ public class RealmMovieRealmProxy extends RealmMovie
                     throw new IllegalArgumentException("Trying to set non-nullable field id to null.");
                 } else {
                     obj.setId((int) reader.nextInt());
-                }
-            } else if (name.equals("indexPopular")) {
-                if (reader.peek() == JsonToken.NULL) {
-                    reader.skipValue();
-                    throw new IllegalArgumentException("Trying to set non-nullable field indexPopular to null.");
-                } else {
-                    obj.setIndexPopular((int) reader.nextInt());
-                }
-            } else if (name.equals("indexNowPlaying")) {
-                if (reader.peek() == JsonToken.NULL) {
-                    reader.skipValue();
-                    throw new IllegalArgumentException("Trying to set non-nullable field indexNowPlaying to null.");
-                } else {
-                    obj.setIndexNowPlaying((int) reader.nextInt());
-                }
-            } else if (name.equals("indexTopRated")) {
-                if (reader.peek() == JsonToken.NULL) {
-                    reader.skipValue();
-                    throw new IllegalArgumentException("Trying to set non-nullable field indexTopRated to null.");
-                } else {
-                    obj.setIndexTopRated((int) reader.nextInt());
-                }
-            } else if (name.equals("category")) {
-                if (reader.peek() == JsonToken.NULL) {
-                    reader.skipValue();
-                    throw new IllegalArgumentException("Trying to set non-nullable field category to null.");
-                } else {
-                    obj.setCategory((int) reader.nextInt());
                 }
             } else if (name.equals("posterPath")) {
                 if (reader.peek() == JsonToken.NULL) {
@@ -908,10 +740,6 @@ public class RealmMovieRealmProxy extends RealmMovie
         RealmMovie realmObject = realm.createObject(RealmMovie.class, newObject.getId());
         cache.put(newObject, (RealmObjectProxy) realmObject);
         realmObject.setId(newObject.getId());
-        realmObject.setIndexPopular(newObject.getIndexPopular());
-        realmObject.setIndexNowPlaying(newObject.getIndexNowPlaying());
-        realmObject.setIndexTopRated(newObject.getIndexTopRated());
-        realmObject.setCategory(newObject.getCategory());
         realmObject.setPosterPath(newObject.getPosterPath());
         realmObject.setOverview(newObject.getOverview());
         realmObject.setTitle(newObject.getTitle());
@@ -954,10 +782,6 @@ public class RealmMovieRealmProxy extends RealmMovie
     }
 
     static RealmMovie update(Realm realm, RealmMovie realmObject, RealmMovie newObject, Map<RealmObject, RealmObjectProxy> cache) {
-        realmObject.setIndexPopular(newObject.getIndexPopular());
-        realmObject.setIndexNowPlaying(newObject.getIndexNowPlaying());
-        realmObject.setIndexTopRated(newObject.getIndexTopRated());
-        realmObject.setCategory(newObject.getCategory());
         realmObject.setPosterPath(newObject.getPosterPath());
         realmObject.setOverview(newObject.getOverview());
         realmObject.setTitle(newObject.getTitle());
@@ -1005,22 +829,6 @@ public class RealmMovieRealmProxy extends RealmMovie
         StringBuilder stringBuilder = new StringBuilder("RealmMovie = [");
         stringBuilder.append("{id:");
         stringBuilder.append(getId());
-        stringBuilder.append("}");
-        stringBuilder.append(",");
-        stringBuilder.append("{indexPopular:");
-        stringBuilder.append(getIndexPopular());
-        stringBuilder.append("}");
-        stringBuilder.append(",");
-        stringBuilder.append("{indexNowPlaying:");
-        stringBuilder.append(getIndexNowPlaying());
-        stringBuilder.append("}");
-        stringBuilder.append(",");
-        stringBuilder.append("{indexTopRated:");
-        stringBuilder.append(getIndexTopRated());
-        stringBuilder.append("}");
-        stringBuilder.append(",");
-        stringBuilder.append("{category:");
-        stringBuilder.append(getCategory());
         stringBuilder.append("}");
         stringBuilder.append(",");
         stringBuilder.append("{posterPath:");

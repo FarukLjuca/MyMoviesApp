@@ -11,13 +11,12 @@ import android.widget.TextView;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
-import com.atlantbh.mymoviesapp.model.credits.MovieCredits;
 import com.atlantbh.mymoviesapp.model.credits.TvCredits;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class TvCreditsAdapter extends RecyclerView.Adapter<TvCreditsAdapter.ViewHolder> {
     private Context context;
@@ -67,10 +66,10 @@ public class TvCreditsAdapter extends RecyclerView.Adapter<TvCreditsAdapter.View
             title += " (" + simpleDate.format(tvCredits.getCreditsTvCast().get(position).getFirstAirDate()) + ")";
         }
         holder.title.setText(title);
-        Picasso.with(context)
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w185/" + tvCredits.getCreditsTvCast().get(position).getPosterPath())
                 .placeholder(R.drawable.actor_placeholder_curved)
-                .transform(new RoundedCornersTransformation(10, 0))
+                .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 0))
                 .into(holder.poster);
         holder.bind(tvCredits.getCreditsTvCast().get(position), listener);
     }

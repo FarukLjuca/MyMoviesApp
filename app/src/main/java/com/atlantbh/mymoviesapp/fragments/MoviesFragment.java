@@ -25,6 +25,7 @@ import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -45,9 +46,10 @@ public abstract class MoviesFragment extends Fragment {
     public static final int CATEGORY_NOW_PLAYING = 1;
     public static final int CATEGORY_TOP_RATED = 2;
 
-    private static List<RealmMovie> optimizedMovieList = new ArrayList<>();
+    private static List<RealmMovieBasic> optimizedMovieList = new ArrayList<>();
 
     private static int pass = 0;
+    private boolean added = false;
 
     private Context currentContext;
     private View currentView;
@@ -89,7 +91,6 @@ public abstract class MoviesFragment extends Fragment {
         currentView = inflater.inflate(R.layout.fragment_movie_list_base, container, false);
         listView = (ListView) currentView.findViewById(R.id.lvContainer);
         gridView = (GridView) currentView.findViewById(R.id.gvContainer);
-        detailsContainer = (RelativeLayout) currentView.findViewById(R.id.rlDetailsContainer);
 
         return currentView;
     }
@@ -139,7 +140,7 @@ public abstract class MoviesFragment extends Fragment {
                         }
 
                         if (index == -1) {
-                            RealmMovie realmMovie = new RealmMovie(movieList.getMovies().get(i));
+                            RealmMovieBasic realmMovie = new RealmMovieBasic(movieList.getMovies().get(i));
                             realmMovie.setCategory(getCategory());
 
                             switch (getCategory()) {
@@ -207,11 +208,11 @@ public abstract class MoviesFragment extends Fragment {
             RealmResults movieList = null;
 
             if (getCategory() == CATEGORY_POPULAR)
-                movieList = realm.where(RealmMovie.class).notEqualTo("indexPopular", -1).findAllSorted("indexPopular");
+                movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexPopular", -1).findAllSorted("indexPopular");
             else if (getCategory() == CATEGORY_NOW_PLAYING)
-                movieList = realm.where(RealmMovie.class).notEqualTo("indexNowPlaying", -1).findAllSorted("indexNowPlaying");
+                movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexNowPlaying", -1).findAllSorted("indexNowPlaying");
             else if (getCategory() == CATEGORY_TOP_RATED)
-                movieList = realm.where(RealmMovie.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
+                movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
 
             setAdapterViews(savedInstanceState, new MovieList(movieList));
         }
@@ -243,17 +244,26 @@ public abstract class MoviesFragment extends Fragment {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
+                    Movie movie = movieList.getMovies().get(position);
                     if (detailsContainer != null) {
-                        Bundle arguments = new Bundle();
-                        arguments.putInt(DetailsFragment.MOVIE_ID, (int) id);
                         DetailsFragment fragment = new DetailsFragment();
-                        fragment.setArguments(arguments);
-                        getFragmentManager().beginTransaction()
-                                .add(R.id.rlDetailsContainer, fragment)
-                                .commit();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("movieId", movie.getId());
+                        fragment.setArguments(bundle);
+                        if (added = false) {
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.rlDetailsContainer, fragment)
+                                    .commit();
+                            added = true;
+                        }
+                        else {
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.rlDetailsContainer, fragment)
+                                    .commit();
+                        }
                     } else {
                         Intent intent = new Intent(currentContext, DetailsActivity.class);
-                        Movie movie = movieList.getMovies().get(position);
                         intent.putExtra("movieId", movie.getId());
                         startActivity(intent);
                     }
@@ -298,20 +308,10 @@ public abstract class MoviesFragment extends Fragment {
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (detailsContainer != null) {
-                        Bundle arguments = new Bundle();
-                        arguments.putInt(DetailsFragment.MOVIE_ID, (int) id);
-                        DetailsFragment fragment = new DetailsFragment();
-                        fragment.setArguments(arguments);
-                        getFragmentManager().beginTransaction()
-                                .add(R.id.rlDetailsContainer, fragment)
-                                .commit();
-                    } else {
-                        Intent intent = new Intent(currentContext, DetailsActivity.class);
-                        Movie movie = movieList.getMovies().get(position);
-                        intent.putExtra("movieId", movie.getId());
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(currentContext, DetailsActivity.class);
+                    Movie movie = movieList.getMovies().get(position);
+                    intent.putExtra("movieId", movie.getId());
+                    startActivity(intent);
                 }
             });
 

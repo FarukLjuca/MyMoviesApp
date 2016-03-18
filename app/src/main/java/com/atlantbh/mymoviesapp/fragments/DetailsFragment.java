@@ -1,14 +1,11 @@
 package com.atlantbh.mymoviesapp.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -23,23 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
-import com.atlantbh.mymoviesapp.activities.ActorDetailsActivity;
+import com.atlantbh.mymoviesapp.activities.ActorActivity;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
 import com.atlantbh.mymoviesapp.activities.MovieListActivity;
-import com.atlantbh.mymoviesapp.activities.MovieVideoActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.api.TvAPI;
+import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Detailable;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.Tv;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmResults;
-import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -57,11 +55,8 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class DetailsFragment extends Fragment {
-    public static final String MOVIE_ID = "movieId";
-    public static final String TV_ID = "tvId";
-
-    private static int movieId;
-    private static int tvId;
+    private int movieId;
+    private int tvId;
 
     @Bind(R.id.ivDetailsBackdrop)
     ImageView backdrop;
@@ -81,26 +76,31 @@ public class DetailsFragment extends Fragment {
     TextView voteAverage;
     @Bind(R.id.tvDetailsVoteCount)
     TextView voteCount;
-
-    private OnFragmentInteractionListener mListener;
+    @Bind(R.id.ivDetailsBackdropBlur)
+    ImageView backdropBlur;
 
     public DetailsFragment() {}
 
-    public static DetailsFragment newInstance(int movieId, int tvId) {
-        DetailsFragment fragment = new DetailsFragment();
-        Bundle args = new Bundle();
-        args.putInt(MOVIE_ID, movieId);
-        args.putInt(TV_ID, tvId);
-        fragment.setArguments(args);
-        return fragment;
+    public void setMovieId(int movieId) {
+        if (movieId > 0) {
+            this.movieId = movieId;
+        }
     }
 
-    public static void setMovieId(int mId) { movieId = mId; }
-    public static void setTvId(int tId) { tvId = tId; }
+    public void setTvId(int tvId) {
+        if (tvId > 0) {
+            this.tvId = tvId;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            movieId = getArguments().getInt(AppString.MOVIE_ID);
+            tvId = getArguments().getInt(AppString.TV_ID);
+        }
     }
 
     @Override
@@ -110,16 +110,18 @@ public class DetailsFragment extends Fragment {
 
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         ButterKnife.bind(this, getView());
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
+        if (getResources().getDisplayMetrics().widthPixels * 160 / getResources().getDisplayMetrics().densityDpi < 900) {
+            backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
+        }
+        else {
+            backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3/5)));
+        }
 
-        if (movieId == -1 && tvId == -1) {
-            Toast.makeText(getContext(), "Movie ili Tv Id nije poslan, dakle bundle nije poslan", Toast.LENGTH_SHORT).show();
-        } else if (movieId != -1) {
+        if (movieId > 0) {
             if (isOnline()) {
                 Gson gson = new GsonBuilder()
                         .setDateFormat("yyyy-MM-dd")
@@ -137,7 +139,16 @@ public class DetailsFragment extends Fragment {
                     @Override
                     public void onResponse(Response<Movie> response, Retrofit retrofit) {
                         Detailable detailable = response.body();
-                        SetContent(detailable);
+                        if (detailable != null) {
+                            SetContent(detailable);
+
+                            Realm realm = Realm.getInstance(getContext());
+                            realm.beginTransaction();
+                            RealmMovie realmMovie = new RealmMovie((Movie) detailable);
+                            realm.copyToRealmOrUpdate(realmMovie);
+                            realm.commitTransaction();
+                            realm.close();
+                        }
                     }
 
                     @Override
@@ -149,11 +160,25 @@ public class DetailsFragment extends Fragment {
             else {
                 Realm realm = Realm.getInstance(getContext());
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
-                for (RealmMovie realmMovie : realmResults) {
-                    SetContent(new Movie(realmMovie));
+                if (realmResults.size() == 0) {
+                    RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
+                    if (realmResultsBasic.size() == 0) {
+                        //TODO: Ovjde neku refresh stranicu napraviti
+                    }
+                    else {
+                        SetContent(new Movie(realmResultsBasic.get(0)));
+                    }
                 }
+                else {
+                    Movie movie = new Movie(realmResults.get(0));
+                    SetContent(movie);
+                }
+
+                getActivity().findViewById(R.id.rlDetailsVideo).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
+                basicText.setLines(10);
             }
-        } else {
+        } else if (tvId > 0) {
             getActivity().findViewById(R.id.rlDetailsVideo).setVisibility(View.GONE);
             getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
             basicText.setLines(10);
@@ -174,7 +199,9 @@ public class DetailsFragment extends Fragment {
                 @Override
                 public void onResponse(Response<Tv> response, Retrofit retrofit) {
                     Detailable detailable = response.body();
-                    SetContent(detailable);
+                    if (detailable != null) {
+                        SetContent(detailable);
+                    }
                 }
 
                 @Override
@@ -187,46 +214,14 @@ public class DetailsFragment extends Fragment {
         SetFonts();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void SetContent(Detailable detailable) {
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
-                .placeholder(R.drawable.actor_placeholder_curved)
                 .into(backdrop);
 
-        List<Transformation> transformations = new ArrayList<>();
-        transformations.add(new BlurTransformation(getContext(), 25));
-        ImageView backdropBlur = (ImageView) getActivity().findViewById(R.id.ivDetailsBackdropBlur);
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
-                .transform(transformations)
+                .bitmapTransform(new BlurTransformation(getContext(), 25))
                 .into(backdropBlur);
 
         title.setText(detailable.getTitle());
@@ -234,7 +229,7 @@ public class DetailsFragment extends Fragment {
         subtitle.setText(detailable.getSubtitle());
 
         ImageView poster = (ImageView) getActivity().findViewById(R.id.ivDetailsPoster);
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w500" + detailable.getPosterPath())
                 .placeholder(R.drawable.actor_placeholder_curved)
                 .into(poster);
@@ -274,9 +269,20 @@ public class DetailsFragment extends Fragment {
         RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), detailable.getActorList(), new ActorAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Actor actor) {
-                Intent intent = new Intent(getContext(), ActorDetailsActivity.class);
-                intent.putExtra("actorId", actor.getId());
-                startActivity(intent);
+                RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
+                if (detailsContainer != null) {
+                    ActorFragment fragment = new ActorFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(AppString.ACTOR_ID, actor.getId());
+                    fragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.rlDetailsContainer, fragment)
+                            .commit();
+                } else {
+                    Intent intent = new Intent(getContext(), ActorActivity.class);
+                    intent.putExtra("actorId", actor.getId());
+                    startActivity(intent);
+                }
             }
         });
         cast.setAdapter(castAdapter);

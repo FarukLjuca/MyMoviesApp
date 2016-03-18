@@ -1,0 +1,85 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.atlantbh.mymoviesapp.fragments.VideoFragment">
+
+    <RatingBar
+        android:id="@+id/rbVideoRating"
+        style="@style/MyRatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvVideoRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/rbVideoRating"
+        android:layout_toRightOf="@id/rbVideoRating" />
+
+    <TextView
+        android:id="@+id/tvVideoRateMovie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/rbVideoRating"
+        android:layout_alignParentRight="true"
+        android:text="@string/rate_movie"
+        android:textColor="@color/customred" />
+
+    <View
+        android:id="@+id/vwVideoHorizontalLine1"
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/rbVideoRating" />
+
+    <TextView
+        android:id="@+id/tvVideoTitle"
+        style="@style/Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vwVideoHorizontalLine1" />
+
+    <TextView
+        android:id="@+id/tvVideoBasicText"
+        style="@style/BasicText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvVideoTitle" />
+
+    <View
+        android:id="@+id/vwVideoHorizontalLine2"
+        android:background="@color/lightgray"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tvVideoBasicText" />
+
+    <TextView
+        android:id="@+id/tvVideoCast"
+        style="@style/Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vwVideoHorizontalLine2"
+        android:text="@string/cast" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvVideoActors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvVideoCast" />
+
+    <TextView
+        android:id="@+id/tvVideoReviews"
+        style="@style/Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rvVideoActors"
+        android:text="@string/reviews" />
+
+    <ListView
+        android:id="@+id/lvVideoReviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvVideoReviews" />
+</RelativeLayout>

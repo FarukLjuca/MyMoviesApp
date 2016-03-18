@@ -3,7 +3,6 @@ package com.atlantbh.mymoviesapp.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,19 +17,15 @@ import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.R;
+import com.atlantbh.mymoviesapp.helpers.AppString;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
-public class DetailsActivity extends AppCompatActivity
-        implements DetailsFragment.OnFragmentInteractionListener {
+public class DetailsActivity extends AppCompatActivity {
     private int movieId;
     private int tvId;
 
     private String overview;
     private TextView tvOverview;
 
-    @Bind(R.id.tbDetailsToolbar)
     Toolbar toolbar;
 
     @Override
@@ -38,8 +33,7 @@ public class DetailsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        ButterKnife.bind(this);
-
+        toolbar = (Toolbar) findViewById(R.id.tbDetailsToolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -47,11 +41,14 @@ public class DetailsActivity extends AppCompatActivity
             ab.setDisplayShowTitleEnabled(false);
         }
 
-        movieId = getIntent().getIntExtra(DetailsFragment.MOVIE_ID, -1);
-        tvId = getIntent().getIntExtra(DetailsFragment.TV_ID, -1);
+        movieId = getIntent().getIntExtra(AppString.MOVIE_ID, -1);
+        tvId = getIntent().getIntExtra(AppString.TV_ID, -1);
 
-        DetailsFragment.setMovieId(movieId);
-        DetailsFragment.setTvId(tvId);
+        DetailsFragment detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentById(R.id.frDetailsContent);
+        if (detailsFragment != null) {
+            detailsFragment.setMovieId(movieId);
+            detailsFragment.setTvId(tvId);
+        }
     }
 
     @Override
@@ -73,13 +70,8 @@ public class DetailsActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
     public void Video_Click(View view) {
-        Intent intent = new Intent(getContext(), MovieVideoActivity.class);
+        Intent intent = new Intent(getContext(), VideoActivity.class);
         intent.putExtra("movieId", movieId);
         startActivity(intent);
     }
@@ -89,7 +81,7 @@ public class DetailsActivity extends AppCompatActivity
         if (l != null) {
             int lines = l.getLineCount();
             if (lines > 0)
-                if (l.getEllipsisCount(lines-1) > 0) {
+                if (l.getEllipsisCount(lines - 1) > 0) {
                     new AlertDialog.Builder(getContext())
                             .setTitle("Detailed overview")
                             .setMessage(overview)

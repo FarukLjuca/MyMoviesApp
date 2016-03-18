@@ -2,5 +2,9 @@
     {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout-w900dp-v13\\fragment_movie_list_base.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout-w900dp\\fragment_movie_list_base.xml"
+    },
+    {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout-w900dp-v13\\content_movie_list.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout-w900dp\\content_movie_list.xml"
     }
 ]

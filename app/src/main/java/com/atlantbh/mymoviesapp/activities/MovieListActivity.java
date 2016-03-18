@@ -3,7 +3,6 @@ package com.atlantbh.mymoviesapp.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -29,7 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DetailsFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private int movieId;
     private int tvId;
@@ -50,7 +49,7 @@ public class MovieListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbDetailsToolbar);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbMainToolbar);
         setSupportActionBar(myToolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -110,13 +109,8 @@ public class MovieListActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
-
     public void Video_Click(View view) {
-        Intent intent = new Intent(getContext(), MovieVideoActivity.class);
+        Intent intent = new Intent(getContext(), VideoActivity.class);
         intent.putExtra("movieId", movieId);
         startActivity(intent);
     }

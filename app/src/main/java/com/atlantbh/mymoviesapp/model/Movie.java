@@ -1,6 +1,9 @@
 package com.atlantbh.mymoviesapp.model;
 
+import com.atlantbh.mymoviesapp.model.realm.RealmActor;
+import com.atlantbh.mymoviesapp.model.realm.RealmGenre;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +42,16 @@ public class Movie implements Detailable {
     private int voteCount;
     @SerializedName("casts")
     private ActorList actorList;
+    @SerializedName("videos")
+    private VideoList videoList;
+
+    public Movie(RealmMovieBasic movie) {
+        setId(movie.getId());
+        setOverview(movie.getOverview());
+        setVoteAverage(movie.getVoteAverage());
+        setTitle(movie.getTitle());
+        setPosterPath(movie.getPosterPath());
+    }
 
     public Movie(RealmMovie movie) {
         setId(movie.getId());
@@ -51,6 +64,18 @@ public class Movie implements Detailable {
         setVoteCount(movie.getVoteCount());
         setReleaseDate(movie.getReleaseDate());
         setRuntime(movie.getRuntime());
+
+        ActorList actorList = new ActorList();
+        for (RealmActor actor : movie.getActors()) {
+            actorList.addActor(new Actor(actor));
+        }
+        setActorList(actorList);
+
+        List<Genre> genres = new ArrayList<>();
+        for (RealmGenre genre : movie.getGenres()) {
+            genres.add(new Genre(genre.getId(), genre.getName()));
+        }
+        setGenres(genres);
     }
 
     @Override
@@ -192,5 +217,13 @@ public class Movie implements Detailable {
         }
 
         return result;
+    }
+
+    public VideoList getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(VideoList videoList) {
+        this.videoList = videoList;
     }
 }

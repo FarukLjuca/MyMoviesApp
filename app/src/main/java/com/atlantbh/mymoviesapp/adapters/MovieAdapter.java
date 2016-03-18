@@ -13,7 +13,7 @@ import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.R;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 public class MovieAdapter extends BaseAdapter {
     private Context context;
@@ -75,7 +75,7 @@ public class MovieAdapter extends BaseAdapter {
 
         Movie currentMovie = getMovieList().getMovies().get(position);
 
-        Picasso.with(getContext())
+        Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w342" + currentMovie.getPosterPath())
                 .placeholder(R.drawable.actor_placeholder_curved).into(holder.imageView);
         holder.ratingBar.setRating(currentMovie.getVoteAverage() / 2);
