@@ -327,7 +327,7 @@
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="cast">Cast</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
-    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">8ee42e21-440d-4ec0-9c8c-def4f8a56914</string>
+    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">e25553f5-54a5-4162-b710-37a517a56543</string>
     <string name="detaildedBiography">Detailed biography</string>
     <string name="detailedOverview">Detailed overview</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>

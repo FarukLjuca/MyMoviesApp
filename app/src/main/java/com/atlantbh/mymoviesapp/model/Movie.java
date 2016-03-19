@@ -191,10 +191,12 @@ public class Movie implements Detailable {
     public String getSubtitle() {
         StringBuilder result = new StringBuilder();
 
-        result.append(runtime / 60);
-        result.append("h ");
-        result.append(runtime - (runtime / 60) * 60);
-        result.append("m |");
+        if (runtime != 0) {
+            result.append(runtime / 60);
+            result.append("h ");
+            result.append(runtime - (runtime / 60) * 60);
+            result.append("m |");
+        }
         if (genres != null) {
             for (int i = 0; i < genres.size(); i++) {
                 result.append(" ");
