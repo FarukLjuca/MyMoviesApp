@@ -276,6 +276,7 @@
     <dimen name="notification_large_icon_height">64dp</dimen>
     <dimen name="notification_large_icon_width">64dp</dimen>
     <dimen name="notification_subtext_size">12dp</dimen>
+    <dimen name="videoMargin">20dp</dimen>
     <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
     <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
@@ -326,7 +327,9 @@
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="cast">Cast</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
-    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">f531a465-f725-4ae9-8d01-c0f571a2fcd3</string>
+    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">8ee42e21-440d-4ec0-9c8c-def4f8a56914</string>
+    <string name="detaildedBiography">Detailed biography</string>
+    <string name="detailedOverview">Detailed overview</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="invalidParse">Invalid parseing of date, please contact app developer for further details.</string>
     <string name="knownFor">Known for</string>
@@ -336,6 +339,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="notYetRated">Not Yet Rated</string>
+    <string name="ok">Ok</string>
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history

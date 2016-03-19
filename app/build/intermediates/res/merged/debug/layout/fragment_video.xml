@@ -3,10 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.atlantbh.mymoviesapp.fragments.VideoFragment">
 
     <RatingBar
         android:id="@+id/rbVideoRating"
+        android:layout_marginLeft="@dimen/videoMargin"
+        android:layout_marginTop="20dp"
         style="@style/MyRatingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -15,20 +18,24 @@
         android:id="@+id/tvVideoRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/rbVideoRating"
+        android:textSize="18sp"
+        android:layout_alignBottom="@id/rbVideoRating"
         android:layout_toRightOf="@id/rbVideoRating" />
 
     <TextView
         android:id="@+id/tvVideoRateMovie"
+        android:layout_marginRight="@dimen/videoMargin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/rbVideoRating"
+        android:textSize="16sp"
+        android:layout_alignBottom="@id/rbVideoRating"
         android:layout_alignParentRight="true"
         android:text="@string/rate_movie"
         android:textColor="@color/customred" />
 
     <View
         android:id="@+id/vwVideoHorizontalLine1"
+        android:layout_margin="@dimen/videoMargin"
         android:background="@color/lightgray"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -36,6 +43,9 @@
 
     <TextView
         android:id="@+id/tvVideoTitle"
+        android:layout_marginLeft="@dimen/videoMargin"
+        android:layout_marginRight="@dimen/videoMargin"
+        android:layout_marginBottom="5dp"
         style="@style/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,13 +53,16 @@
 
     <TextView
         android:id="@+id/tvVideoBasicText"
-        style="@style/BasicText"
+        android:layout_marginLeft="@dimen/videoMargin"
+        android:layout_marginRight="@dimen/videoMargin"
+        android:textColor="@color/textcustomgray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvVideoTitle" />
 
     <View
         android:id="@+id/vwVideoHorizontalLine2"
+        android:layout_margin="@dimen/videoMargin"
         android:background="@color/lightgray"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -58,6 +71,7 @@
     <TextView
         android:id="@+id/tvVideoCast"
         style="@style/Subtitle"
+        android:layout_marginLeft="@dimen/videoMargin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/vwVideoHorizontalLine2"
@@ -72,6 +86,7 @@
     <TextView
         android:id="@+id/tvVideoReviews"
         style="@style/Subtitle"
+        android:layout_marginLeft="@dimen/videoMargin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rvVideoActors"

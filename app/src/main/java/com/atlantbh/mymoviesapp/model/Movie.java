@@ -1,5 +1,6 @@
 package com.atlantbh.mymoviesapp.model;
 
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.atlantbh.mymoviesapp.model.realm.RealmGenre;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
@@ -179,26 +180,28 @@ public class Movie implements Detailable {
     }
 
     public String getYear() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         if (releaseDate != null) {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy");
-            result = "(" + format.format(releaseDate) + ")";
+            result.append("(");
+            result.append(AppHelper.getSimpleDateFormat().format(releaseDate));
+            result.append(")");
         }
-        return result;
+        return result.toString();
     }
     public String getSubtitle() {
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
-        result += runtime / 60;
-        result += "h ";
-        result += runtime - (runtime / 60) * 60;
-        result += "m |";
+        result.append(runtime / 60);
+        result.append("h ");
+        result.append(runtime - (runtime / 60) * 60);
+        result.append("m |");
         if (genres != null) {
             for (int i = 0; i < genres.size(); i++) {
-                result += " " + genres.get(i).getName();
+                result.append(" ");
+                result.append(genres.get(i).getName());
             }
         }
-        return result;
+        return result.toString();
     }
 
     public static int mergeCategories(int oldCategory, int newCategory) {

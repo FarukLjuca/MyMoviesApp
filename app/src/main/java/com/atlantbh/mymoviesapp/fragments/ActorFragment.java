@@ -22,6 +22,7 @@ import com.atlantbh.mymoviesapp.activities.DetailsActivity;
 import com.atlantbh.mymoviesapp.adapters.MovieCreditsAdapter;
 import com.atlantbh.mymoviesapp.adapters.TvCreditsAdapter;
 import com.atlantbh.mymoviesapp.api.ActorAPI;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
@@ -57,7 +58,6 @@ public class ActorFragment extends Fragment {
     ImageView actorInfo;
 
     private int actorId;
-    private OnFragmentInteractionListener mListener;
 
     public void setActorId(int actorId) {
         if (actorId != -1) {
@@ -76,7 +76,7 @@ public class ActorFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_actor_details, container, false);
+        return inflater.inflate(R.layout.fragment_actor, container, false);
     }
 
     @Override
@@ -88,18 +88,8 @@ public class ActorFragment extends Fragment {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         actorBackdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
 
-        if (actorId == -1) {
-            Toast.makeText(getContext(), "Actor Id nije poslan, dakle bundle nije poslan", Toast.LENGTH_SHORT).show();
-        } else {
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
+        if (actorId > 0) {
+            Retrofit retrofit = AppHelper.getRetrofit();
             ActorAPI actorAPI = retrofit.create(ActorAPI.class);
 
             Call<Actor> call = actorAPI.loadActorById(actorId);
@@ -111,11 +101,12 @@ public class ActorFragment extends Fragment {
                     if (actor.getImageList().getImages().size() > 0) {
                         Glide.with(getContext())
                                 .load("https://image.tmdb.org/t/p/w1280" + actor.getImageList().getImages().get(0).getMovie().getBackdropPath())
+                                .placeholder(R.drawable.backdrop_placeholder)
                                 .into(actorBackdrop);
                     }
                     else {
                         Glide.with(getContext())
-                                .load(R.drawable.actor_placeholder_curved)
+                                .load(R.drawable.backdrop_placeholder)
                                 .into(actorBackdrop);
                     }
 
@@ -189,26 +180,5 @@ public class ActorFragment extends Fragment {
         actorName.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         actorSubtitile.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         actorBiography.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-
     }
 }

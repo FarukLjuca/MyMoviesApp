@@ -19,10 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
+import com.atlantbh.mymoviesapp.helpers.AppString;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,11 +61,15 @@ public class MovieListActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        if (drawer != null) {
+            drawer.addDrawerListener(toggle);
+        }
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        if (navigationView != null) {
+            navigationView.setNavigationItemSelectedListener(this);
+        }
 
         pagerAdapter = new MoviePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -93,25 +99,26 @@ public class MovieListActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_slideshow) {
-
+            Toast.makeText(getContext(), "Favorites clicked", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_share) {
-
+            Toast.makeText(getContext(), "Share clicked", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (drawer != null) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
     public void Video_Click(View view) {
         Intent intent = new Intent(getContext(), VideoActivity.class);
-        intent.putExtra("movieId", movieId);
+        intent.putExtra(AppString.MOVIE_ID, movieId);
         startActivity(intent);
     }
 
@@ -122,9 +129,9 @@ public class MovieListActivity extends AppCompatActivity
             if (lines > 0)
                 if (l.getEllipsisCount(lines-1) > 0) {
                     new AlertDialog.Builder(getContext())
-                            .setTitle("Detailed overview")
+                            .setTitle(getString(R.string.detailedOverview))
                             .setMessage(overview)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })

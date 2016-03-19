@@ -10,19 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
-import com.atlantbh.mymoviesapp.api.VideoAPI;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.Movie;
-import com.atlantbh.mymoviesapp.model.MovieList;
-import com.atlantbh.mymoviesapp.model.Video;
-import com.atlantbh.mymoviesapp.model.VideoList;
-import com.google.android.youtube.player.YouTubePlayerFragment;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.math.BigDecimal;
 
@@ -30,7 +23,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -80,15 +72,7 @@ public class VideoFragment extends Fragment {
         ButterKnife.bind(this, getView());
 
         if (movieId > 0) {
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
+            Retrofit retrofit = AppHelper.getRetrofit();
             MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
             Call<Movie> call = movieAPI.loadMovieById(movieId);
@@ -99,7 +83,7 @@ public class VideoFragment extends Fragment {
 
                     ratingBar.setRating(movie.getVoteAverage() / 2);
                     rating.setText(String.valueOf(round(movie.getVoteAverage(), 1)));
-                    title.setText(movie.getTitle());
+                    title.setText(new StringBuilder().append(movie.getTitle()).append(" (Movie)"));
                     basicText.setText(movie.getOverview());
                 }
 

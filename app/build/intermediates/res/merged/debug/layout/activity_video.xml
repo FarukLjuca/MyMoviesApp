@@ -32,8 +32,6 @@
 
             <fragment
                 android:id="@+id/frVideoContent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_below="@id/frYoutube"
                 android:name="com.atlantbh.mymoviesapp.fragments.VideoFragment"
                 android:layout_width="match_parent"

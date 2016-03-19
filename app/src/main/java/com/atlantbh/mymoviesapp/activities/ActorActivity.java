@@ -16,7 +16,7 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 
-public class ActorActivity extends AppCompatActivity implements ActorFragment.OnFragmentInteractionListener {
+public class ActorActivity extends AppCompatActivity {
     private int actorId;
     private Toolbar toolbar;
     private TextView tvActorBiography;
@@ -54,9 +54,9 @@ public class ActorActivity extends AppCompatActivity implements ActorFragment.On
             if (lines > 0)
                 if (l.getEllipsisCount(lines - 1) > 0) {
                     new AlertDialog.Builder(getContext())
-                            .setTitle("Detailed biography")
+                            .setTitle(getString(R.string.detaildedBiography))
                             .setMessage(actorBiography)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })

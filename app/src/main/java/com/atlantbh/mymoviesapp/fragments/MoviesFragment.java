@@ -22,6 +22,8 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
+import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
@@ -113,15 +115,7 @@ public abstract class MoviesFragment extends Fragment {
         category = getCategory();
 
         if (isOnline()) {
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
+            Retrofit retrofit = AppHelper.getRetrofit();
             final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
             Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(), 1);
@@ -205,7 +199,7 @@ public abstract class MoviesFragment extends Fragment {
         } else {
             Realm realm = Realm.getInstance(getContext());
 
-            RealmResults movieList = null;
+            RealmResults<RealmMovieBasic> movieList = null;
 
             if (getCategory() == CATEGORY_POPULAR)
                 movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexPopular", -1).findAllSorted("indexPopular");
@@ -249,9 +243,9 @@ public abstract class MoviesFragment extends Fragment {
                     if (detailsContainer != null) {
                         DetailsFragment fragment = new DetailsFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putInt("movieId", movie.getId());
+                        bundle.putInt(AppString.MOVIE_ID, movie.getId());
                         fragment.setArguments(bundle);
-                        if (added = false) {
+                        if (!added) {
                             getFragmentManager().beginTransaction()
                                     .replace(R.id.rlDetailsContainer, fragment)
                                     .commit();
@@ -264,7 +258,7 @@ public abstract class MoviesFragment extends Fragment {
                         }
                     } else {
                         Intent intent = new Intent(currentContext, DetailsActivity.class);
-                        intent.putExtra("movieId", movie.getId());
+                        intent.putExtra(AppString.MOVIE_ID, movie.getId());
                         startActivity(intent);
                     }
                 }
@@ -310,7 +304,7 @@ public abstract class MoviesFragment extends Fragment {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent(currentContext, DetailsActivity.class);
                     Movie movie = movieList.getMovies().get(position);
-                    intent.putExtra("movieId", movie.getId());
+                    intent.putExtra(AppString.MOVIE_ID, movie.getId());
                     startActivity(intent);
                 }
             });

@@ -72,7 +72,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     public void Video_Click(View view) {
         Intent intent = new Intent(getContext(), VideoActivity.class);
-        intent.putExtra("movieId", movieId);
+        intent.putExtra(AppString.MOVIE_ID, movieId);
         startActivity(intent);
     }
 
@@ -83,9 +83,9 @@ public class DetailsActivity extends AppCompatActivity {
             if (lines > 0)
                 if (l.getEllipsisCount(lines - 1) > 0) {
                     new AlertDialog.Builder(getContext())
-                            .setTitle("Detailed overview")
+                            .setTitle(getString(R.string.detailedOverview))
                             .setMessage(overview)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             })

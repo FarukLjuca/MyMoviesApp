@@ -26,6 +26,7 @@ import com.atlantbh.mymoviesapp.activities.MovieListActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.api.TvAPI;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
@@ -123,15 +124,7 @@ public class DetailsFragment extends Fragment {
 
         if (movieId > 0) {
             if (isOnline()) {
-                Gson gson = new GsonBuilder()
-                        .setDateFormat("yyyy-MM-dd")
-                        .create();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://api.themoviedb.org")
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .build();
-
+                Retrofit retrofit = AppHelper.getRetrofit();
                 MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
                 Call<Movie> call = movieAPI.loadMovieById(movieId);
@@ -164,6 +157,7 @@ public class DetailsFragment extends Fragment {
                     RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
                     if (realmResultsBasic.size() == 0) {
                         //TODO: Ovjde neku refresh stranicu napraviti
+                        Toast.makeText(getContext(), "Todo refresh", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         SetContent(new Movie(realmResultsBasic.get(0)));
@@ -183,15 +177,7 @@ public class DetailsFragment extends Fragment {
             getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
             basicText.setLines(10);
 
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd")
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
+            Retrofit retrofit = AppHelper.getRetrofit();
             TvAPI tvAPI = retrofit.create(TvAPI.class);
 
             Call<Tv> call = tvAPI.loadTvById(tvId);
@@ -217,6 +203,7 @@ public class DetailsFragment extends Fragment {
     private void SetContent(Detailable detailable) {
         Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
+                .placeholder(R.drawable.backdrop_placeholder)
                 .into(backdrop);
 
         Glide.with(getContext())

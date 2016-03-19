@@ -11,6 +11,8 @@ import android.widget.Toolbar;
 import com.atlantbh.mymoviesapp.api.VideoAPI;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.fragments.VideoFragment;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
+import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.VideoList;
 import com.atlantbh.mymoviesapp.R;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -42,7 +44,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         }
 
         Intent intent = getIntent();
-        movieId = intent.getIntExtra("movieId", -1);
+        movieId = intent.getIntExtra(AppString.MOVIE_ID, -1);
 
         VideoFragment videoFragment = (VideoFragment) getFragmentManager().findFragmentById(R.id.frVideoContent);
         if (videoFragment != null) {
@@ -50,11 +52,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         }
 
         if (movieId != -1) {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
+            Retrofit retrofit = AppHelper.getRetrofit();
             VideoAPI videoAPI = retrofit.create(VideoAPI.class);
 
             Call<VideoList> call = videoAPI.loadVideosByMovieId(movieId);
