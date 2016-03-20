@@ -11,4 +11,6 @@ public interface Detailable {
     Float getVoteAverage();
     int getVoteCount();
     ActorList getActorList();
+    boolean getFavorite();
+    void setFavorite(boolean favorite);
 }

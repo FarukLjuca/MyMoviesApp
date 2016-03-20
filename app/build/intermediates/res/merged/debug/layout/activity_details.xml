@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/clDetailsCoordinator"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.DetailsActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tbDetailsToolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/AppToolbar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:layout_height="match_parent">
 
-    <fragment
-        android:id="@+id/frDetailsContent"
-        android:name="com.atlantbh.mymoviesapp.fragments.DetailsFragment"
-        android:layout_below="@id/tbDetailsToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tbDetailsToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/AppToolbar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-</RelativeLayout>
+        <fragment
+            android:id="@+id/frDetailsContent"
+            android:name="com.atlantbh.mymoviesapp.fragments.DetailsFragment"
+            android:layout_below="@id/tbDetailsToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

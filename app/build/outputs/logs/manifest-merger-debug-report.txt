@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:2:1-39:12
+ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:2:1-36:12
 	package
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:3:5-39
 		INJECTED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml
@@ -31,7 +31,7 @@ ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\ma
 	android:name
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:6:22-76
 application
-ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:8:5-37:19
+ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:8:5-34:19
 MERGED from [com.android.support:appcompat-v7:23.2.1] C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.2.1\AndroidManifest.xml:25:5-20
 MERGED from [com.android.support:support-v4:23.2.1] C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.2.1\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:animated-vector-drawable:23.2.1] C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.2.1\AndroidManifest.xml:7:5-20
@@ -100,24 +100,22 @@ ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\ma
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:26:13-59
 	android:name
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:25:13-53
+activity#com.atlantbh.mymoviesapp.activities.LoginActivity
+ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:27:9-61
+	android:name
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:27:19-59
 activity#com.atlantbh.mymoviesapp.activities.SettingsActivity
-ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:27:9-29:63
+ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:28:9-30:63
 	android:label
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:29:13-60
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:30:13-60
 	android:name
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:28:13-56
-service#com.atlantbh.mymoviesapp.offline.OfflineSyncService
-ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:31:9-33:39
-	android:exported
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:33:13-37
-	android:name
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:32:13-55
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:29:13-56
 meta-data#io.fabric.ApiKey
-ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:34:9-36:72
+ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:31:9-33:72
 	android:value
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:36:13-69
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:33:13-69
 	android:name
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:35:13-44
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:32:13-44
 uses-sdk
 INJECTED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support:appcompat-v7:23.2.1] C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.2.1\AndroidManifest.xml:21:5-23:78

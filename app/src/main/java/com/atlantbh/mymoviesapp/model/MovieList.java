@@ -1,11 +1,14 @@
 package com.atlantbh.mymoviesapp.model;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.google.gson.annotations.SerializedName;
@@ -63,14 +66,10 @@ public class MovieList {
         }
     }
 
-    public void LoadData(final MovieAdapter movieAdapter, String category) {
+    public void LoadData(final Context context, final MovieAdapter movieAdapter, String category) {
         page++;
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = AppHelper.getRetrofit();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
         Call<MovieList> call = movieAPI.loadMoviesByPage(category, page);
@@ -84,24 +83,21 @@ public class MovieList {
 
             @Override
             public void onFailure(Throwable t) {
-
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void LoadDataToPage(final MovieAdapter movieAdapter, String category, int page, final View view, final int position) {
         while (this.page <= page + 1) {
-            if (this.page == page + 1) isLast = true;
-            this.page++;
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
+            Retrofit retrofit = AppHelper.getRetrofit();
             MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
-            Call<MovieList> call = movieAPI.loadMoviesByPage(category, page);
+            this.page++;
+            Call<MovieList> call = movieAPI.loadMoviesByPage(category, this.page);
+            if (this.page == page + 1) {
+                isLast = true;
+            }
             call.enqueue(new Callback<MovieList>() {
                 @Override
                 public void onResponse(Response<MovieList> response, Retrofit retrofit) {

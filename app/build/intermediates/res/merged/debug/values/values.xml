@@ -327,12 +327,15 @@
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="cast">Cast</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
-    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">e25553f5-54a5-4162-b710-37a517a56543</string>
+    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">9eeb9309-54d9-4f24-b402-349af3b19201</string>
     <string name="detaildedBiography">Detailed biography</string>
     <string name="detailedOverview">Detailed overview</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="forgot_password">Forgot your password?</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="invalidParse">Invalid parseing of date, please contact app developer for further details.</string>
     <string name="knownFor">Known for</string>
+    <string name="login">Login</string>
     <string name="movie_category_now_playing">now_playing</string>
     <string name="movie_category_popular">popular</string>
     <string name="movie_category_top_rated">top_rated</string>
@@ -340,6 +343,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="notYetRated">Not Yet Rated</string>
     <string name="ok">Ok</string>
+    <string name="password">Password</string>
     <string name="pref_default_display_name">John Smith</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
         based on your message history
@@ -357,11 +361,14 @@
     <string name="pref_title_system_sync_settings">System sync settings</string>
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="rate_movie">Rate movie</string>
+    <string name="reset_password">Reset password</string>
     <string name="reviews">Reviews</string>
     <string name="search">Search</string>
+    <string name="sign_up">Sign Up</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="title_activity_settings">Settings</string>
     <string name="tvSeries">TV Series</string>
+    <string name="username">Username</string>
     <string name="videos">Videos</string>
     <string name="yourRating">Your\nRating</string>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>

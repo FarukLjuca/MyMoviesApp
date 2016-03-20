@@ -30,13 +30,10 @@
         <activity
             android:name="com.atlantbh.mymoviesapp.activities.VideoActivity"
             android:configChanges="orientation|screenSize" />
+        <activity android:name="com.atlantbh.mymoviesapp.activities.LoginActivity" />
         <activity
             android:name="com.atlantbh.mymoviesapp.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-
-        <service
-            android:name="com.atlantbh.mymoviesapp.offline.OfflineSyncService"
-            android:exported="false" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

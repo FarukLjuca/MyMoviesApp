@@ -1,5 +1,10 @@
 package com.atlantbh.mymoviesapp.helpers;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import com.atlantbh.mymoviesapp.MyApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -32,5 +37,15 @@ public class AppHelper {
                     .build();
         }
         return retrofit;
+    }
+
+    private static ConnectivityManager cm;
+
+    public static boolean isOnline() {
+        if (cm == null) {
+            cm = (ConnectivityManager) MyApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

@@ -30,6 +30,8 @@ public class Tv implements Detailable {
     @SerializedName("credits")
     private ActorList actorList;
 
+    private boolean favorite;
+
     public int getId() { return id; }
     public String getBackdropPath() { return backdropPath; }
     public String getPosterPath() { return posterPath; }
@@ -56,5 +58,15 @@ public class Tv implements Detailable {
             result += " " + genres.get(i).getName();
         }
         return result;
+    }
+
+    @Override
+    public boolean getFavorite() {
+        return favorite;
+    }
+
+    @Override
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

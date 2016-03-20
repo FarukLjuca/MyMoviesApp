@@ -215,6 +215,7 @@ public abstract class MoviesFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        /*
         if (listView != null) {
             int index = listView.getLastVisiblePosition() - 1;
             View v = listView.getChildAt(0);
@@ -227,6 +228,13 @@ public abstract class MoviesFragment extends Fragment {
             int top = (v == null) ? 0 : (v.getTop() - gridView.getPaddingTop());
             savedInstanceState.putInt("index", index);
             savedInstanceState.putInt("top", top);
+        }
+        */
+        if (listView != null) {
+            savedInstanceState.putInt("index", listView.getFirstVisiblePosition() + 1);
+        }
+        else if (gridView != null) {
+            savedInstanceState.putInt("index", gridView.getFirstVisiblePosition() + 3);
         }
     }
 
@@ -282,7 +290,7 @@ public abstract class MoviesFragment extends Fragment {
                     int l = visibleItemCount + firstVisibleItem;
                     if (l >= totalItemCount && !movieList.getIsLoading()) {
                         movieList.setIsLoading(true);
-                        movieList.LoadData(movieAdapter, getCategoryString());
+                        movieList.LoadData(getContext(), movieAdapter, getCategoryString());
                         movieList.setIsLoading(false);
                     }
                 }
@@ -291,7 +299,7 @@ public abstract class MoviesFragment extends Fragment {
             if (savedInstanceState != null) {
                 int position = savedInstanceState.getInt("index", 0);
                 if (position != 0) {
-                    movieList.LoadDataToPage(movieAdapter, getCategoryString(), position / 20 + 1, listView, position);
+                    movieList.LoadDataToPage(movieAdapter, getCategoryString(), position / 20, listView, position);
                 }
             }
 
@@ -326,7 +334,7 @@ public abstract class MoviesFragment extends Fragment {
                     int l = visibleItemCount + firstVisibleItem;
                     if (l >= totalItemCount && !movieList.getIsLoading()) {
                         movieList.setIsLoading(true);
-                        movieList.LoadData(movieAdapter, getCategoryString());
+                        movieList.LoadData(getContext(), movieAdapter, getCategoryString());
                         movieList.setIsLoading(false);
                     }
                 }
@@ -335,7 +343,7 @@ public abstract class MoviesFragment extends Fragment {
             if (savedInstanceState != null) {
                 int position = savedInstanceState.getInt("index", 0);
                 if (position != 0) {
-                    movieList.LoadDataToPage(movieAdapter, getCategoryString(), position / 20 + 1, gridView, position);
+                    movieList.LoadDataToPage(movieAdapter, getCategoryString(), position / 20, gridView, position);
                 }
             }
         }

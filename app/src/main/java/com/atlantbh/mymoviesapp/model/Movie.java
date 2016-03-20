@@ -46,6 +46,8 @@ public class Movie implements Detailable {
     @SerializedName("videos")
     private VideoList videoList;
 
+    private boolean favorite;
+
     public Movie(RealmMovieBasic movie) {
         setId(movie.getId());
         setOverview(movie.getOverview());
@@ -230,5 +232,15 @@ public class Movie implements Detailable {
 
     public void setVideoList(VideoList videoList) {
         this.videoList = videoList;
+    }
+
+    @Override
+    public boolean getFavorite() {
+        return favorite;
+    }
+
+    @Override
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

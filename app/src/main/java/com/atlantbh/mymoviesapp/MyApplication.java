@@ -1,6 +1,7 @@
 package com.atlantbh.mymoviesapp;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -10,9 +11,13 @@ import io.fabric.sdk.android.Fabric;
 import io.realm.RealmConfiguration;
 
 public class MyApplication extends Application {
+    private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
+
         Fabric.with(this, new Crashlytics());
 
         Stetho.initialize(
@@ -20,5 +25,9 @@ public class MyApplication extends Application {
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                         .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
                         .build());
+    }
+
+    public static Context getContext() {
+        return context;
     }
 }

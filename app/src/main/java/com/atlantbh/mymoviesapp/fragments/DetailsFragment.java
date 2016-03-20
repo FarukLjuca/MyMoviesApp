@@ -2,6 +2,7 @@ package com.atlantbh.mymoviesapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -157,13 +158,7 @@ public class DetailsFragment extends Fragment {
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
                 if (realmResults.size() == 0) {
                     RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
-                    if (realmResultsBasic.size() == 0) {
-                        //TODO: Ovjde neku refresh stranicu napraviti
-                        Toast.makeText(getContext(), "Todo refresh", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        SetContent(new Movie(realmResultsBasic.get(0)));
-                    }
+                    SetContent(new Movie(realmResultsBasic.get(0)));
                 }
                 else {
                     Movie movie = new Movie(realmResults.get(0));
@@ -258,29 +253,40 @@ public class DetailsFragment extends Fragment {
         RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), detailable.getActorList(), new ActorAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Actor actor) {
-                if (isOnline()) {
-                    RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
-                    if (detailsContainer != null) {
-                        ActorFragment fragment = new ActorFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(AppString.ACTOR_ID, actor.getId());
-                        fragment.setArguments(bundle);
-                        getFragmentManager().beginTransaction()
-                                .replace(R.id.rlDetailsContainer, fragment)
-                                .commit();
-                    } else {
-                        Intent intent = new Intent(getContext(), ActorActivity.class);
-                        intent.putExtra("actorId", actor.getId());
-                        startActivity(intent);
-                    }
-                }
-                else {
-                    //Todo: Make snackbar with refresh button
-                    Toast.makeText(getContext(), "Check your internet connection", Toast.LENGTH_SHORT).show();
-                }
+                onActoritemClick(actor);
             }
         });
         cast.setAdapter(castAdapter);
+    }
+
+    public void onActoritemClick(final Actor actor) {
+        if (isOnline()) {
+            RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
+            if (detailsContainer != null) {
+                ActorFragment fragment = new ActorFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt(AppString.ACTOR_ID, actor.getId());
+                fragment.setArguments(bundle);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.rlDetailsContainer, fragment)
+                        .commit();
+            } else {
+                Intent intent = new Intent(getContext(), ActorActivity.class);
+                intent.putExtra("actorId", actor.getId());
+                startActivity(intent);
+            }
+        }
+        else {
+            Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clDetailsCoordinator), "Check your internet connection", Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.CYAN);
+            snackbar.setAction("Refresh", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onActoritemClick(actor);
+                }
+            });
+            snackbar.show();
+        }
     }
 
     public static BigDecimal round(float d, int decimalPlace) {
@@ -300,5 +306,4 @@ public class DetailsFragment extends Fragment {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
 }

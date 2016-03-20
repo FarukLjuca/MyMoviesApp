@@ -8,22 +8,22 @@ import butterknife.ButterKnife.ViewBinder;
 public class ActorFragment$$ViewBinder<T extends com.atlantbh.mymoviesapp.fragments.ActorFragment> implements ViewBinder<T> {
   @Override public void bind(final Finder finder, final T target, Object source) {
     View view;
-    view = finder.findRequiredView(source, 2131624064, "field 'actorBackdrop'");
-    target.actorBackdrop = finder.castView(view, 2131624064, "field 'actorBackdrop'");
-    view = finder.findRequiredView(source, 2131624066, "field 'actorPoster'");
-    target.actorPoster = finder.castView(view, 2131624066, "field 'actorPoster'");
-    view = finder.findRequiredView(source, 2131624067, "field 'actorName'");
-    target.actorName = finder.castView(view, 2131624067, "field 'actorName'");
-    view = finder.findRequiredView(source, 2131624068, "field 'actorSubtitile'");
-    target.actorSubtitile = finder.castView(view, 2131624068, "field 'actorSubtitile'");
-    view = finder.findRequiredView(source, 2131624071, "field 'actorBiography'");
-    target.actorBiography = finder.castView(view, 2131624071, "field 'actorBiography'");
-    view = finder.findRequiredView(source, 2131624072, "field 'actorMovies'");
-    target.actorMovies = finder.castView(view, 2131624072, "field 'actorMovies'");
-    view = finder.findRequiredView(source, 2131624073, "field 'actorTv'");
-    target.actorTv = finder.castView(view, 2131624073, "field 'actorTv'");
-    view = finder.findRequiredView(source, 2131624070, "field 'actorInfo'");
-    target.actorInfo = finder.castView(view, 2131624070, "field 'actorInfo'");
+    view = finder.findRequiredView(source, 2131624076, "field 'actorBackdrop'");
+    target.actorBackdrop = finder.castView(view, 2131624076, "field 'actorBackdrop'");
+    view = finder.findRequiredView(source, 2131624078, "field 'actorPoster'");
+    target.actorPoster = finder.castView(view, 2131624078, "field 'actorPoster'");
+    view = finder.findRequiredView(source, 2131624079, "field 'actorName'");
+    target.actorName = finder.castView(view, 2131624079, "field 'actorName'");
+    view = finder.findRequiredView(source, 2131624080, "field 'actorSubtitile'");
+    target.actorSubtitile = finder.castView(view, 2131624080, "field 'actorSubtitile'");
+    view = finder.findRequiredView(source, 2131624083, "field 'actorBiography'");
+    target.actorBiography = finder.castView(view, 2131624083, "field 'actorBiography'");
+    view = finder.findRequiredView(source, 2131624084, "field 'actorMovies'");
+    target.actorMovies = finder.castView(view, 2131624084, "field 'actorMovies'");
+    view = finder.findRequiredView(source, 2131624085, "field 'actorTv'");
+    target.actorTv = finder.castView(view, 2131624085, "field 'actorTv'");
+    view = finder.findRequiredView(source, 2131624082, "field 'actorInfo'");
+    target.actorInfo = finder.castView(view, 2131624082, "field 'actorInfo'");
   }
 
   @Override public void unbind(T target) {

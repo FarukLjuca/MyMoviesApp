@@ -24,13 +24,10 @@
         <activity
             android:name=".activities.VideoActivity"
             android:configChanges="orientation|screenSize" />
+        <activity android:name=".activities.LoginActivity"/>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-
-        <service
-            android:name=".offline.OfflineSyncService"
-            android:exported="false"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8fc51e8e71bd737ccdce4f93029f758816dc69fe" />
