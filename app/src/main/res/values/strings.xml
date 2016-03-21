@@ -91,4 +91,7 @@
     <string name="forgot_password">Forgot your password?</string>
     <string name="reset_password">Reset password</string>
     <string name="login">Login</string>
+    <string name="actions">Actions</string>
+    <string name="refresh">Refresh</string>
+    <string name="check_your_internet_connection">Check your internet connection</string>
 </resources>
