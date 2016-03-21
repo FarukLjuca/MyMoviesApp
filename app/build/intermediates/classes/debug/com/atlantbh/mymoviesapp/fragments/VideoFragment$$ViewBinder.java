@@ -8,20 +8,20 @@ import butterknife.ButterKnife.ViewBinder;
 public class VideoFragment$$ViewBinder<T extends com.atlantbh.mymoviesapp.fragments.VideoFragment> implements ViewBinder<T> {
   @Override public void bind(final Finder finder, final T target, Object source) {
     View view;
-    view = finder.findRequiredView(source, 2131624114, "field 'ratingBar'");
-    target.ratingBar = finder.castView(view, 2131624114, "field 'ratingBar'");
-    view = finder.findRequiredView(source, 2131624115, "field 'rating'");
-    target.rating = finder.castView(view, 2131624115, "field 'rating'");
-    view = finder.findRequiredView(source, 2131624116, "field 'rateMovie'");
-    target.rateMovie = finder.castView(view, 2131624116, "field 'rateMovie'");
-    view = finder.findRequiredView(source, 2131624118, "field 'title'");
-    target.title = finder.castView(view, 2131624118, "field 'title'");
-    view = finder.findRequiredView(source, 2131624119, "field 'basicText'");
-    target.basicText = finder.castView(view, 2131624119, "field 'basicText'");
-    view = finder.findRequiredView(source, 2131624122, "field 'actors'");
-    target.actors = finder.castView(view, 2131624122, "field 'actors'");
-    view = finder.findRequiredView(source, 2131624124, "field 'reviews'");
-    target.reviews = finder.castView(view, 2131624124, "field 'reviews'");
+    view = finder.findRequiredView(source, 2131558581, "field 'ratingBar'");
+    target.ratingBar = finder.castView(view, 2131558581, "field 'ratingBar'");
+    view = finder.findRequiredView(source, 2131558582, "field 'rating'");
+    target.rating = finder.castView(view, 2131558582, "field 'rating'");
+    view = finder.findRequiredView(source, 2131558583, "field 'rateMovie'");
+    target.rateMovie = finder.castView(view, 2131558583, "field 'rateMovie'");
+    view = finder.findRequiredView(source, 2131558585, "field 'title'");
+    target.title = finder.castView(view, 2131558585, "field 'title'");
+    view = finder.findRequiredView(source, 2131558586, "field 'basicText'");
+    target.basicText = finder.castView(view, 2131558586, "field 'basicText'");
+    view = finder.findRequiredView(source, 2131558589, "field 'actors'");
+    target.actors = finder.castView(view, 2131558589, "field 'actors'");
+    view = finder.findRequiredView(source, 2131558591, "field 'reviews'");
+    target.reviews = finder.castView(view, 2131558591, "field 'reviews'");
   }
 
   @Override public void unbind(T target) {

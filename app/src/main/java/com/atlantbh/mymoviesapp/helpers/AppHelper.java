@@ -1,10 +1,17 @@
 package com.atlantbh.mymoviesapp.helpers;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import com.atlantbh.mymoviesapp.MyApplication;
+import com.atlantbh.mymoviesapp.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

@@ -1,29 +1,29 @@
 package com.atlantbh.mymoviesapp.activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
+import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
+import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 
 import butterknife.Bind;
@@ -31,19 +31,22 @@ import butterknife.ButterKnife;
 
 public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private int movieId;
-    private int tvId;
-
-    private String overview;
-    private TextView tvOverview;
-
-    private MoviePagerAdapter pagerAdapter;
-
     @Bind(R.id.vpMovieList)
     ViewPager viewPager;
     @Bind(R.id.tlMovieTabs)
     TabLayout tabLayout;
+    @Bind(R.id.tbMovieToolbar)
+    Toolbar toolbar;
+    @Bind(R.id.dlMovieDrawer)
+    DrawerLayout drawer;
+
+    private MoviePagerAdapter pagerAdapter;
+    private DetailsFragment detailsFragment;
+    private ActorFragment actorFragment;
+
+    public Context getContext() {
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +54,13 @@ public class MovieListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbMainToolbar);
-        setSupportActionBar(myToolbar);
+        setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, myToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         if (drawer != null) {
             drawer.addDrawerListener(toggle);
         }
@@ -86,9 +86,6 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-
             case R.id.itSearch:
                 return true;
 
@@ -101,54 +98,62 @@ public class MovieListActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_slideshow) {
-            Toast.makeText(getContext(), "Favorites clicked", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_manage) {
-            startActivity(new Intent(this, SettingsActivity.class));
-        } else if (id == R.id.nav_share) {
-            Toast.makeText(getContext(), "Share clicked", Toast.LENGTH_SHORT).show();
+        if (id == R.id.nav_login) {
+            loginClick();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer != null) {
             drawer.closeDrawer(GravityCompat.START);
         }
         return true;
     }
 
-    public void Video_Click(View view) {
-        Intent intent = new Intent(getContext(), VideoActivity.class);
-        intent.putExtra(AppString.MOVIE_ID, movieId);
-        startActivity(intent);
-    }
-
-    public void Info_Click(View view) {
-        Layout l = tvOverview.getLayout();
-        if (l != null) {
-            int lines = l.getLineCount();
-            if (lines > 0)
-                if (l.getEllipsisCount(lines-1) > 0) {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle(getString(R.string.detailedOverview))
-                            .setMessage(overview)
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .show();
-                }
+    private void loginClick() {
+        if (AppHelper.isOnline()) {
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+        else {
+            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+            if (coordinator != null) {
+                Snackbar snackbar = Snackbar.make(coordinator, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loginClick();
+                    }
+                });
+                snackbar.show();
+            }
         }
     }
 
-    public Context getContext() {
-        return this;
+    public void videoClick(View view) {
+        detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentByTag(AppString.detailsFragmentTag);
+        if (detailsFragment != null) {
+            detailsFragment.videoClick();
+        }
     }
 
-    public void setOverview(String overview) {
-        this.overview = overview;
+    public void detailableInfoClick(View view) {
+        detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentByTag(AppString.detailsFragmentTag);
+        if (detailsFragment != null) {
+            detailsFragment.detailableInfoClick();
+        }
     }
 
-    public void setTvOverview(TextView tvOverview) {
-        this.tvOverview = tvOverview;
+    public void favoriteClick(View view) {
+        detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentByTag(AppString.detailsFragmentTag);
+        if (detailsFragment != null) {
+            detailsFragment.favoriteClick();
+        }
+    }
+
+    public void actorInfoClick(View view) {
+        actorFragment = (ActorFragment) getSupportFragmentManager().findFragmentByTag(AppString.actorFragmentTag);
+        if (actorFragment != null) {
+            actorFragment.actorInfoClick();
+        }
     }
 }

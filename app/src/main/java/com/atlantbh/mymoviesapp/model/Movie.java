@@ -45,6 +45,8 @@ public class Movie implements Detailable {
     private ActorList actorList;
     @SerializedName("videos")
     private VideoList videoList;
+    @SerializedName("reviews")
+    private ReviewList reviewList;
 
     private boolean favorite;
 
@@ -79,6 +81,10 @@ public class Movie implements Detailable {
             genres.add(new Genre(genre.getId(), genre.getName()));
         }
         setGenres(genres);
+    }
+
+    public ReviewList getReviewList() {
+        return reviewList;
     }
 
     @Override

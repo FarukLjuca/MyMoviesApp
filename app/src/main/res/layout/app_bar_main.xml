@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/tbMainToolbar"
+            android:id="@+id/tbMovieToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -25,6 +25,7 @@
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tlMovieTabs"
+            app:tabIndicatorColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </android.support.design.widget.AppBarLayout>

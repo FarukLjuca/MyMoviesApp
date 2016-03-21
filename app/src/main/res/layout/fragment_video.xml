@@ -46,6 +46,7 @@
         android:layout_marginLeft="@dimen/videoMargin"
         android:layout_marginRight="@dimen/videoMargin"
         android:layout_marginBottom="5dp"
+        android:textColor="@color/textdarkgray"
         style="@style/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,8 +71,10 @@
 
     <TextView
         android:id="@+id/tvVideoCast"
-        style="@style/Subtitle"
+        android:textSize="18sp"
         android:layout_marginLeft="@dimen/videoMargin"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/vwVideoHorizontalLine2"
@@ -80,21 +83,27 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvVideoActors"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
         android:layout_below="@id/tvVideoCast" />
 
     <TextView
         android:id="@+id/tvVideoReviews"
-        style="@style/Subtitle"
+        android:textSize="18sp"
         android:layout_marginLeft="@dimen/videoMargin"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rvVideoActors"
         android:text="@string/reviews" />
 
-    <ListView
+    <com.atlantbh.mymoviesapp.helpers.NonScrollListView
         android:id="@+id/lvVideoReviews"
-        android:layout_width="wrap_content"
+        android:divider="@null"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvVideoReviews" />
 </RelativeLayout>

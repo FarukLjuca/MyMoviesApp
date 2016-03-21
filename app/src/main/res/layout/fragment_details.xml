@@ -102,7 +102,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_margin="10dp"
-                    android:onClick="Info_Click"
+                    android:onClick="detailableInfoClick"
                     android:src="@drawable/ic_info_outline_black_36dp"
                     android:tint="@color/infoblue" />
 
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rlOverviewAndInfo"
                 android:layout_toRightOf="@id/ivDetailsPoster"
-                android:onClick="Video_Click">
+                android:onClick="videoClick">
 
                 <ImageView
                     android:id="@+id/ivDetailsPlay"

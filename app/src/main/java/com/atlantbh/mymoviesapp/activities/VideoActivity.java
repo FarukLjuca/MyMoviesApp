@@ -1,34 +1,37 @@
 package com.atlantbh.mymoviesapp.activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.atlantbh.mymoviesapp.api.VideoAPI;
-import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.fragments.VideoFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.VideoList;
 import com.atlantbh.mymoviesapp.R;
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class VideoActivity extends YouTubeFailureRecoveryActivity {
+public class VideoActivity extends AppCompatActivity implements YouTubePlayer.OnInitializedListener {
     private int movieId;
     private String videoKey;
+    private YouTubePlayer youTubePlayer;
+    private ScrollView scrollView;
 
-    private YouTubePlayer YPlayer;
     private static final String YoutubeDeveloperKey = "AIzaSyBbChM9SBrXSgLsQk43VOBu8A9hu1lgcPY";
 
     @Override
@@ -36,22 +39,25 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.tbVideoToolbar);
-        setActionBar(myToolbar);
-        ActionBar ab = getActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tbVideoToolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowTitleEnabled(false);
         }
 
         Intent intent = getIntent();
         movieId = intent.getIntExtra(AppString.MOVIE_ID, -1);
 
-        VideoFragment videoFragment = (VideoFragment) getFragmentManager().findFragmentById(R.id.frVideoContent);
+        VideoFragment videoFragment = (VideoFragment) getSupportFragmentManager().findFragmentById(R.id.frVideoContent);
         if (videoFragment != null) {
             videoFragment.setMovieId(movieId);
         }
 
-        if (movieId != -1) {
+        scrollView = (ScrollView) findViewById(R.id.svVideoScrollView);
+
+        if (movieId > 0) {
             Retrofit retrofit = AppHelper.getRetrofit();
             VideoAPI videoAPI = retrofit.create(VideoAPI.class);
 
@@ -61,7 +67,7 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
                 public void onResponse(Response<VideoList> response, Retrofit retrofit) {
                     VideoList videoList = response.body();
                     videoKey = videoList.getFirst().getKey();
-                    YouTubePlayerFragment youTubePlayerFragment = (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.frYoutube);
+                    YouTubePlayerSupportFragment youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.frYoutube);
                     youTubePlayerFragment.initialize(YoutubeDeveloperKey, VideoActivity.this);
                 }
 
@@ -74,38 +80,41 @@ public class VideoActivity extends YouTubeFailureRecoveryActivity {
     }
 
     @Override
-    protected YouTubePlayer.Provider getYouTubePlayerProvider() {
-        return (YouTubePlayerFragment) getFragmentManager().findFragmentById(R.id.frYoutube);
-    }
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
 
-    @Override
-    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
-        if (!wasRestored) {
-            player.cueVideo(videoKey);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            youTubePlayer.setFullscreen(true);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            youTubePlayer.setFullscreen(false);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.details_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-
-            case R.id.itSearch:
-                return true;
-
             case android.R.id.home:
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+        youTubePlayer.cueVideo(videoKey);
+        this.youTubePlayer = youTubePlayer;
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        Toast.makeText(this, "There was a problem with initialization of youtube player.", Toast.LENGTH_LONG).show();
     }
 }

@@ -2,12 +2,12 @@ package com.atlantbh.mymoviesapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Looper;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +26,7 @@ import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +36,6 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -51,18 +47,15 @@ public abstract class MoviesFragment extends Fragment {
     private static List<RealmMovieBasic> optimizedMovieList = new ArrayList<>();
 
     private static int pass = 0;
-    private boolean added = false;
 
     private Context currentContext;
     private View currentView;
 
     private MovieAdapter movieAdapter;
 
-    private int category;
-
-    GridView gridView;
-    ListView listView;
-    RelativeLayout detailsContainer;
+    protected GridView gridView;
+    protected ListView listView;
+    protected RelativeLayout detailsContainer;
 
     public MoviesFragment() {
     }
@@ -111,8 +104,6 @@ public abstract class MoviesFragment extends Fragment {
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        category = getCategory();
 
         if (isOnline()) {
             Retrofit retrofit = AppHelper.getRetrofit();
@@ -207,6 +198,7 @@ public abstract class MoviesFragment extends Fragment {
                 movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexNowPlaying", -1).findAllSorted("indexNowPlaying");
             else if (getCategory() == CATEGORY_TOP_RATED)
                 movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
+            realm.close();
 
             setAdapterViews(savedInstanceState, new MovieList(movieList));
         }
@@ -215,26 +207,11 @@ public abstract class MoviesFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        /*
+
         if (listView != null) {
-            int index = listView.getLastVisiblePosition() - 1;
-            View v = listView.getChildAt(0);
-            int top = (v == null) ? 0 : (v.getTop() - listView.getPaddingTop());
-            savedInstanceState.putInt("index", index);
-            savedInstanceState.putInt("top", top);
+            savedInstanceState.putInt("index", listView.getLastVisiblePosition() - 1);
         } else if (gridView != null) {
-            int index = gridView.getLastVisiblePosition() - 3;
-            View v = gridView.getChildAt(0);
-            int top = (v == null) ? 0 : (v.getTop() - gridView.getPaddingTop());
-            savedInstanceState.putInt("index", index);
-            savedInstanceState.putInt("top", top);
-        }
-        */
-        if (listView != null) {
-            savedInstanceState.putInt("index", listView.getFirstVisiblePosition() + 1);
-        }
-        else if (gridView != null) {
-            savedInstanceState.putInt("index", gridView.getFirstVisiblePosition() + 3);
+            savedInstanceState.putInt("index", gridView.getLastVisiblePosition() - 3);
         }
     }
 
@@ -253,17 +230,10 @@ public abstract class MoviesFragment extends Fragment {
                         Bundle bundle = new Bundle();
                         bundle.putInt(AppString.MOVIE_ID, movie.getId());
                         fragment.setArguments(bundle);
-                        if (!added) {
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.rlDetailsContainer, fragment)
-                                    .commit();
-                            added = true;
-                        }
-                        else {
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.rlDetailsContainer, fragment)
-                                    .commit();
-                        }
+                        getFragmentManager().beginTransaction()
+                                .addToBackStack(null)
+                                .replace(R.id.rlDetailsContainer, fragment, AppString.detailsFragmentTag)
+                                .commit();
                     } else {
                         Intent intent = new Intent(currentContext, DetailsActivity.class);
                         intent.putExtra(AppString.MOVIE_ID, movie.getId());
@@ -281,18 +251,7 @@ public abstract class MoviesFragment extends Fragment {
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    if (listView.getAdapter() == null)
-                        return;
-
-                    if (listView.getAdapter().getCount() == 0)
-                        return;
-
-                    int l = visibleItemCount + firstVisibleItem;
-                    if (l >= totalItemCount && !movieList.getIsLoading()) {
-                        movieList.setIsLoading(true);
-                        movieList.LoadData(getContext(), movieAdapter, getCategoryString());
-                        movieList.setIsLoading(false);
-                    }
+                    onMovieScroll(firstVisibleItem, visibleItemCount, totalItemCount, movieList);
                 }
             });
 
@@ -347,5 +306,34 @@ public abstract class MoviesFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void onMovieScroll(final int firstVisibleItem, final int visibleItemCount, final int totalItemCount, final MovieList movieList) {
+        if (listView.getAdapter() == null)
+            return;
+
+        if (listView.getAdapter().getCount() == 0)
+            return;
+
+        int l = visibleItemCount + firstVisibleItem;
+        if (l >= totalItemCount && !movieList.getIsLoading()) {
+            if (AppHelper.isOnline()) {
+                movieList.setIsLoading(true);
+                movieList.LoadData(getContext(), movieAdapter, getCategoryString());
+                movieList.setIsLoading(false);
+            } else {
+                Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction(R.string.login, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onMovieScroll(firstVisibleItem, visibleItemCount, totalItemCount, movieList);
+                    }
+                });
+                snackbar.show();
+            }
+
+        }
+
     }
 }

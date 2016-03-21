@@ -16,22 +16,20 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 
-public class ActorActivity extends AppCompatActivity {
-    private int actorId;
-    private Toolbar toolbar;
-    private TextView tvActorBiography;
-    private String actorBiography;
+import butterknife.Bind;
 
-    private Context getContext() {
-        return ActorActivity.this;
-    }
+public class ActorActivity extends AppCompatActivity {
+    @Bind(R.id.tbActorToolbar)
+    Toolbar toolbar;
+
+    private int actorId;
+    private ActorFragment actorFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor);
 
-        toolbar = (Toolbar) findViewById(R.id.tbActorToolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -41,28 +39,14 @@ public class ActorActivity extends AppCompatActivity {
 
         actorId = getIntent().getIntExtra(AppString.ACTOR_ID, -1);
 
-        ActorFragment actorFragment = (ActorFragment) getSupportFragmentManager().findFragmentById(R.id.frActorDetailsContent);
+        actorFragment = (ActorFragment) getSupportFragmentManager().findFragmentById(R.id.frActorDetailsContent);
         if (actorFragment != null) {
             actorFragment.setActorId(actorId);
         }
     }
 
-    public void Info_Click(View view) {
-        Layout l = tvActorBiography.getLayout();
-        if (l != null) {
-            int lines = l.getLineCount();
-            if (lines > 0)
-                if (l.getEllipsisCount(lines - 1) > 0) {
-                    new AlertDialog.Builder(getContext())
-                            .setTitle(getString(R.string.detaildedBiography))
-                            .setMessage(actorBiography)
-                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .show();
-                }
-        }
+    public void actorInfoClick(View view) {
+        actorFragment.actorInfoClick();
     }
 
     @Override
@@ -74,13 +58,5 @@ public class ActorActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public void setTvActorBiography(TextView tvActorBiography) {
-        this.tvActorBiography = tvActorBiography;
-    }
-
-    public void setActorBiography(String actorBiography) {
-        this.actorBiography = actorBiography;
     }
 }

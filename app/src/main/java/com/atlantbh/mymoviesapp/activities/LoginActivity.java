@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tbActorToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tbLoginToolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -93,15 +94,21 @@ public class LoginActivity extends AppCompatActivity {
             user.login(username.getText().toString(), password.getText().toString(), this, error);
         }
         else {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.clLoginCoordinator), "Check your internet connection", Snackbar.LENGTH_LONG);
-            snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction("Refresh", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    login();
-                }
-            });
-            snackbar.show();
+            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clLoginCoordinator);
+            if (coordinator == null) {
+                coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+            }
+            if (coordinator != null) {
+                Snackbar snackbar = Snackbar.make(coordinator, "Check your internet connection", Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction("Refresh", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        login();
+                    }
+                });
+                snackbar.show();
+            }
         }
     }
 
@@ -111,15 +118,21 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(browserIntent);
         }
         else {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.clLoginCoordinator), "Check your internet connection", Snackbar.LENGTH_LONG);
-            snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction("Refresh", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    signup();
-                }
-            });
-            snackbar.show();
+            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clLoginCoordinator);
+            if (coordinator == null) {
+                coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+            }
+            if (coordinator != null) {
+                Snackbar snackbar = Snackbar.make(coordinator, "Check your internet connection", Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction("Refresh", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signup();
+                    }
+                });
+                snackbar.show();
+            }
         }
     }
 
@@ -129,15 +142,21 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(browserIntent);
         }
         else {
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.clLoginCoordinator), "Check your internet connection", Snackbar.LENGTH_LONG);
-            snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction("Refresh", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    resetpassword();
-                }
-            });
-            snackbar.show();
+            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clLoginCoordinator);
+            if (coordinator == null) {
+                coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+            }
+            if (coordinator != null) {
+                Snackbar snackbar = Snackbar.make(coordinator, "Check your internet connection", Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction("Refresh", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        resetpassword();
+                    }
+                });
+                snackbar.show();
+            }
         }
     }
 }

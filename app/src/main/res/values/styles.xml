@@ -2,12 +2,13 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/customred</item>
         <item name="colorPrimaryDark">@color/customreddark</item>
-        <item name="colorAccent">@color/white</item>
+        <item name="colorAccent">@color/customred</item>
     </style>
 
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:tint">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:colorActivatedHighlight">@color/white</item>
     </style>
 
     <style name="MyRatingBar" parent="@android:style/Widget.RatingBar">

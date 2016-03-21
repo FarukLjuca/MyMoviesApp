@@ -1,9 +1,13 @@
 package com.atlantbh.mymoviesapp.fragments;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -28,14 +32,11 @@ import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -47,7 +48,7 @@ public class ActorFragment extends Fragment {
     @Bind(R.id.tvTitle)
     TextView actorName;
     @Bind(R.id.tvActorSubtitle)
-    TextView actorSubtitile;
+    TextView actorSubtitle;
     @Bind(R.id.tvActorBiography)
     TextView actorBiography;
     @Bind(R.id.rvActorMovies)
@@ -60,7 +61,7 @@ public class ActorFragment extends Fragment {
     private int actorId;
 
     public void setActorId(int actorId) {
-        if (actorId != -1) {
+        if (actorId > 0) {
             this.actorId = actorId;
         }
     }
@@ -86,7 +87,12 @@ public class ActorFragment extends Fragment {
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        actorBackdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
+        if (getResources().getDisplayMetrics().widthPixels * 160 / getResources().getDisplayMetrics().densityDpi < 900) {
+            actorBackdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
+        }
+        else {
+            actorBackdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3/5)));
+        }
 
         if (actorId > 0) {
             Retrofit retrofit = AppHelper.getRetrofit();
@@ -116,7 +122,7 @@ public class ActorFragment extends Fragment {
                             .into(actorPoster);
 
                     actorName.setText(actor.getName());
-                    actorSubtitile.setText(actor.getFrequentJobs());
+                    actorSubtitle.setText(actor.getFrequentJobs());
                     if (actor.getBiography() != null) {
                         actorBiography.setText(actor.getBiography().replace("\n", " "));
                     }
@@ -134,20 +140,13 @@ public class ActorFragment extends Fragment {
                         }
                     });
 
-                    if (getActivity() instanceof ActorActivity) {
-                        ((ActorActivity) getActivity()).setActorBiography(actor.getBiography());
-                        ((ActorActivity) getActivity()).setTvActorBiography(actorBiography);
-                    }
-
                     actorMovies.setHasFixedSize(true);
                     RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                     actorMovies.setLayoutManager(movieCreditsLayoutManager);
                     RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Credits credits) {
-                            Intent intent = new Intent(getContext(), DetailsActivity.class);
-                            intent.putExtra(AppString.MOVIE_ID, credits.getId());
-                            startActivity(intent);
+                            detailableClick(credits.getId(), -1);
                         }
                     });
                     actorMovies.setAdapter(movieCreditsAdapter);
@@ -158,9 +157,7 @@ public class ActorFragment extends Fragment {
                     RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Credits credits) {
-                            Intent intent = new Intent(getContext(), DetailsActivity.class);
-                            intent.putExtra(AppString.TV_ID, credits.getId());
-                            startActivity(intent);
+                            detailableClick(-1, credits.getId());
                         }
                     });
                     actorTv.setAdapter(tvCreditsAdapter);
@@ -178,7 +175,73 @@ public class ActorFragment extends Fragment {
 
     private void SetFonts() {
         actorName.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
-        actorSubtitile.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
+        actorSubtitle.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         actorBiography.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
+    }
+
+    public void actorInfoClick() {
+        Layout l = actorBiography.getLayout();
+        if (l != null) {
+            int lines = l.getLineCount();
+            if (lines > 0)
+                if (l.getEllipsisCount(lines - 1) > 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(getString(R.string.detaildedBiography))
+                            .setMessage(actorBiography.getText())
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+                }
+        }
+    }
+
+    public void detailableClick(final int movieId, final int tvId) {
+        if (AppHelper.isOnline()) {
+            RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
+            if (detailsContainer != null) {
+                DetailsFragment fragment = new DetailsFragment();
+                Bundle bundle = new Bundle();
+                if (movieId != -1) {
+                    bundle.putInt(AppString.MOVIE_ID, movieId);
+                }
+                else if (tvId != -1) {
+                    bundle.putInt(AppString.TV_ID, tvId);
+                }
+                fragment.setArguments(bundle);
+                getFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.rlDetailsContainer, fragment, AppString.detailsFragmentTag)
+                        .commit();
+            } else {
+                Intent intent = new Intent(getContext(), DetailsActivity.class);
+                if (movieId != -1) {
+                    intent.putExtra(AppString.MOVIE_ID, movieId);
+                }
+                else if (tvId != -1) {
+                    intent.putExtra(AppString.TV_ID, tvId);
+                }
+                startActivity(intent);
+            }
+        }
+        else {
+            CoordinatorLayout coordinatorLayout;
+            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+            }
+            else {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+            }
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Check your internet connection", Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.CYAN);
+            snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    detailableClick(movieId, tvId);
+                }
+            });
+            snackbar.show();
+        }
     }
 }

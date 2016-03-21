@@ -1,14 +1,13 @@
 package com.atlantbh.mymoviesapp.fragments;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
@@ -24,8 +23,8 @@ import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.ActorActivity;
-import com.atlantbh.mymoviesapp.activities.DetailsActivity;
-import com.atlantbh.mymoviesapp.activities.MovieListActivity;
+import com.atlantbh.mymoviesapp.activities.LoginActivity;
+import com.atlantbh.mymoviesapp.activities.VideoActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.api.TvAPI;
@@ -36,16 +35,12 @@ import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Detailable;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.Tv;
+import com.atlantbh.mymoviesapp.model.User;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Transformation;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,7 +49,6 @@ import io.realm.RealmResults;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -82,6 +76,12 @@ public class DetailsFragment extends Fragment {
     TextView voteCount;
     @Bind(R.id.ivDetailsBackdropBlur)
     ImageView backdropBlur;
+    @Bind(R.id.rlDetailsVideo)
+    RelativeLayout video;
+    @Bind(R.id.vwDetailsVideoLine)
+    View videoLine;
+    @Bind(R.id.rvDetailsCast)
+    RecyclerView cast;
 
     public DetailsFragment() {}
 
@@ -126,7 +126,7 @@ public class DetailsFragment extends Fragment {
         }
 
         if (movieId > 0) {
-            if (isOnline()) {
+            if (AppHelper.isOnline()) {
                 Retrofit retrofit = AppHelper.getRetrofit();
                 MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
@@ -164,14 +164,15 @@ public class DetailsFragment extends Fragment {
                     Movie movie = new Movie(realmResults.get(0));
                     SetContent(movie);
                 }
+                realm.close();
 
-                getActivity().findViewById(R.id.rlDetailsVideo).setVisibility(View.GONE);
-                getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
+                video.setVisibility(View.GONE);
+                videoLine.setVisibility(View.GONE);
                 basicText.setLines(10);
             }
         } else if (tvId > 0) {
-            getActivity().findViewById(R.id.rlDetailsVideo).setVisibility(View.GONE);
-            getActivity().findViewById(R.id.vwDetailsVideoLine).setVisibility(View.GONE);
+            video.setVisibility(View.GONE);
+            videoLine.setVisibility(View.GONE);
             basicText.setLines(10);
 
             Retrofit retrofit = AppHelper.getRetrofit();
@@ -233,34 +234,24 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-        if (getActivity() instanceof DetailsActivity) {
-            ((DetailsActivity) getActivity()).setTvOverview(basicText);
-            ((DetailsActivity) getActivity()).setOverview(detailable.getBasicText());
-        }
-        else if (getActivity() instanceof MovieListActivity) {
-            ((MovieListActivity) getActivity()).setTvOverview(basicText);
-            ((MovieListActivity) getActivity()).setOverview(detailable.getBasicText());
-        }
-
         rating.setRating(detailable.getVoteAverage() / 2);
         voteAverage.setText(String.valueOf(round(detailable.getVoteAverage(), 1)));
         voteCount.setText(Integer.toString(detailable.getVoteCount()));
 
-        RecyclerView cast = (RecyclerView) getActivity().findViewById(R.id.rvDetailsCast);
         cast.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         cast.setLayoutManager(layoutManager);
         RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), detailable.getActorList(), new ActorAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Actor actor) {
-                onActoritemClick(actor);
+                actorClick(actor);
             }
         });
         cast.setAdapter(castAdapter);
     }
 
-    public void onActoritemClick(final Actor actor) {
-        if (isOnline()) {
+    public void actorClick(final Actor actor) {
+        if (AppHelper.isOnline()) {
             RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
             if (detailsContainer != null) {
                 ActorFragment fragment = new ActorFragment();
@@ -268,21 +259,29 @@ public class DetailsFragment extends Fragment {
                 bundle.putInt(AppString.ACTOR_ID, actor.getId());
                 fragment.setArguments(bundle);
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.rlDetailsContainer, fragment)
+                        .addToBackStack(null)
+                        .replace(R.id.rlDetailsContainer, fragment, AppString.actorFragmentTag)
                         .commit();
             } else {
                 Intent intent = new Intent(getContext(), ActorActivity.class);
-                intent.putExtra("actorId", actor.getId());
+                intent.putExtra(AppString.ACTOR_ID, actor.getId());
                 startActivity(intent);
             }
         }
         else {
-            Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clDetailsCoordinator), "Check your internet connection", Snackbar.LENGTH_LONG);
+            CoordinatorLayout coordinatorLayout;
+            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+            }
+            else {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+            }
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Check your internet connection", Snackbar.LENGTH_LONG);
             snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction("Refresh", new View.OnClickListener() {
+            snackbar.setAction(R.string.refresh, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onActoritemClick(actor);
+                    actorClick(actor);
                 }
             });
             snackbar.show();
@@ -301,9 +300,81 @@ public class DetailsFragment extends Fragment {
         subtitle.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
+    public void favoriteClick() {
+        if (AppHelper.isOnline()) {
+            favorite();
+        }
+        else {
+            CoordinatorLayout coordinatorLayout;
+            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+            }
+            else {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+            }
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.CYAN);
+            snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favoriteClick();
+                }
+            });
+            snackbar.show();
+        }
+    }
+
+    private void favorite() {
+        ImageView imageView = (ImageView) getActivity().findViewById(R.id.ivDetailsFavorite);
+
+        //Todo: Ako je u listi favorita, onda ga odfavoritisi, u suprotom ga favoritisi
+        if (User.isLoggedIn()) {
+            if (imageView != null) {
+                //User.favorite(movieId, true, "movie", imageView);
+                Toast.makeText(getContext(), "Todo dalje", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            CoordinatorLayout coordinatorLayout;
+            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+            }
+            else {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+            }
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "You need to be logged in", Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.CYAN);
+            snackbar.setAction(R.string.login, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+            snackbar.show();
+        }
+    }
+
+    public void videoClick() {
+        Intent intent = new Intent(getContext(), VideoActivity.class);
+        intent.putExtra(AppString.MOVIE_ID, movieId);
+        startActivity(intent);
+    }
+
+    public void detailableInfoClick() {
+        Layout l = basicText.getLayout();
+        if (l != null) {
+            int lines = l.getLineCount();
+            if (lines > 0)
+                if (l.getEllipsisCount(lines - 1) > 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(getString(R.string.detailedOverview))
+                            .setMessage(basicText.getText())
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .show();
+                }
+        }
     }
 }

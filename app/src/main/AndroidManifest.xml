@@ -15,19 +15,15 @@
         <activity android:name=".activities.MovieListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activities.DetailsActivity" />
         <activity android:name=".activities.ActorActivity" />
-        <activity
-            android:name=".activities.VideoActivity"
-            android:configChanges="orientation|screenSize" />
+        <activity android:name=".activities.VideoActivity"
+                  android:configChanges="orientation|screenSize" />
         <activity android:name=".activities.LoginActivity"/>
-        <activity
-            android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8fc51e8e71bd737ccdce4f93029f758816dc69fe" />

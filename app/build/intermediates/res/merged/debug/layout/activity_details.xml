@@ -18,8 +18,8 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
-            android:theme="@style/AppToolbar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:theme="@style/AppToolbar"/>
 
         <fragment
             android:id="@+id/frDetailsContent"

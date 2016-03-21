@@ -67,7 +67,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
-                    android:onClick="Info_Click"
+                    android:onClick="actorInfoClick"
                     android:src="@drawable/ic_info_outline_black_36dp"
                     android:tint="@color/infoblue" />
 
