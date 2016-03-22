@@ -97,19 +97,31 @@ public class VideoFragment extends Fragment {
                     title.setText(new StringBuilder().append(movie.getTitle()).append(" (Movie)"));
                     basicText.setText(movie.getOverview());
 
-                    actors.setHasFixedSize(true);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                    actors.setLayoutManager(layoutManager);
-                    RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), movie.getActorList(), new ActorAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Actor actor) {
-                            actorClick(actor);
-                        }
-                    });
-                    actors.setAdapter(castAdapter);
+                    if (movie.getActorList().getActors().size() > 0) {
+                        actors.setHasFixedSize(true);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                        actors.setLayoutManager(layoutManager);
+                        RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), movie.getActorList(), new ActorAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(Actor actor) {
+                                actorClick(actor);
+                            }
+                        });
+                        actors.setAdapter(castAdapter);
+                    }
+                    else {
+                        actors.setVisibility(View.GONE);
+                        ((TextView) getActivity().findViewById(R.id.tvVideoCast)).setVisibility(View.GONE);
+                    }
 
-                    ReviewsAdapter reviewsAdapter = new ReviewsAdapter(getContext(), movie.getReviewList());
-                    reviews.setAdapter(reviewsAdapter);
+                    if (movie.getReviewList().getReviewList().size() > 0) {
+                        ReviewsAdapter reviewsAdapter = new ReviewsAdapter(getContext(), movie.getReviewList());
+                        reviews.setAdapter(reviewsAdapter);
+                    }
+                    else {
+                        reviews.setVisibility(View.GONE);
+                        ((TextView) getActivity().findViewById(R.id.tvVideoReviews)).setVisibility(View.GONE);
+                    }
 
                     title.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
                     rateMovie.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));

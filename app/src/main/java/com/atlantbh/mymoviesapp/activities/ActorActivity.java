@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -19,9 +20,6 @@ import com.atlantbh.mymoviesapp.helpers.AppString;
 import butterknife.Bind;
 
 public class ActorActivity extends AppCompatActivity {
-    @Bind(R.id.tbActorToolbar)
-    Toolbar toolbar;
-
     private int actorId;
     private ActorFragment actorFragment;
 
@@ -30,6 +28,7 @@ public class ActorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tbActorToolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
@@ -47,6 +46,12 @@ public class ActorActivity extends AppCompatActivity {
 
     public void actorInfoClick(View view) {
         actorFragment.actorInfoClick();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return true;
     }
 
     @Override

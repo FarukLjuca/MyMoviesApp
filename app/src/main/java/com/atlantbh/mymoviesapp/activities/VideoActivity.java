@@ -66,9 +66,11 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
                 @Override
                 public void onResponse(Response<VideoList> response, Retrofit retrofit) {
                     VideoList videoList = response.body();
-                    videoKey = videoList.getFirst().getKey();
-                    YouTubePlayerSupportFragment youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.frYoutube);
-                    youTubePlayerFragment.initialize(YoutubeDeveloperKey, VideoActivity.this);
+                    if (videoList != null && videoList.getFirst() != null) {
+                        videoKey = videoList.getFirst().getKey();
+                        YouTubePlayerSupportFragment youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.frYoutube);
+                        youTubePlayerFragment.initialize(YoutubeDeveloperKey, VideoActivity.this);
+                    }
                 }
 
                 @Override
@@ -83,10 +85,12 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            youTubePlayer.setFullscreen(true);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            youTubePlayer.setFullscreen(false);
+        if (videoKey != "" && youTubePlayer != null) {
+            if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                youTubePlayer.setFullscreen(true);
+            } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                youTubePlayer.setFullscreen(false);
+            }
         }
     }
 
@@ -109,7 +113,9 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-        youTubePlayer.cueVideo(videoKey);
+        if (videoKey != "") {
+            youTubePlayer.cueVideo(videoKey);
+        }
         this.youTubePlayer = youTubePlayer;
     }
 

@@ -9,7 +9,12 @@ public class VideoList {
     private List<Video> videos;
 
     public Video getFirst() {
-        return getVideos().get(0);
+        if (getVideos() != null && getVideos().size() > 0) {
+            return getVideos().get(0);
+        }
+        else {
+            return null;
+        }
     }
 
     public List<Video> getVideos() { return videos; }
