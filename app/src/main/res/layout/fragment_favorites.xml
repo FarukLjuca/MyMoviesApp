@@ -1,0 +1,15 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    tools:context=".fragments.FavoritesFragment">
+
+    <ExpandableListView
+        android:id="@+id/lvFavoritesContainer"
+        android:scrollbars="none"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5.0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

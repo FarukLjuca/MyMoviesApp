@@ -55,5 +55,4 @@
         android:layout_height="wrap_content"
         android:lines="3"
         android:ellipsize="end"/>
-
 </RelativeLayout>

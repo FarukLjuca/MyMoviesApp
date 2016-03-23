@@ -69,4 +69,8 @@ public class Tv implements Detailable {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+
+    public void setBasicText(String basicText) {
+        this.overview = basicText;
+    }
 }

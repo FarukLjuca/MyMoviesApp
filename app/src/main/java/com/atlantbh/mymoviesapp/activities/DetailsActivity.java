@@ -49,7 +49,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.details_menu, menu);
+        getMenuInflater().inflate(R.menu.basic_menu, menu);
         return true;
     }
 
@@ -76,5 +76,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     public void favoriteClick(View view) {
         detailsFragment.favoriteClick();
+    }
+
+    public void rateMovie(View view) {
+        detailsFragment.rateMovie();
     }
 }

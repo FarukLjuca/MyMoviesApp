@@ -94,4 +94,6 @@
     <string name="actions">Actions</string>
     <string name="refresh">Refresh</string>
     <string name="check_your_internet_connection">Check your internet connection</string>
+    <string name="favorites">Favorites</string>
+    <string name="you_need_to_be_logged_in">You need to be logged in</string>
 </resources>

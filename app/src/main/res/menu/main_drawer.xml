@@ -5,8 +5,13 @@
         <menu>
             <item
                 android:id="@+id/nav_login"
-                android:icon="@drawable/ic_account_circle_black_24dp"
+                android:icon="@drawable/ic_account_circle_black_48dp"
                 android:title="@string/login" />
+
+            <item
+                android:id="@+id/nav_favorites"
+                android:icon="@drawable/ic_favorite_black_48dp"
+                android:title="@string/favorites" />
         </menu>
     </item>
 </menu>

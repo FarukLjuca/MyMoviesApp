@@ -12,13 +12,12 @@
         android:id="@+id/abMovieList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tbMovieToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:theme="@style/AppToolbar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView android:id="@+id/ivFavoritesPoster"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_width="120dp"
+        android:layout_height="180dp" />
+
+    <RatingBar
+        android:id="@+id/rbFavoritesRating"
+        style="@style/MyRatingBar"
+        android:layout_toRightOf="@id/ivFavoritesPoster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:isIndicator="true"
+        android:numStars="5" />
+
+    <TextView android:id="@+id/tvFavoritesRating"
+        android:textSize="18sp"
+        android:layout_toRightOf="@id/rbFavoritesRating"
+        android:textColor="@color/textdarkgray"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView android:id="@+id/tvFavoritesTitle"
+        android:textSize="18sp"
+        android:layout_below="@id/rbFavoritesRating"
+        android:layout_alignLeft="@id/rbFavoritesRating"
+        android:textColor="@color/textdarkgray"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView android:id="@+id/tvFavoritesOverview"
+        android:textSize="14sp"
+        android:layout_below="@id/tvFavoritesTitle"
+        android:layout_alignLeft="@id/rbFavoritesRating"
+        android:layout_marginRight="30dp"
+        android:textColor="@color/textcustomgray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:ellipsize="end"/>
+</RelativeLayout>

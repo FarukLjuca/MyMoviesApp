@@ -1,23 +1,16 @@
 package com.atlantbh.mymoviesapp.activities;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.helpers.AppString;
-
-import butterknife.Bind;
 
 public class ActorActivity extends AppCompatActivity {
     private int actorId;
@@ -50,7 +43,7 @@ public class ActorActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.details_menu, menu);
+        getMenuInflater().inflate(R.menu.basic_menu, menu);
         return true;
     }
 

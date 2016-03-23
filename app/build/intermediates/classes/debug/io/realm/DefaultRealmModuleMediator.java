@@ -27,9 +27,9 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
     static {
         Set<Class<? extends RealmObject>> modelClasses = new HashSet<Class<? extends RealmObject>>();
         modelClasses.add(RealmMovie.class);
-        modelClasses.add(RealmMovieBasic.class);
         modelClasses.add(RealmActor.class);
         modelClasses.add(RealmGenre.class);
+        modelClasses.add(RealmMovieBasic.class);
         MODEL_CLASSES = Collections.unmodifiableSet(modelClasses);
     }
 
@@ -39,12 +39,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return RealmMovieRealmProxy.initTable(transaction);
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return RealmMovieBasicRealmProxy.initTable(transaction);
         } else if (clazz.equals(RealmActor.class)) {
             return RealmActorRealmProxy.initTable(transaction);
         } else if (clazz.equals(RealmGenre.class)) {
             return RealmGenreRealmProxy.initTable(transaction);
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return RealmMovieBasicRealmProxy.initTable(transaction);
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -56,12 +56,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return RealmMovieRealmProxy.validateTable(transaction);
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return RealmMovieBasicRealmProxy.validateTable(transaction);
         } else if (clazz.equals(RealmActor.class)) {
             return RealmActorRealmProxy.validateTable(transaction);
         } else if (clazz.equals(RealmGenre.class)) {
             return RealmGenreRealmProxy.validateTable(transaction);
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return RealmMovieBasicRealmProxy.validateTable(transaction);
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -73,12 +73,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return RealmMovieRealmProxy.getFieldNames();
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return RealmMovieBasicRealmProxy.getFieldNames();
         } else if (clazz.equals(RealmActor.class)) {
             return RealmActorRealmProxy.getFieldNames();
         } else if (clazz.equals(RealmGenre.class)) {
             return RealmGenreRealmProxy.getFieldNames();
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return RealmMovieBasicRealmProxy.getFieldNames();
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -90,12 +90,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return RealmMovieRealmProxy.getTableName();
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return RealmMovieBasicRealmProxy.getTableName();
         } else if (clazz.equals(RealmActor.class)) {
             return RealmActorRealmProxy.getTableName();
         } else if (clazz.equals(RealmGenre.class)) {
             return RealmGenreRealmProxy.getTableName();
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return RealmMovieBasicRealmProxy.getTableName();
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -107,12 +107,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return clazz.cast(new RealmMovieRealmProxy(columnInfo));
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return clazz.cast(new RealmMovieBasicRealmProxy(columnInfo));
         } else if (clazz.equals(RealmActor.class)) {
             return clazz.cast(new RealmActorRealmProxy(columnInfo));
         } else if (clazz.equals(RealmGenre.class)) {
             return clazz.cast(new RealmGenreRealmProxy(columnInfo));
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return clazz.cast(new RealmMovieBasicRealmProxy(columnInfo));
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -131,12 +131,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return clazz.cast(RealmMovieRealmProxy.copyOrUpdate(realm, (RealmMovie) obj, update, cache));
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return clazz.cast(RealmMovieBasicRealmProxy.copyOrUpdate(realm, (RealmMovieBasic) obj, update, cache));
         } else if (clazz.equals(RealmActor.class)) {
             return clazz.cast(RealmActorRealmProxy.copyOrUpdate(realm, (RealmActor) obj, update, cache));
         } else if (clazz.equals(RealmGenre.class)) {
             return clazz.cast(RealmGenreRealmProxy.copyOrUpdate(realm, (RealmGenre) obj, update, cache));
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return clazz.cast(RealmMovieBasicRealmProxy.copyOrUpdate(realm, (RealmMovieBasic) obj, update, cache));
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -149,12 +149,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return clazz.cast(RealmMovieRealmProxy.createOrUpdateUsingJsonObject(realm, json, update));
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return clazz.cast(RealmMovieBasicRealmProxy.createOrUpdateUsingJsonObject(realm, json, update));
         } else if (clazz.equals(RealmActor.class)) {
             return clazz.cast(RealmActorRealmProxy.createOrUpdateUsingJsonObject(realm, json, update));
         } else if (clazz.equals(RealmGenre.class)) {
             return clazz.cast(RealmGenreRealmProxy.createOrUpdateUsingJsonObject(realm, json, update));
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return clazz.cast(RealmMovieBasicRealmProxy.createOrUpdateUsingJsonObject(realm, json, update));
         } else {
             throw getMissingProxyClassException(clazz);
         }
@@ -167,12 +167,12 @@ class DefaultRealmModuleMediator extends RealmProxyMediator {
 
         if (clazz.equals(RealmMovie.class)) {
             return clazz.cast(RealmMovieRealmProxy.createUsingJsonStream(realm, reader));
-        } else if (clazz.equals(RealmMovieBasic.class)) {
-            return clazz.cast(RealmMovieBasicRealmProxy.createUsingJsonStream(realm, reader));
         } else if (clazz.equals(RealmActor.class)) {
             return clazz.cast(RealmActorRealmProxy.createUsingJsonStream(realm, reader));
         } else if (clazz.equals(RealmGenre.class)) {
             return clazz.cast(RealmGenreRealmProxy.createUsingJsonStream(realm, reader));
+        } else if (clazz.equals(RealmMovieBasic.class)) {
+            return clazz.cast(RealmMovieBasicRealmProxy.createUsingJsonStream(realm, reader));
         } else {
             throw getMissingProxyClassException(clazz);
         }

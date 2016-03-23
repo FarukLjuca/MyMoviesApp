@@ -28,11 +28,13 @@ import com.atlantbh.mymoviesapp.activities.VideoActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.api.TvAPI;
+import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Detailable;
+import com.atlantbh.mymoviesapp.model.FavoritePost;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.Tv;
 import com.atlantbh.mymoviesapp.model.User;
@@ -82,6 +84,10 @@ public class DetailsFragment extends Fragment {
     View videoLine;
     @Bind(R.id.rvDetailsCast)
     RecyclerView cast;
+    @Bind(R.id.rlDetailsRatingButton)
+    RelativeLayout rateButton;
+    @Bind(R.id.ivDetailsFavorite)
+    ImageView favorite;
 
     public DetailsFragment() {}
 
@@ -209,6 +215,16 @@ public class DetailsFragment extends Fragment {
                 .bitmapTransform(new BlurTransformation(getContext(), 25))
                 .into(backdropBlur);
 
+        if (User.isLoggedIn()) {
+            User user = User.getInstance();
+            boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
+            if (!isFavorite) {
+                favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
+            } else {
+                favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
+            }
+        }
+
         title.setText(detailable.getTitle());
         year.setText(detailable.getYear());
         subtitle.setText(detailable.getSubtitle());
@@ -325,13 +341,33 @@ public class DetailsFragment extends Fragment {
     }
 
     private void favorite() {
-        ImageView imageView = (ImageView) getActivity().findViewById(R.id.ivDetailsFavorite);
-
-        //Todo: Ako je u listi favorita, onda ga odfavoritisi, u suprotom ga favoritisi
         if (User.isLoggedIn()) {
-            if (imageView != null) {
-                //User.favorite(movieId, true, "movie", imageView);
-                Toast.makeText(getContext(), "Todo dalje", Toast.LENGTH_SHORT).show();
+            if (favorite != null) {
+                final User user = User.getInstance();
+
+                Retrofit retrofit = AppHelper.getRetrofit();
+                UserAPI userAPI = retrofit.create(UserAPI.class);
+
+                final boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
+                FavoritePost body = new FavoritePost(isMovie() ? "movie" : "tv", isMovie() ? movieId : tvId, !isFavorite);
+
+                Call<com.atlantbh.mymoviesapp.model.Response> call = userAPI.setFavorite(user.getId(), User.getSession().getSessionId(), body);
+                call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
+                    @Override
+                    public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
+                        user.getFavorites();
+                        if (isFavorite) {
+                            favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
+                        } else {
+                            favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+
+                    }
+                });
             }
         } else {
             CoordinatorLayout coordinatorLayout;
@@ -341,7 +377,7 @@ public class DetailsFragment extends Fragment {
             else {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
             }
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "You need to be logged in", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
             snackbar.setActionTextColor(Color.CYAN);
             snackbar.setAction(R.string.login, new View.OnClickListener() {
                 @Override
@@ -376,5 +412,13 @@ public class DetailsFragment extends Fragment {
                             .show();
                 }
         }
+    }
+
+    public void rateMovie() {
+
+    }
+
+    private boolean isMovie() {
+        return movieId > 0;
     }
 }

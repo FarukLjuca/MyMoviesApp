@@ -25,6 +25,8 @@ import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
+import com.atlantbh.mymoviesapp.model.MovieList;
+import com.atlantbh.mymoviesapp.model.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -101,11 +103,36 @@ public class MovieListActivity extends AppCompatActivity
         if (id == R.id.nav_login) {
             loginClick();
         }
+        else if (id == R.id.nav_favorites) {
+            goToFavorites();
+        }
 
         if (drawer != null) {
             drawer.closeDrawer(GravityCompat.START);
         }
         return true;
+    }
+
+    private void goToFavorites() {
+        if (User.isLoggedIn() || !AppHelper.isOnline()) {
+            Intent intent = new Intent(MovieListActivity.this, FavoritesActivity.class);
+            startActivity(intent);
+        }
+        else {
+            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+            if (coordinator != null) {
+                Snackbar snackbar = Snackbar.make(coordinator, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction(R.string.login, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                snackbar.show();
+            }
+        }
     }
 
     private void loginClick() {

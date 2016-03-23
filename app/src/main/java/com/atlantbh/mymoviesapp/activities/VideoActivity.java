@@ -96,7 +96,7 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.details_menu, menu);
+        getMenuInflater().inflate(R.menu.basic_menu, menu);
         return true;
     }
 

@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:scrollbars="none"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.atlantbh.mymoviesapp.fragments.DetailsFragment">
@@ -207,34 +208,43 @@
                     android:layout_toLeftOf="@id/vwFakeView"
                     android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/tvDetailsYourRating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
+                <RelativeLayout
+                    android:id="@+id/rlDetailsRatingButton"
                     android:layout_toRightOf="@id/vwFakeView"
-                    android:text="@string/yourRating"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/ivDetailsChevronRating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_chevron_right_black_36dp"
-                    android:tint="@color/lightgray" />
-
-                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_toLeftOf="@id/ivDetailsChevronRating"
-                    android:layout_toRightOf="@id/tvDetailsYourRating"
-                    android:text="@string/notYetRated"
-                    android:textAlignment="center"/>
+                    android:onClick="rateMovie"
+                    android:layout_height="64dp">
+
+                    <TextView
+                        android:id="@+id/tvDetailsYourRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/yourRating"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/ivDetailsChevronRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_chevron_right_black_36dp"
+                        android:tint="@color/lightgray" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/ivDetailsChevronRating"
+                        android:layout_toRightOf="@id/tvDetailsYourRating"
+                        android:text="@string/notYetRated"
+                        android:gravity="center"/>
+                </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
 
