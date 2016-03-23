@@ -90,12 +90,6 @@ public abstract class MoviesFragment extends Fragment {
         return currentView;
     }
 
-    public boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) currentContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +99,7 @@ public abstract class MoviesFragment extends Fragment {
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (isOnline()) {
+        if (AppHelper.isOnline()) {
             Retrofit retrofit = AppHelper.getRetrofit();
             final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
@@ -324,7 +318,7 @@ public abstract class MoviesFragment extends Fragment {
             } else {
                 Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
                 snackbar.setActionTextColor(Color.CYAN);
-                snackbar.setAction(R.string.login, new View.OnClickListener() {
+                snackbar.setAction(R.string.refresh, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         onMovieScroll(firstVisibleItem, visibleItemCount, totalItemCount, movieList);

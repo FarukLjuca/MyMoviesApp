@@ -15,4 +15,8 @@ public class Session {
     public boolean isSuccess() {
         return success;
     }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
 }

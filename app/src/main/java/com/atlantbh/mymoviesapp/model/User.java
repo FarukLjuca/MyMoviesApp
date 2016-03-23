@@ -6,16 +6,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.atlantbh.mymoviesapp.MyApplication;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.api.TvAPI;
 import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieFavorites;
+import com.atlantbh.mymoviesapp.model.realm.RealmTvFavorites;
+import com.atlantbh.mymoviesapp.model.realm.RealmUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -36,6 +45,7 @@ public class User {
     private MovieFavorites movieFavorites;
     private int sum = 0;
     private int index = 0;
+    private boolean tvLoadingDone = false;
 
     private User() {}
 
@@ -48,6 +58,57 @@ public class User {
 
     public static Session getSession() {
         return session;
+    }
+
+    public void logout() {
+        id = 0;
+        name = "";
+        session = null;
+        requestToken = null;
+        movieFavorites = null;
+        tvFavorites = null;
+
+        Realm realm = Realm.getInstance(MyApplication.getContext());
+
+        realm.beginTransaction();
+        realm.where(RealmUser.class).findAll().clear();
+        realm.where(RealmMovieFavorites.class).findAll().clear();
+        realm.where(RealmTvFavorites.class).findAll().clear();
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    public void getUserFromDatabase() {
+        Realm realm = Realm.getInstance(MyApplication.getContext());
+
+        realm.beginTransaction();
+        RealmResults<RealmUser> realmResults = realm.where(RealmUser.class).findAll();
+        if (realmResults.size() > 0) {
+            RealmUser user = realmResults.get(0);
+            id = user.getId();
+            name = user.getName();
+            session = new Session();
+            session.setSessionId(user.getSessionId());
+            requestToken = new RequestToken();
+            requestToken.setRequestToken(user.getRequestToken());
+            requestToken.setExpiresAt(user.getRequestTokenExpiration());
+
+            movieFavorites = new MovieFavorites();
+            List<Movie> movieList = new ArrayList<>();
+            for (RealmMovieFavorites movie : user.getMovieFavorites()) {
+                movieList.add(new Movie(movie));
+            }
+            movieFavorites.setMovieList(movieList);
+
+            tvFavorites = new TvFavorites();
+            List<Tv> tvList = new ArrayList<>();
+            for (RealmTvFavorites tv : user.getTvFavorites()) {
+                tvList.add(new Tv(tv));
+            }
+            tvFavorites.setTvList(tvList);
+        }
+
+        realm.commitTransaction();
     }
 
     public void login(final String username, final String password, final Activity activity, final TextView error) {
@@ -161,6 +222,10 @@ public class User {
                     @Override
                     public void onResponse(Response<MovieFavorites> response, Retrofit retrofit) {
                         movieFavorites = response.body();
+                        if (tvLoadingDone) {
+                            saveToDatabase();
+                            tvLoadingDone = false;
+                        }
                     }
 
                     @Override
@@ -184,19 +249,21 @@ public class User {
                                 @Override
                                 public void onResponse(Response<Tv> response, Retrofit retrofit) {
                                     Tv innerTv = response.body();
-                                    if (sum < index) {
-                                        sum++;
-                                        for (Tv loopTv : tvFavorites.getTvList()) {
-                                            if (loopTv.getId() == innerTv.getId()) {
-                                                loopTv.setBasicText(innerTv.getBasicText());
-                                                break;
-                                            }
+
+                                    for (Tv loopTv : tvFavorites.getTvList()) {
+                                        if (loopTv.getId() == innerTv.getId()) {
+                                            loopTv.setBasicText(innerTv.getBasicText());
+                                            break;
                                         }
                                     }
-                                    else {
+                                    sum++;
+                                    if (sum >= index) {
+                                        index = 0;
+                                        sum = 0;
+                                        tvLoadingDone = true;
                                         if (movieFavorites != null) {
-                                            index = 0;
-                                            sum = 0;
+                                            saveToDatabase();
+                                            tvLoadingDone = false;
                                         }
                                     }
                                 }
@@ -251,5 +318,22 @@ public class User {
         }
 
         return isIn;
+    }
+
+    private void saveToDatabase() {
+        if (movieFavorites != null && tvFavorites != null) {
+            RealmUser realmUser = new RealmUser(this);
+
+            Realm realm = Realm.getInstance(MyApplication.getContext());
+
+            realm.beginTransaction();
+            realm.copyToRealmOrUpdate(realmUser);
+            realm.commitTransaction();
+            realm.close();
+        }
+    }
+
+    public RequestToken getRequestToken() {
+        return requestToken;
     }
 }

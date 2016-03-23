@@ -55,6 +55,11 @@ public class FavoritesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         context = getActivity();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         setAdapter();
     }

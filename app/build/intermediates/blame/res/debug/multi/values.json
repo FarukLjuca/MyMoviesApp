@@ -3659,14 +3659,7 @@
                     "endOffset": 44339
                 },
                 "from": {
-                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\values\\strings.xml",
-                    "position": {
-                        "startLine": 97,
-                        "startColumn": 4,
-                        "startOffset": 4089,
-                        "endColumn": 77,
-                        "endOffset": 4162
-                    }
+                    "file": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\values\\strings.xml"
                 }
             },
             {

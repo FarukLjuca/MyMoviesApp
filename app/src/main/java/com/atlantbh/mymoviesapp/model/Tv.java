@@ -1,5 +1,6 @@
 package com.atlantbh.mymoviesapp.model;
 
+import com.atlantbh.mymoviesapp.model.realm.RealmTvFavorites;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
@@ -31,6 +32,16 @@ public class Tv implements Detailable {
     private ActorList actorList;
 
     private boolean favorite;
+
+    public Tv() {}
+
+    public Tv(RealmTvFavorites tv) {
+        id = tv.getId();
+        overview = tv.getBasicText();
+        posterPath = tv.getPosterPath();
+        name = tv.getTitle();
+        voteAverage = tv.getVoteAverage();
+    }
 
     public int getId() { return id; }
     public String getBackdropPath() { return backdropPath; }

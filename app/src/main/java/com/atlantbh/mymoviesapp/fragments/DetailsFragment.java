@@ -164,7 +164,9 @@ public class DetailsFragment extends Fragment {
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
                 if (realmResults.size() == 0) {
                     RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
-                    SetContent(new Movie(realmResultsBasic.get(0)));
+                    if (realmResultsBasic.size() > 0) {
+                        SetContent(new Movie(realmResultsBasic.get(0)));
+                    }
                 }
                 else {
                     Movie movie = new Movie(realmResults.get(0));
@@ -188,9 +190,20 @@ public class DetailsFragment extends Fragment {
             call.enqueue(new Callback<Tv>() {
                 @Override
                 public void onResponse(Response<Tv> response, Retrofit retrofit) {
-                    Detailable detailable = response.body();
+                    final Detailable detailable = response.body();
                     if (detailable != null) {
-                        SetContent(detailable);
+                        if (AppHelper.isOnline()) {
+                            SetContent(detailable);
+                        }
+                        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+                        snackbar.setActionTextColor(Color.CYAN);
+                        snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                SetContent(detailable);
+                            }
+                        });
+                        snackbar.show();
                     }
                 }
 

@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
@@ -41,6 +42,8 @@ public class MovieListActivity extends AppCompatActivity
     Toolbar toolbar;
     @Bind(R.id.dlMovieDrawer)
     DrawerLayout drawer;
+    @Bind(R.id.nav_view)
+    NavigationView navigationView;
 
     private MoviePagerAdapter pagerAdapter;
     private DetailsFragment detailsFragment;
@@ -53,6 +56,10 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        User user = User.getInstance();
+        user.getUserFromDatabase();
+
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
@@ -62,7 +69,21 @@ public class MovieListActivity extends AppCompatActivity
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            public void onDrawerStateChanged(int newState) {
+                super.onDrawerStateChanged(newState);
+                if (navigationView != null) {
+                    Menu menu = navigationView.getMenu();
+                    MenuItem nav_logout = menu.findItem(R.id.nav_login);
+                    if (User.isLoggedIn()) {
+                        nav_logout.setTitle("Logout");
+                    }
+                    else {
+                        nav_logout.setTitle("Login");
+                    }
+                }
+            }
+        };
         if (drawer != null) {
             drawer.addDrawerListener(toggle);
         }
@@ -136,23 +157,27 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     private void loginClick() {
-        if (AppHelper.isOnline()) {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
+        if (!User.isLoggedIn()) {
+            if (AppHelper.isOnline()) {
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            } else {
+                CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
+                if (coordinator != null) {
+                    Snackbar snackbar = Snackbar.make(coordinator, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+                    snackbar.setActionTextColor(Color.CYAN);
+                    snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loginClick();
+                        }
+                    });
+                    snackbar.show();
+                }
+            }
         }
         else {
-            CoordinatorLayout coordinator = (CoordinatorLayout) findViewById(R.id.clMovieCoordinator);
-            if (coordinator != null) {
-                Snackbar snackbar = Snackbar.make(coordinator, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
-                snackbar.setActionTextColor(Color.CYAN);
-                snackbar.setAction(R.string.refresh, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        loginClick();
-                    }
-                });
-                snackbar.show();
-            }
+            User.getInstance().logout();
         }
     }
 

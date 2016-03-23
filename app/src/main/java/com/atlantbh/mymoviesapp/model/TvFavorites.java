@@ -28,4 +28,8 @@ public class TvFavorites {
     public void setTvList(ArrayList<Tv> tvList) {
         this.tvList = tvList;
     }
+
+    public void setTvList(List<Tv> tvList) {
+        this.tvList = tvList;
+    }
 }

@@ -23,4 +23,12 @@ public class RequestToken {
     public boolean getSuccess() {
         return success;
     }
+
+    public void setRequestToken(String requestToken) {
+        this.requestToken = requestToken;
+    }
+
+    public void setExpiresAt(Date expiresAt) {
+        this.expiresAt = expiresAt;
+    }
 }

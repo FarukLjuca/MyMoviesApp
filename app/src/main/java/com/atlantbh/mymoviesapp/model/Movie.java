@@ -5,6 +5,7 @@ import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.atlantbh.mymoviesapp.model.realm.RealmGenre;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieFavorites;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.SimpleDateFormat;
@@ -81,6 +82,14 @@ public class Movie implements Detailable {
             genres.add(new Genre(genre.getId(), genre.getName()));
         }
         setGenres(genres);
+    }
+
+    public Movie(RealmMovieFavorites movie) {
+        id = movie.getId();
+        overview = movie.getBasicText();
+        posterPath = movie.getPosterPath();
+        title = movie.getTitle();
+        voteAverage = movie.getVoteAverage();
     }
 
     public ReviewList getReviewList() {
