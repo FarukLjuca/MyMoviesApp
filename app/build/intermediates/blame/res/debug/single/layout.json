@@ -228,6 +228,10 @@
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\layout\\abc_screen_simple.xml"
     },
     {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\horizontal_list_card_tv.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\horizontal_list_card_tv.xml"
+    },
+    {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },

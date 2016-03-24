@@ -195,15 +195,21 @@ public class DetailsFragment extends Fragment {
                         if (AppHelper.isOnline()) {
                             SetContent(detailable);
                         }
-                        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
-                        snackbar.setActionTextColor(Color.CYAN);
-                        snackbar.setAction(R.string.refresh, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                SetContent(detailable);
+                        else {
+                            CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+                            if (coordinator == null) {
+                                coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
                             }
-                        });
-                        snackbar.show();
+                            Snackbar snackbar = Snackbar.make(coordinator, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
+                            snackbar.setActionTextColor(Color.CYAN);
+                            snackbar.setAction(R.string.refresh, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    SetContent(detailable);
+                                }
+                            });
+                            snackbar.show();
+                        }
                     }
                 }
 

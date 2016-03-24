@@ -29,8 +29,8 @@ public class TvCreditsAdapter extends RecyclerView.Adapter<TvCreditsAdapter.View
 
         public ViewHolder(View view) {
             super(view);
-            poster = (ImageView) view.findViewById(R.id.ivPoster);
-            title = (TextView) view.findViewById(R.id.tvTitle);
+            poster = (ImageView) view.findViewById(R.id.ivPosterTv);
+            title = (TextView) view.findViewById(R.id.tvTitleTv);
         }
 
         public void bind(final Credits credits, final OnItemClickListener listener) {
@@ -52,8 +52,8 @@ public class TvCreditsAdapter extends RecyclerView.Adapter<TvCreditsAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_list_card, parent, false);
-        TextView title = (TextView) v.findViewById(R.id.tvTitle);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.horizontal_list_card_tv, parent, false);
+        TextView title = (TextView) v.findViewById(R.id.tvTitleTv);
         title.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         return new ViewHolder(v);
     }
