@@ -1,5 +1,6 @@
 package com.atlantbh.mymoviesapp.activities;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
@@ -103,15 +105,17 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.itSearch).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.itSearch:
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -10,15 +10,17 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:largeHeap="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MovieListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".activities.SearchActivity" />
         </activity>
         <activity android:name=".activities.DetailsActivity" />
         <activity android:name=".activities.ActorActivity" />
@@ -31,7 +33,16 @@
             android:name="io.fabric.ApiKey"
             android:value="8fc51e8e71bd737ccdce4f93029f758816dc69fe" />
 
-        <activity android:name=".activities.FavoritesActivity"></activity>
+        <activity android:name=".activities.FavoritesActivity" />
+        <activity android:name=".activities.SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>

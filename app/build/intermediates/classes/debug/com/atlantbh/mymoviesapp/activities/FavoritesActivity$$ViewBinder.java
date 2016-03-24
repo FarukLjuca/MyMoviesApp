@@ -8,8 +8,8 @@ import butterknife.ButterKnife.ViewBinder;
 public class FavoritesActivity$$ViewBinder<T extends com.atlantbh.mymoviesapp.activities.FavoritesActivity> implements ViewBinder<T> {
   @Override public void bind(final Finder finder, final T target, Object source) {
     View view;
-    view = finder.findRequiredView(source, 2131558510, "field 'toolbar'");
-    target.toolbar = finder.castView(view, 2131558510, "field 'toolbar'");
+    view = finder.findRequiredView(source, 2131624046, "field 'toolbar'");
+    target.toolbar = finder.castView(view, 2131624046, "field 'toolbar'");
   }
 
   @Override public void unbind(T target) {
