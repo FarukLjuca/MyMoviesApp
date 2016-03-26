@@ -98,4 +98,6 @@
     <string name="you_need_to_be_logged_in">You need to be logged in</string>
     <string name="search_hint">Search movies, tv shows and actors</string>
     <string name="no_results">No results</string>
+    <string name="cancel">Cancel</string>
+    <string name="share">Share</string>
 </resources>

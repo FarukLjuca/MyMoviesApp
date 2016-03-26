@@ -326,10 +326,11 @@
     <string name="app_name">My Movies App</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="cancel">Cancel</string>
     <string name="cast">Cast</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
     <string name="check_your_internet_connection">Check your internet connection</string>
-    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">1c9fa98f-e645-4580-ba37-7315c088bcae</string>
+    <string name="com.crashlytics.android.build_id" ns1:ignore="UnusedResources,TypographyDashes" translatable="false">7a54b2ed-7f6f-4322-b734-24eac56e6ac7</string>
     <string name="detaildedBiography">Detailed biography</string>
     <string name="detailedOverview">Detailed overview</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
@@ -370,6 +371,7 @@
     <string name="reviews">Reviews</string>
     <string name="search">Search</string>
     <string name="search_hint">Search movies, tv shows and actors</string>
+    <string name="share">Share</string>
     <string name="sign_up">Sign Up</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="title_activity_settings">Settings</string>
@@ -395,6 +397,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:tint">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:colorActivatedHighlight">@color/white</item>
     </style>
@@ -1374,6 +1377,13 @@
         <item name="android:minHeight">24dp</item>
         <item name="android:numStars">5</item>
         <item name="android:stepSize">0.1</item>
+    </style>
+    <style name="MyRatingBarRate" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/my_rating_selector</item>
+        <item name="android:maxHeight">24dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:numStars">10</item>
+        <item name="android:stepSize">0.5</item>
     </style>
     <style name="Platform.AppCompat" parent="android:Theme">
         <item name="android:windowNoTitle">true</item>

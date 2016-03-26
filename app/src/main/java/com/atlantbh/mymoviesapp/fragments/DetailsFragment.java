@@ -1,5 +1,6 @@
 package com.atlantbh.mymoviesapp.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +37,9 @@ import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Detailable;
 import com.atlantbh.mymoviesapp.model.FavoritePost;
 import com.atlantbh.mymoviesapp.model.Movie;
+import com.atlantbh.mymoviesapp.model.Rating;
+import com.atlantbh.mymoviesapp.model.RatingList;
+import com.atlantbh.mymoviesapp.model.RatingValue;
 import com.atlantbh.mymoviesapp.model.Tv;
 import com.atlantbh.mymoviesapp.model.User;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
@@ -57,6 +61,8 @@ import retrofit.Retrofit;
 public class DetailsFragment extends Fragment {
     private int movieId;
     private int tvId;
+    private RatingList ratingList;
+    private int counter = 1;
 
     @Bind(R.id.ivDetailsBackdrop)
     ImageView backdrop;
@@ -88,8 +94,11 @@ public class DetailsFragment extends Fragment {
     RelativeLayout rateButton;
     @Bind(R.id.ivDetailsFavorite)
     ImageView favorite;
+    @Bind(R.id.tvDetailsRating)
+    TextView yourRating;
 
-    public DetailsFragment() {}
+    public DetailsFragment() {
+    }
 
     public void setMovieId(int movieId) {
         if (movieId > 0) {
@@ -122,13 +131,14 @@ public class DetailsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, getView());
 
+        setRatingView();
+
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         if (getResources().getDisplayMetrics().widthPixels * 160 / getResources().getDisplayMetrics().densityDpi < 900) {
             backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (720.0 / 1280.0 * displaymetrics.widthPixels)));
-        }
-        else {
-            backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3/5)));
+        } else {
+            backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3 / 5)));
         }
 
         if (movieId > 0) {
@@ -158,8 +168,7 @@ public class DetailsFragment extends Fragment {
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }
-            else {
+            } else {
                 Realm realm = Realm.getInstance(getContext());
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
                 if (realmResults.size() == 0) {
@@ -167,8 +176,7 @@ public class DetailsFragment extends Fragment {
                     if (realmResultsBasic.size() > 0) {
                         SetContent(new Movie(realmResultsBasic.get(0)));
                     }
-                }
-                else {
+                } else {
                     Movie movie = new Movie(realmResults.get(0));
                     SetContent(movie);
                 }
@@ -194,8 +202,7 @@ public class DetailsFragment extends Fragment {
                     if (detailable != null) {
                         if (AppHelper.isOnline()) {
                             SetContent(detailable);
-                        }
-                        else {
+                        } else {
                             CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
                             if (coordinator == null) {
                                 coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
@@ -302,13 +309,11 @@ public class DetailsFragment extends Fragment {
                 intent.putExtra(AppString.ACTOR_ID, actor.getId());
                 startActivity(intent);
             }
-        }
-        else {
+        } else {
             CoordinatorLayout coordinatorLayout;
             if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
-            }
-            else {
+            } else {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
             }
             Snackbar snackbar = Snackbar.make(coordinatorLayout, "Check your internet connection", Snackbar.LENGTH_LONG);
@@ -338,13 +343,11 @@ public class DetailsFragment extends Fragment {
     public void favoriteClick() {
         if (AppHelper.isOnline()) {
             favorite();
-        }
-        else {
+        } else {
             CoordinatorLayout coordinatorLayout;
             if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
-            }
-            else {
+            } else {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
             }
             Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
@@ -392,8 +395,7 @@ public class DetailsFragment extends Fragment {
             CoordinatorLayout coordinatorLayout;
             if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
-            }
-            else {
+            } else {
                 coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
             }
             Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
@@ -434,7 +436,162 @@ public class DetailsFragment extends Fragment {
     }
 
     public void rateMovie() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View view = inflater.inflate(R.layout.rate_view, null);
+        builder.setTitle("Rate a movie")
+                .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Retrofit retrofit = AppHelper.getRetrofit();
+                        UserAPI userAPI = retrofit.create(UserAPI.class);
 
+                        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rbRate);
+                        final RatingValue ratingValue = new RatingValue();
+                        ratingValue.setValue(ratingBar.getRating());
+
+                        Call<com.atlantbh.mymoviesapp.model.Response> call = null;
+
+                        if (movieId > 0) {
+                            call = userAPI.setRatingMovie(movieId, User.getSession().getSessionId(), ratingValue);
+
+                        } else if (tvId > 0) {
+                            call = userAPI.setRatingMovie(tvId, User.getSession().getSessionId(), ratingValue);
+                        }
+
+                        if (call != null) {
+                            call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
+                                @Override
+                                public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
+                                    yourRating.setText(String.valueOf(ratingValue.getValue()));
+                                    yourRating.setTextSize(24);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void setRatingView() {
+        Retrofit retrofit = AppHelper.getRetrofit();
+        UserAPI userAPI = retrofit.create(UserAPI.class);
+
+        if (movieId > 0) {
+            Call<RatingList> call = userAPI.getRatedMovies(User.getSession().getSessionId(), 1);
+            call.enqueue(new Callback<RatingList>() {
+                @Override
+                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                    ratingList = response.body();
+                    if (ratingList.getPage() < ratingList.getTotalPages()) {
+                        for (int i = 2; i < ratingList.getTotalPages(); i++) {
+                            UserAPI userAPI = retrofit.create(UserAPI.class);
+
+                            Call<RatingList> call = userAPI.getRatedMovies(User.getSession().getSessionId(), i);
+                            call.enqueue(new Callback<RatingList>() {
+                                @Override
+                                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                                    ratingList.getRatingList().addAll(response.body().getRatingList());
+                                    counter++;
+                                    if (counter == ratingList.getTotalPages()) {
+                                        for (Rating rating : ratingList.getRatingList()) {
+                                            if (rating.getId() == movieId) {
+                                                yourRating.setText(String.valueOf(rating.getRating()));
+                                                yourRating.setTextSize(24);
+                                                break;
+                                            }
+                                        }
+                                        counter = 1;
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        for (Rating rating : ratingList.getRatingList()) {
+                            if (rating.getId() == movieId) {
+                                yourRating.setText(String.valueOf(rating.getRating()));
+                                yourRating.setTextSize(24);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
+        }
+        else if (tvId > 0) {
+            Call<RatingList> call = userAPI.getRatedTvs(User.getSession().getSessionId(), 1);
+            call.enqueue(new Callback<RatingList>() {
+                @Override
+                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                    ratingList = response.body();
+                    if (ratingList.getPage() < ratingList.getTotalPages()) {
+                        for (int i = 2; i < ratingList.getTotalPages(); i++) {
+                            UserAPI userAPI = retrofit.create(UserAPI.class);
+
+                            Call<RatingList> call = userAPI.getRatedTvs(User.getSession().getSessionId(), i);
+                            call.enqueue(new Callback<RatingList>() {
+                                @Override
+                                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                                    ratingList.getRatingList().addAll(response.body().getRatingList());
+                                    counter++;
+                                    if (counter == ratingList.getTotalPages()) {
+                                        for (Rating rating : ratingList.getRatingList()) {
+                                            if (rating.getId() == tvId) {
+                                                yourRating.setText(String.valueOf(rating.getRating()));
+                                                break;
+                                            }
+                                        }
+                                        counter = 1;
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        for (Rating rating : ratingList.getRatingList()) {
+                            if (rating.getId() == tvId) {
+                                yourRating.setText(String.valueOf(rating.getRating()));
+                                yourRating.setTextSize(24);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+
+                }
+            });
+        }
     }
 
     private boolean isMovie() {

@@ -7,6 +7,7 @@
 
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:tint">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:colorActivatedHighlight">@color/white</item>
     </style>
@@ -17,6 +18,14 @@
         <item name="android:minHeight">24dp</item>
         <item name="android:numStars">5</item>
         <item name="android:stepSize">0.1</item>
+    </style>
+
+    <style name="MyRatingBarRate" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/my_rating_selector</item>
+        <item name="android:maxHeight">24dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:numStars">10</item>
+        <item name="android:stepSize">0.5</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

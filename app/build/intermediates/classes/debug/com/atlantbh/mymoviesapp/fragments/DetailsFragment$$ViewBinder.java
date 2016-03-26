@@ -32,12 +32,14 @@ public class DetailsFragment$$ViewBinder<T extends com.atlantbh.mymoviesapp.frag
     target.video = finder.castView(view, 2131624112, "field 'video'");
     view = finder.findRequiredView(source, 2131624115, "field 'videoLine'");
     target.videoLine = view;
-    view = finder.findRequiredView(source, 2131624126, "field 'cast'");
-    target.cast = finder.castView(view, 2131624126, "field 'cast'");
+    view = finder.findRequiredView(source, 2131624127, "field 'cast'");
+    target.cast = finder.castView(view, 2131624127, "field 'cast'");
     view = finder.findRequiredView(source, 2131624122, "field 'rateButton'");
     target.rateButton = finder.castView(view, 2131624122, "field 'rateButton'");
     view = finder.findRequiredView(source, 2131624103, "field 'favorite'");
     target.favorite = finder.castView(view, 2131624103, "field 'favorite'");
+    view = finder.findRequiredView(source, 2131624125, "field 'yourRating'");
+    target.yourRating = finder.castView(view, 2131624125, "field 'yourRating'");
   }
 
   @Override public void unbind(T target) {
@@ -56,5 +58,6 @@ public class DetailsFragment$$ViewBinder<T extends com.atlantbh.mymoviesapp.frag
     target.cast = null;
     target.rateButton = null;
     target.favorite = null;
+    target.yourRating = null;
   }
 }

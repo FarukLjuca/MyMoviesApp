@@ -35,8 +35,8 @@ public class SearchActivity extends AppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.lvSearchListView)
     ListView listView;
-    @Bind(R.id.tvSearchNoResults)
-    TextView noResults;
+    @Bind(R.id.tvSearchResults)
+    TextView results;
 
     public Context getContext() {
         return this;
@@ -89,6 +89,7 @@ public class SearchActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            results.setText("Results for \"" + query + "\":");
 
             Retrofit retrofit = AppHelper.getRetrofit();
             final SearchAPI searchAPI = retrofit.create(SearchAPI.class);
@@ -105,7 +106,7 @@ public class SearchActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 Search search = (Search) searchAdapter.getItem(position);
-                                Intent intent = null;
+                                Intent intent;
                                 switch (search.getMediaType()) {
                                     case AppString.MOVIE:
                                         intent = new Intent(getContext(), DetailsActivity.class);
@@ -127,8 +128,7 @@ public class SearchActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        listView.setVisibility(View.GONE);
-                        noResults.setVisibility(View.GONE);
+                        results.setText(R.string.no_results);
                     }
                 }
 

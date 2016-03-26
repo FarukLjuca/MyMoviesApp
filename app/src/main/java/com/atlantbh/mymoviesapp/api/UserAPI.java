@@ -2,6 +2,8 @@ package com.atlantbh.mymoviesapp.api;
 
 import com.atlantbh.mymoviesapp.model.FavoritePost;
 import com.atlantbh.mymoviesapp.model.MovieFavorites;
+import com.atlantbh.mymoviesapp.model.RatingList;
+import com.atlantbh.mymoviesapp.model.RatingValue;
 import com.atlantbh.mymoviesapp.model.RequestToken;
 import com.atlantbh.mymoviesapp.model.Response;
 import com.atlantbh.mymoviesapp.model.Session;
@@ -36,4 +38,16 @@ public interface UserAPI {
 
     @POST("3/account/{id}/favorite?api_key=7ba2567f9f865330c7dbaae861f9e566")
     Call<Response> setFavorite(@Path("id") int userId, @Query("session_id") String sessionId, @Body FavoritePost favoritePost);
+
+    @GET("3/account/{id}/rated/movies?api_key=7ba2567f9f865330c7dbaae861f9e566")
+    Call<RatingList> getRatedMovies(@Query("session_id") String sessionId, @Query("page") int page);
+
+    @GET("3/account/{id}/rated/tv?api_key=7ba2567f9f865330c7dbaae861f9e566")
+    Call<RatingList> getRatedTvs(@Query("session_id") String sessionId, @Query("page") int page);
+
+    @POST("3/movie/{id}/rating?api_key=7ba2567f9f865330c7dbaae861f9e566")
+    Call<Response> setRatingMovie(@Path("id") int id, @Query("session_id") String sessionId, @Body RatingValue ratingValue);
+
+    @POST("3/tv/{id}/rating?api_key=7ba2567f9f865330c7dbaae861f9e566")
+    Call<Response> setRatingTv(@Path("id") int id, @Query("session_id") String sessionId, @Body RatingValue ratingValue);
 }

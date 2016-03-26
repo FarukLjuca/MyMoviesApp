@@ -10,15 +10,15 @@ public class SearchActivity$$ViewBinder<T extends com.atlantbh.mymoviesapp.activ
     View view;
     view = finder.findRequiredView(source, 2131624062, "field 'toolbar'");
     target.toolbar = finder.castView(view, 2131624062, "field 'toolbar'");
-    view = finder.findRequiredView(source, 2131624063, "field 'listView'");
-    target.listView = finder.castView(view, 2131624063, "field 'listView'");
-    view = finder.findRequiredView(source, 2131624064, "field 'noResults'");
-    target.noResults = finder.castView(view, 2131624064, "field 'noResults'");
+    view = finder.findRequiredView(source, 2131624064, "field 'listView'");
+    target.listView = finder.castView(view, 2131624064, "field 'listView'");
+    view = finder.findRequiredView(source, 2131624063, "field 'results'");
+    target.results = finder.castView(view, 2131624063, "field 'results'");
   }
 
   @Override public void unbind(T target) {
     target.toolbar = null;
     target.listView = null;
-    target.noResults = null;
+    target.results = null;
   }
 }

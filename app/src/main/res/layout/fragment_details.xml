@@ -187,8 +187,7 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="20dp"
-                    android:isIndicator="true"
-                    android:numStars="5" />
+                    android:isIndicator="true" />
 
                 <TextView
                     android:id="@+id/tvDetailsVoteAverage"
@@ -237,6 +236,7 @@
                         android:tint="@color/lightgray" />
 
                     <TextView
+                        android:id="@+id/tvDetailsRating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
