@@ -1,12 +1,15 @@
 package com.atlantbh.mymoviesapp.fragments;
 
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,18 +18,22 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.ActorActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.adapters.ReviewsAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
+import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.helpers.NonScrollListView;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Movie;
+import com.atlantbh.mymoviesapp.model.RatingValue;
+import com.atlantbh.mymoviesapp.model.User;
 
 import java.math.BigDecimal;
 
@@ -177,5 +184,46 @@ public class VideoFragment extends Fragment {
         BigDecimal bd = new BigDecimal(Float.toString(d));
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
+    }
+
+    public void rateMovieVideo(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rateView = inflater.inflate(R.layout.rate_view, null);
+        builder.setTitle("Rate a movie")
+                .setView(rateView)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Retrofit retrofit = AppHelper.getRetrofit();
+                        UserAPI userAPI = retrofit.create(UserAPI.class);
+
+                        RatingBar ratingBar = (RatingBar) rateView.findViewById(R.id.rbRate);
+                        final RatingValue ratingValue = new RatingValue();
+                        ratingValue.setValue(ratingBar.getRating());
+
+                        Call<com.atlantbh.mymoviesapp.model.Response> call = null;
+                        call = userAPI.setRatingMovie(movieId, User.getSession().getSessionId(), ratingValue);
+
+                        call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
+                            @Override
+                            public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
+                                Toast.makeText(getContext(), "Successfully rated...", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Throwable t) {
+
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

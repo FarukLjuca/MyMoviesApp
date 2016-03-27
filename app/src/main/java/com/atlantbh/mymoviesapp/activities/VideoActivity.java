@@ -1,20 +1,29 @@
 package com.atlantbh.mymoviesapp.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.api.VideoAPI;
 import com.atlantbh.mymoviesapp.fragments.VideoFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
+import com.atlantbh.mymoviesapp.model.RatingValue;
+import com.atlantbh.mymoviesapp.model.User;
 import com.atlantbh.mymoviesapp.model.VideoList;
 import com.atlantbh.mymoviesapp.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -31,6 +40,7 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
     private String videoKey;
     private YouTubePlayer youTubePlayer;
     private ScrollView scrollView;
+    private VideoFragment videoFragment;
 
     private static final String YoutubeDeveloperKey = "AIzaSyBbChM9SBrXSgLsQk43VOBu8A9hu1lgcPY";
 
@@ -50,7 +60,7 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
         Intent intent = getIntent();
         movieId = intent.getIntExtra(AppString.MOVIE_ID, -1);
 
-        VideoFragment videoFragment = (VideoFragment) getSupportFragmentManager().findFragmentById(R.id.frVideoContent);
+        videoFragment = (VideoFragment) getSupportFragmentManager().findFragmentById(R.id.frVideoContent);
         if (videoFragment != null) {
             videoFragment.setMovieId(movieId);
         }
@@ -122,5 +132,9 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
         Toast.makeText(this, "There was a problem with initialization of youtube player.", Toast.LENGTH_LONG).show();
+    }
+
+    public void rateMovieVideo(View view) {
+           videoFragment.rateMovieVideo(view);
     }
 }

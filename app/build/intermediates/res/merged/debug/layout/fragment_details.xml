@@ -51,6 +51,10 @@
                 <TextView
                     android:id="@+id/tvDetailsTitle"
                     style="@style/Title"
+                    android:shadowColor="@color/textcustomgray"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
@@ -59,6 +63,10 @@
 
                 <TextView
                     android:id="@+id/tvDetailsYear"
+                    android:shadowColor="@color/textcustomgray"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
@@ -69,6 +77,10 @@
 
             <TextView
                 android:id="@+id/tvDetailsSubtitle"
+                android:shadowColor="@color/customred"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/llTitleAndReleaseYear"

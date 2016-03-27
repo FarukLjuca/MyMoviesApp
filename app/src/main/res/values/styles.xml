@@ -6,7 +6,6 @@
     </style>
 
     <style name="AppToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:tint">@color/white</item>
         <item name="android:textColorHint">@color/white</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:colorActivatedHighlight">@color/white</item>

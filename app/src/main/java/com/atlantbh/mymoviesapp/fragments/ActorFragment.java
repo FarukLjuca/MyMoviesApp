@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,6 +60,7 @@ public class ActorFragment extends Fragment {
     ImageView actorInfo;
 
     private int actorId;
+    private SwipeRefreshLayout refreshLayout;
 
     public void setActorId(int actorId) {
         if (actorId > 0) {
@@ -94,6 +96,24 @@ public class ActorFragment extends Fragment {
             actorBackdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3/5)));
         }
 
+        refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srActorRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        refresh();
+
+        SetFonts();
+    }
+
+    private void refresh() {
         if (actorId > 0) {
             Retrofit retrofit = AppHelper.getRetrofit();
             ActorAPI actorAPI = retrofit.create(ActorAPI.class);
@@ -168,9 +188,9 @@ public class ActorFragment extends Fragment {
                     Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             });
-
-            SetFonts();
         }
+
+        refreshLayout.setRefreshing(false);
     }
 
     private void SetFonts() {

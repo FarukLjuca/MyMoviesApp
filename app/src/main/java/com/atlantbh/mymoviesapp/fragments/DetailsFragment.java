@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +64,7 @@ public class DetailsFragment extends Fragment {
     private int tvId;
     private RatingList ratingList;
     private int counter = 1;
+    private SwipeRefreshLayout refreshLayout;
 
     @Bind(R.id.ivDetailsBackdrop)
     ImageView backdrop;
@@ -127,11 +129,15 @@ public class DetailsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_details, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setRatingView();
+    }
+
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, getView());
-
-        setRatingView();
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -141,6 +147,27 @@ public class DetailsFragment extends Fragment {
             backdrop.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) ((720.0 / 1280.0 * displaymetrics.widthPixels) * 3 / 5)));
         }
 
+        refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srDetailsRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+        refresh();
+
+        SetFonts();
+    }
+
+    private void refresh() {
+        User user = User.getInstance();
+        user.getFavorites();
         if (movieId > 0) {
             if (AppHelper.isOnline()) {
                 Retrofit retrofit = AppHelper.getRetrofit();
@@ -226,8 +253,7 @@ public class DetailsFragment extends Fragment {
                 }
             });
         }
-
-        SetFonts();
+        setRatingView();
     }
 
     private void SetContent(Detailable detailable) {
@@ -290,6 +316,8 @@ public class DetailsFragment extends Fragment {
             }
         });
         cast.setAdapter(castAdapter);
+
+        refreshLayout.setRefreshing(false);
     }
 
     public void actorClick(final Actor actor) {
@@ -435,19 +463,19 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    public void rateMovie() {
+    public void rateMovie(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View view = inflater.inflate(R.layout.rate_view, null);
+        final View rateView = inflater.inflate(R.layout.rate_view, null);
         builder.setTitle("Rate a movie")
-                .setView(view)
+                .setView(rateView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         Retrofit retrofit = AppHelper.getRetrofit();
                         UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rbRate);
+                        RatingBar ratingBar = (RatingBar) rateView.findViewById(R.id.rbRate);
                         final RatingValue ratingValue = new RatingValue();
                         ratingValue.setValue(ratingBar.getRating());
 
@@ -494,42 +522,43 @@ public class DetailsFragment extends Fragment {
             call.enqueue(new Callback<RatingList>() {
                 @Override
                 public void onResponse(Response<RatingList> response, Retrofit retrofit) {
-                    ratingList = response.body();
-                    if (ratingList.getPage() < ratingList.getTotalPages()) {
-                        for (int i = 2; i < ratingList.getTotalPages(); i++) {
-                            UserAPI userAPI = retrofit.create(UserAPI.class);
+                    if (response.body() != null) {
+                        ratingList = response.body();
+                        if (ratingList.getPage() < ratingList.getTotalPages()) {
+                            for (int i = 2; i < ratingList.getTotalPages(); i++) {
+                                UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                            Call<RatingList> call = userAPI.getRatedMovies(User.getSession().getSessionId(), i);
-                            call.enqueue(new Callback<RatingList>() {
-                                @Override
-                                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
-                                    ratingList.getRatingList().addAll(response.body().getRatingList());
-                                    counter++;
-                                    if (counter == ratingList.getTotalPages()) {
-                                        for (Rating rating : ratingList.getRatingList()) {
-                                            if (rating.getId() == movieId) {
-                                                yourRating.setText(String.valueOf(rating.getRating()));
-                                                yourRating.setTextSize(24);
-                                                break;
+                                Call<RatingList> call = userAPI.getRatedMovies(User.getSession().getSessionId(), i);
+                                call.enqueue(new Callback<RatingList>() {
+                                    @Override
+                                    public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                                        ratingList.getRatingList().addAll(response.body().getRatingList());
+                                        counter++;
+                                        if (counter == ratingList.getTotalPages()) {
+                                            for (Rating rating : ratingList.getRatingList()) {
+                                                if (rating.getId() == movieId) {
+                                                    yourRating.setText(String.valueOf(rating.getRating()));
+                                                    yourRating.setTextSize(24);
+                                                    break;
+                                                }
                                             }
+                                            counter = 1;
                                         }
-                                        counter = 1;
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Throwable t) {
+                                    @Override
+                                    public void onFailure(Throwable t) {
 
+                                    }
+                                });
+                            }
+                        } else {
+                            for (Rating rating : ratingList.getRatingList()) {
+                                if (rating.getId() == movieId) {
+                                    yourRating.setText(String.valueOf(rating.getRating()));
+                                    yourRating.setTextSize(24);
+                                    break;
                                 }
-                            });
-                        }
-                    }
-                    else {
-                        for (Rating rating : ratingList.getRatingList()) {
-                            if (rating.getId() == movieId) {
-                                yourRating.setText(String.valueOf(rating.getRating()));
-                                yourRating.setTextSize(24);
-                                break;
                             }
                         }
                     }

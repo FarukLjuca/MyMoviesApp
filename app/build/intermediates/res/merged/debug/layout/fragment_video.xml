@@ -28,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
+        android:onClick="rateMovieVideo"
         android:layout_alignBottom="@id/rbVideoRating"
         android:layout_alignParentRight="true"
         android:text="@string/rate_movie"

@@ -57,7 +57,14 @@ public class User {
     }
 
     public static Session getSession() {
-        return session;
+        Session result;
+        if (session != null) {
+            result = session;
+        }
+        else {
+            result = new Session();
+        }
+        return result;
     }
 
     public void logout() {
@@ -238,41 +245,43 @@ public class User {
                 tvCall.enqueue(new Callback<TvFavorites>() {
                     @Override
                     public void onResponse(Response<TvFavorites> response, Retrofit retrofit) {
-                        tvFavorites = response.body();
+                        if (response.body() != null) {
+                            tvFavorites = response.body();
 
-                        for (Tv tv : tvFavorites.getTvList()) {
-                            index++;
+                            for (Tv tv : tvFavorites.getTvList()) {
+                                index++;
 
-                            TvAPI tvAPI = retrofit.create(TvAPI.class);
-                            final Call<Tv> innerCall = tvAPI.loadTvById(tv.getId());
-                            innerCall.enqueue(new Callback<Tv>() {
-                                @Override
-                                public void onResponse(Response<Tv> response, Retrofit retrofit) {
-                                    Tv innerTv = response.body();
+                                TvAPI tvAPI = retrofit.create(TvAPI.class);
+                                final Call<Tv> innerCall = tvAPI.loadTvById(tv.getId());
+                                innerCall.enqueue(new Callback<Tv>() {
+                                    @Override
+                                    public void onResponse(Response<Tv> response, Retrofit retrofit) {
+                                        Tv innerTv = response.body();
 
-                                    for (Tv loopTv : tvFavorites.getTvList()) {
-                                        if (loopTv.getId() == innerTv.getId()) {
-                                            loopTv.setBasicText(innerTv.getBasicText());
-                                            break;
+                                        for (Tv loopTv : tvFavorites.getTvList()) {
+                                            if (loopTv.getId() == innerTv.getId()) {
+                                                loopTv.setBasicText(innerTv.getBasicText());
+                                                break;
+                                            }
+                                        }
+                                        sum++;
+                                        if (sum >= index) {
+                                            index = 0;
+                                            sum = 0;
+                                            tvLoadingDone = true;
+                                            if (movieFavorites != null) {
+                                                saveToDatabase();
+                                                tvLoadingDone = false;
+                                            }
                                         }
                                     }
-                                    sum++;
-                                    if (sum >= index) {
-                                        index = 0;
-                                        sum = 0;
-                                        tvLoadingDone = true;
-                                        if (movieFavorites != null) {
-                                            saveToDatabase();
-                                            tvLoadingDone = false;
-                                        }
+
+                                    @Override
+                                    public void onFailure(Throwable t) {
+
                                     }
-                                }
-
-                                @Override
-                                public void onFailure(Throwable t) {
-
-                                }
-                            });
+                                });
+                            }
                         }
                     }
 
@@ -301,18 +310,20 @@ public class User {
     public boolean isFavorite(int id) {
         boolean isIn = false;
 
-        for(Movie movie : movieFavorites.getMovieList()) {
-            if (movie.getId() == id) {
-                isIn = true;
-                break;
-            }
-        }
-
-        if (!isIn) {
-            for (Tv tv : tvFavorites.getTvList()) {
-                if (tv.getId() == id) {
+        if (movieFavorites != null && tvFavorites != null) {
+            for (Movie movie : movieFavorites.getMovieList()) {
+                if (movie.getId() == id) {
                     isIn = true;
                     break;
+                }
+            }
+
+            if (!isIn) {
+                for (Tv tv : tvFavorites.getTvList()) {
+                    if (tv.getId() == id) {
+                        isIn = true;
+                        break;
+                    }
                 }
             }
         }

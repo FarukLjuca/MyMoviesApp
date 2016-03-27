@@ -15,10 +15,16 @@
         android:theme="@style/AppToolbar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <fragment
-        android:id="@+id/frActorDetailsContent"
-        class="com.atlantbh.mymoviesapp.fragments.ActorFragment"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srActorRefresh"
         android:layout_below="@id/tbActorToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/frActorDetailsContent"
+            class="com.atlantbh.mymoviesapp.fragments.ActorFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

@@ -8,12 +8,12 @@ import butterknife.ButterKnife.ViewBinder;
 public class SearchActivity$$ViewBinder<T extends com.atlantbh.mymoviesapp.activities.SearchActivity> implements ViewBinder<T> {
   @Override public void bind(final Finder finder, final T target, Object source) {
     View view;
-    view = finder.findRequiredView(source, 2131624062, "field 'toolbar'");
-    target.toolbar = finder.castView(view, 2131624062, "field 'toolbar'");
-    view = finder.findRequiredView(source, 2131624064, "field 'listView'");
-    target.listView = finder.castView(view, 2131624064, "field 'listView'");
-    view = finder.findRequiredView(source, 2131624063, "field 'results'");
-    target.results = finder.castView(view, 2131624063, "field 'results'");
+    view = finder.findRequiredView(source, 2131624064, "field 'toolbar'");
+    target.toolbar = finder.castView(view, 2131624064, "field 'toolbar'");
+    view = finder.findRequiredView(source, 2131624066, "field 'listView'");
+    target.listView = finder.castView(view, 2131624066, "field 'listView'");
+    view = finder.findRequiredView(source, 2131624065, "field 'results'");
+    target.results = finder.castView(view, 2131624065, "field 'results'");
   }
 
   @Override public void unbind(T target) {

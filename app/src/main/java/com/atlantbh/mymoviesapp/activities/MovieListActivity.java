@@ -26,6 +26,7 @@ import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
+import com.atlantbh.mymoviesapp.fragments.VideoFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.model.MovieList;
@@ -50,6 +51,7 @@ public class MovieListActivity extends AppCompatActivity
     private MoviePagerAdapter pagerAdapter;
     private DetailsFragment detailsFragment;
     private ActorFragment actorFragment;
+    private VideoFragment videoFragment;
 
     public Context getContext() {
         return this;
@@ -206,10 +208,22 @@ public class MovieListActivity extends AppCompatActivity
         }
     }
 
+    public void rateMovie(View view) {
+        detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentByTag(AppString.detailsFragmentTag);
+        if (detailsFragment != null) {
+            detailsFragment.rateMovie(view);
+        }
+    }
+
     public void actorInfoClick(View view) {
         actorFragment = (ActorFragment) getSupportFragmentManager().findFragmentByTag(AppString.actorFragmentTag);
         if (actorFragment != null) {
             actorFragment.actorInfoClick();
         }
+    }
+
+    public void rateMovieVideo(View view) {
+        videoFragment = (VideoFragment) getSupportFragmentManager().findFragmentByTag(AppString.videoFragmentTag);
+        videoFragment.rateMovieVideo(view);
     }
 }
