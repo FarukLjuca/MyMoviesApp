@@ -14,11 +14,16 @@
         android:theme="@style/AppToolbar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <fragment
-        android:id="@+id/frFavoritesContent"
-        android:name="com.atlantbh.mymoviesapp.fragments.FavoritesFragment"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srFavoritesRefresh"
         android:layout_below="@id/tbFavoritesToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
+        <fragment
+            android:id="@+id/frFavoritesContent"
+            android:name="com.atlantbh.mymoviesapp.fragments.FavoritesFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

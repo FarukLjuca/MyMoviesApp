@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
+import com.atlantbh.mymoviesapp.activities.VideoActivity;
 import com.atlantbh.mymoviesapp.adapters.FavoritesAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.api.TvAPI;
@@ -38,6 +40,7 @@ import retrofit.Retrofit;
 public class FavoritesFragment extends Fragment {
     private ExpandableListView listView;
     private Context context;
+    private SwipeRefreshLayout refreshLayout;
 
     public FavoritesFragment() {}
 
@@ -60,6 +63,18 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srFavoritesRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setAdapter();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         setAdapter();
     }
@@ -108,5 +123,7 @@ public class FavoritesFragment extends Fragment {
                 return true;
             }
         });
+
+        refreshLayout.setRefreshing(false);
     }
 }

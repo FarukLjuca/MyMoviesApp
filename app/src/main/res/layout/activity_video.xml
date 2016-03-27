@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/clVideoCoordinator"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clVideoCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.VideoActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".activities.VideoActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -19,34 +19,40 @@
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             android:theme="@style/AppToolbar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <ScrollView
-            android:id="@+id/svVideoScrollView"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srVideoRefresh"
             android:layout_below="@id/tbVideoToolbar"
-            android:scrollbars="none"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
+            <ScrollView
+                android:id="@+id/svVideoScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
 
-                <fragment
-                    android:id="@+id/frYoutube"
-                    android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
 
-                <fragment
-                    android:id="@+id/frVideoContent"
-                    android:layout_below="@id/frYoutube"
-                    android:name="com.atlantbh.mymoviesapp.fragments.VideoFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </RelativeLayout>
-        </ScrollView>
+                    <fragment
+                        android:id="@+id/frYoutube"
+                        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <fragment
+                        android:id="@+id/frVideoContent"
+                        android:layout_below="@id/frYoutube"
+                        android:name="com.atlantbh.mymoviesapp.fragments.VideoFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+            </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -42,6 +42,10 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
     private ScrollView scrollView;
     private VideoFragment videoFragment;
 
+    public YouTubePlayer getYouTubePlayer() {
+        return youTubePlayer;
+    }
+
     private static final String YoutubeDeveloperKey = "AIzaSyBbChM9SBrXSgLsQk43VOBu8A9hu1lgcPY";
 
     @Override
@@ -136,5 +140,9 @@ public class VideoActivity extends AppCompatActivity implements YouTubePlayer.On
 
     public void rateMovieVideo(View view) {
            videoFragment.rateMovieVideo(view);
+    }
+
+    public String getVideoKey() {
+        return videoKey;
     }
 }

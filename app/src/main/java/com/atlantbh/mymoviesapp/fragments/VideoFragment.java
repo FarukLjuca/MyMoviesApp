@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.ActorActivity;
+import com.atlantbh.mymoviesapp.activities.VideoActivity;
 import com.atlantbh.mymoviesapp.adapters.ActorAdapter;
 import com.atlantbh.mymoviesapp.adapters.ReviewsAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
@@ -61,6 +63,7 @@ public class VideoFragment extends Fragment {
     NonScrollListView reviews;
 
     private int movieId;
+    private SwipeRefreshLayout refreshLayout;
 
     public VideoFragment() {}
 
@@ -89,6 +92,23 @@ public class VideoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, getView());
 
+        refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srVideoRefresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+                ((VideoActivity) getActivity()).getYouTubePlayer().cueVideo(((VideoActivity) getActivity()).getVideoKey());
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        refresh();
+    }
+
+    private void refresh() {
         if (movieId > 0) {
             Retrofit retrofit = AppHelper.getRetrofit();
             MovieAPI movieAPI = retrofit.create(MovieAPI.class);
@@ -118,7 +138,7 @@ public class VideoFragment extends Fragment {
                     }
                     else {
                         actors.setVisibility(View.GONE);
-                        ((TextView) getActivity().findViewById(R.id.tvVideoCast)).setVisibility(View.GONE);
+                        getActivity().findViewById(R.id.tvVideoCast).setVisibility(View.GONE);
                     }
 
                     if (movie.getReviewList().getReviewList().size() > 0) {
@@ -127,7 +147,7 @@ public class VideoFragment extends Fragment {
                     }
                     else {
                         reviews.setVisibility(View.GONE);
-                        ((TextView) getActivity().findViewById(R.id.tvVideoReviews)).setVisibility(View.GONE);
+                        getActivity().findViewById(R.id.tvVideoReviews).setVisibility(View.GONE);
                     }
 
                     title.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
@@ -140,6 +160,8 @@ public class VideoFragment extends Fragment {
                 }
             });
         }
+
+        refreshLayout.setRefreshing(false);
     }
 
     public void actorClick(final Actor actor) {
