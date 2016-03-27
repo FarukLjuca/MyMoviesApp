@@ -41,6 +41,7 @@ public class FavoritesFragment extends Fragment {
     private ExpandableListView listView;
     private Context context;
     private SwipeRefreshLayout refreshLayout;
+    private FavoritesAdapter favoritesAdapter;
 
     public FavoritesFragment() {}
 
@@ -68,7 +69,9 @@ public class FavoritesFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                setAdapter();
+                if (favoritesAdapter != null) {
+                    favoritesAdapter.refresh();
+                }
             }
         });
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -84,7 +87,7 @@ public class FavoritesFragment extends Fragment {
         final MovieFavorites movieFavorites = user.getMovieFavorites();
         final TvFavorites tvFavorites = user.getTvFavorites();
 
-        FavoritesAdapter favoritesAdapter = new FavoritesAdapter(getContext(), movieFavorites, tvFavorites);
+        favoritesAdapter = new FavoritesAdapter(getContext(), movieFavorites, tvFavorites);
         listView = (ExpandableListView) getActivity().findViewById(R.id.lvFavoritesContainer);
         listView.setAdapter(favoritesAdapter);
 
@@ -98,8 +101,7 @@ public class FavoritesFragment extends Fragment {
 
                 if (groupPosition == 0) {
                     movieId = movieFavorites.getMovieList().get(childPosition).getId();
-                }
-                else if (groupPosition == 1) {
+                } else if (groupPosition == 1) {
                     tvId = tvFavorites.getTvList().get(childPosition).getId();
                 }
 

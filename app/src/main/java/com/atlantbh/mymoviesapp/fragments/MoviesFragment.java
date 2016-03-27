@@ -154,10 +154,7 @@ public abstract class MoviesFragment extends Fragment {
                     pass++;
 
                     setAdapterViews(savedInstanceState, movieList);
-                    /*
-                    if (pass == 1) {
-                        Realm.deleteRealm(new RealmConfiguration.Builder(getContext()).build());
-                    }*/
+
                     if (pass == 3) {
                         Runnable runnable = new Runnable() {
                             @Override

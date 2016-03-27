@@ -24,7 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmMigrationNeededException;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -86,36 +88,48 @@ public class User {
     }
 
     public void getUserFromDatabase() {
-        Realm realm = Realm.getInstance(MyApplication.getContext());
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(MyApplication.getContext()).build();
+        Realm realm = null;
 
-        realm.beginTransaction();
-        RealmResults<RealmUser> realmResults = realm.where(RealmUser.class).findAll();
-        if (realmResults.size() > 0) {
-            RealmUser user = realmResults.get(0);
-            id = user.getId();
-            name = user.getName();
-            session = new Session();
-            session.setSessionId(user.getSessionId());
-            requestToken = new RequestToken();
-            requestToken.setRequestToken(user.getRequestToken());
-            requestToken.setExpiresAt(user.getRequestTokenExpiration());
-
-            movieFavorites = new MovieFavorites();
-            List<Movie> movieList = new ArrayList<>();
-            for (RealmMovieFavorites movie : user.getMovieFavorites()) {
-                movieList.add(new Movie(movie));
-            }
-            movieFavorites.setMovieList(movieList);
-
-            tvFavorites = new TvFavorites();
-            List<Tv> tvList = new ArrayList<>();
-            for (RealmTvFavorites tv : user.getTvFavorites()) {
-                tvList.add(new Tv(tv));
-            }
-            tvFavorites.setTvList(tvList);
+        try {
+            realm = Realm.getInstance(realmConfiguration);
+        } catch (RealmMigrationNeededException e){
+            try {
+                Realm.deleteRealm(realmConfiguration);
+                realm = Realm.getInstance(realmConfiguration);
+            } catch (Exception ex){}
         }
 
-        realm.commitTransaction();
+        if (realm != null) {
+            realm.beginTransaction();
+            RealmResults<RealmUser> realmResults = realm.where(RealmUser.class).findAll();
+            if (realmResults.size() > 0) {
+                RealmUser user = realmResults.get(0);
+                id = user.getId();
+                name = user.getName();
+                session = new Session();
+                session.setSessionId(user.getSessionId());
+                requestToken = new RequestToken();
+                requestToken.setRequestToken(user.getRequestToken());
+                requestToken.setExpiresAt(user.getRequestTokenExpiration());
+
+                movieFavorites = new MovieFavorites();
+                List<Movie> movieList = new ArrayList<>();
+                for (RealmMovieFavorites movie : user.getMovieFavorites()) {
+                    movieList.add(new Movie(movie));
+                }
+                movieFavorites.setMovieList(movieList);
+
+                tvFavorites = new TvFavorites();
+                List<Tv> tvList = new ArrayList<>();
+                for (RealmTvFavorites tv : user.getTvFavorites()) {
+                    tvList.add(new Tv(tv));
+                }
+                tvFavorites.setTvList(tvList);
+            }
+
+            realm.commitTransaction();
+        }
     }
 
     public void login(final String username, final String password, final Activity activity, final TextView error) {
@@ -185,14 +199,6 @@ public class User {
 
     public static boolean isLoggedIn() {
         return session != null && session.getSessionId() != "";
-    }
-
-    public static void favorite(int detailableId, boolean action, String contentType, ImageView imageView) {
-        if (action) {
-            imageView.setImageResource(R.drawable.ic_favorite_border_white_48dp);
-        } else {
-            imageView.setImageResource(R.drawable.ic_favorite_white_48dp);
-        }
     }
 
     public int getId() {
