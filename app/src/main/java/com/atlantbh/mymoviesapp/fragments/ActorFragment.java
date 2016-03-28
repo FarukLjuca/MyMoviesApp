@@ -97,16 +97,18 @@ public class ActorFragment extends Fragment {
         }
 
         refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srActorRefresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
-        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        if (refreshLayout != null) {
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+            refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
 
         refresh();
 
@@ -190,7 +192,8 @@ public class ActorFragment extends Fragment {
             });
         }
 
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null)
+            refreshLayout.setRefreshing(false);
     }
 
     private void SetFonts() {

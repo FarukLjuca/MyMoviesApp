@@ -1,5 +1,6 @@
 package com.atlantbh.mymoviesapp.fragments;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
+import com.atlantbh.mymoviesapp.activities.VideoActivity;
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
@@ -99,6 +102,11 @@ public abstract class MoviesFragment extends Fragment {
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srMoviesRefresh);
+        refresh(savedInstanceState, refreshLayout);
+    }
+
+    public void refresh(final Bundle savedInstanceState, final SwipeRefreshLayout refreshLayout) {
         if (AppHelper.isOnline()) {
             Retrofit retrofit = AppHelper.getRetrofit();
             final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
@@ -153,7 +161,7 @@ public abstract class MoviesFragment extends Fragment {
 
                     pass++;
 
-                    setAdapterViews(savedInstanceState, movieList);
+                    setAdapterViews(savedInstanceState, movieList, refreshLayout);
 
                     if (pass == 3) {
                         Runnable runnable = new Runnable() {
@@ -179,7 +187,7 @@ public abstract class MoviesFragment extends Fragment {
                 }
             });
         } else {
-            Realm realm = Realm.getInstance(getContext());
+            Realm realm = Realm.getInstance(getActivity());
 
             RealmResults<RealmMovieBasic> movieList = null;
 
@@ -191,7 +199,18 @@ public abstract class MoviesFragment extends Fragment {
                 movieList = realm.where(RealmMovieBasic.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
             realm.close();
 
-            setAdapterViews(savedInstanceState, new MovieList(movieList));
+            setAdapterViews(savedInstanceState, new MovieList(movieList), refreshLayout);
+
+            if (refreshLayout != null) {
+                refreshLayout.setRefreshing(false);
+            }
+        }
+
+        if (listView != null) {
+            listView.setSelection(0);
+        }
+        else if (gridView != null) {
+            gridView.setSelection(0);
         }
     }
 
@@ -206,7 +225,7 @@ public abstract class MoviesFragment extends Fragment {
         }
     }
 
-    private void setAdapterViews(Bundle savedInstanceState, final MovieList movieList) {
+    private void setAdapterViews(Bundle savedInstanceState, final MovieList movieList, final SwipeRefreshLayout refreshLayout) {
         if (listView != null) {
             movieAdapter = new MovieAdapter(getActivity(), movieList);
             listView.setAdapter(movieAdapter);
@@ -221,10 +240,36 @@ public abstract class MoviesFragment extends Fragment {
                         Bundle bundle = new Bundle();
                         bundle.putInt(AppString.MOVIE_ID, movie.getId());
                         fragment.setArguments(bundle);
-                        getFragmentManager().beginTransaction()
-                                .addToBackStack(null)
-                                .replace(R.id.rlDetailsContainer, fragment, AppString.detailsFragmentTag)
-                                .commit();
+
+                        // get Support Fragment Manager
+                        android.support.v4.app.FragmentManager manager = getFragmentManager();
+                        if (manager != null) {
+                            // get size of BackStack
+                            int backStackSize = manager.getBackStackEntryCount();
+
+                            // if size is 0, no fragments have been added, add fragment regularly
+                            if (backStackSize == 0) {
+                                manager.beginTransaction()
+                                        .addToBackStack(String.valueOf(movie.getId()))
+                                        .replace(R.id.rlDetailsContainer, fragment, AppString.detailsFragmentTag)
+                                        .commit();
+                            }
+                            // if size is greater than 0, check if last BackStack Record name is same as current name,
+                            // if it is, do nothing, if it is not, add fragment regularly
+                            else if (backStackSize > 0) {
+                                android.support.v4.app.FragmentManager.BackStackEntry backStackLastRecord = manager.getBackStackEntryAt(backStackSize - 1);
+                                if (backStackLastRecord != null) {
+                                    String backStackName = backStackLastRecord.getName();
+                                    String currentName = String.valueOf(movie.getId());
+                                    if (!backStackName.equals(currentName)) {
+                                        manager.beginTransaction()
+                                                .addToBackStack(String.valueOf(movie.getId()))
+                                                .replace(R.id.rlDetailsContainer, fragment, AppString.detailsFragmentTag)
+                                                .commit();
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         Intent intent = new Intent(currentContext, DetailsActivity.class);
                         intent.putExtra(AppString.MOVIE_ID, movie.getId());
@@ -243,6 +288,16 @@ public abstract class MoviesFragment extends Fragment {
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                     onMovieScroll(firstVisibleItem, visibleItemCount, totalItemCount, movieList);
+                    boolean enable = false;
+                    if (listView != null && listView.getChildCount() > 0) {
+                        // check if the first item of the list is visible
+                        boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                        // check if the top of the first item is visible
+                        boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+                        // enabling or disabling the refresh layout
+                        enable = firstItemVisible && topOfFirstItemVisible && detailsContainer == null;
+                    }
+                    refreshLayout.setEnabled(enable);
                 }
             });
 
@@ -275,18 +330,24 @@ public abstract class MoviesFragment extends Fragment {
 
                 @Override
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    if (gridView.getAdapter() == null)
-                        return;
-
-                    if (gridView.getAdapter().getCount() == 0)
-                        return;
-
-                    int l = visibleItemCount + firstVisibleItem;
-                    if (l >= totalItemCount && !movieList.getIsLoading()) {
-                        movieList.setIsLoading(true);
-                        movieList.LoadData(getContext(), movieAdapter, getCategoryString());
-                        movieList.setIsLoading(false);
+                    if (gridView.getAdapter() != null && gridView.getAdapter().getCount() > 0) {
+                        int l = visibleItemCount + firstVisibleItem;
+                        if (l >= totalItemCount && !movieList.getIsLoading()) {
+                            movieList.setIsLoading(true);
+                            movieList.LoadData(getContext(), movieAdapter, getCategoryString());
+                        }
                     }
+
+                    boolean enable = false;
+                    if (gridView != null && gridView.getChildCount() > 0) {
+                        // check if the first item of the list is visible
+                        boolean firstItemVisible = gridView.getFirstVisiblePosition() == 0;
+                        // check if the top of the first item is visible
+                        boolean topOfFirstItemVisible = gridView.getChildAt(0).getTop() == 0;
+                        // enabling or disabling the refresh layout
+                        enable = firstItemVisible && topOfFirstItemVisible && detailsContainer == null;
+                    }
+                    refreshLayout.setEnabled(enable);
                 }
             });
 
@@ -297,6 +358,8 @@ public abstract class MoviesFragment extends Fragment {
                 }
             }
         }
+
+        refreshLayout.setRefreshing(false);
     }
 
     private void onMovieScroll(final int firstVisibleItem, final int visibleItemCount, final int totalItemCount, final MovieList movieList) {
@@ -311,7 +374,6 @@ public abstract class MoviesFragment extends Fragment {
             if (AppHelper.isOnline()) {
                 movieList.setIsLoading(true);
                 movieList.LoadData(getContext(), movieAdapter, getCategoryString());
-                movieList.setIsLoading(false);
             } else {
                 Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
                 snackbar.setActionTextColor(Color.CYAN);

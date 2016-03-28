@@ -148,17 +148,18 @@ public class DetailsFragment extends Fragment {
         }
 
         refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srDetailsRefresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-            }
-        });
-        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
+        if (refreshLayout != null) {
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                }
+            });
+            refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
 
         refresh();
 
@@ -317,7 +318,9 @@ public class DetailsFragment extends Fragment {
         });
         cast.setAdapter(castAdapter);
 
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     public void actorClick(final Actor actor) {
@@ -463,7 +466,7 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    public void rateMovie(View view) {
+    private void rateMovie(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rateView = inflater.inflate(R.layout.rate_view, null);
@@ -485,7 +488,7 @@ public class DetailsFragment extends Fragment {
                             call = userAPI.setRatingMovie(movieId, User.getSession().getSessionId(), ratingValue);
 
                         } else if (tvId > 0) {
-                            call = userAPI.setRatingMovie(tvId, User.getSession().getSessionId(), ratingValue);
+                            call = userAPI.setRatingTv(tvId, User.getSession().getSessionId(), ratingValue);
                         }
 
                         if (call != null) {
@@ -513,6 +516,29 @@ public class DetailsFragment extends Fragment {
         alertDialog.show();
     }
 
+    public void rateMovieClick(View view) {
+        if (User.isLoggedIn()) {
+            rateMovie(view);
+        } else {
+            CoordinatorLayout coordinatorLayout;
+            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+            } else {
+                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+            }
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
+            snackbar.setActionTextColor(Color.CYAN);
+            snackbar.setAction(R.string.login, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intent);
+                }
+            });
+            snackbar.show();
+        }
+    }
+
     private void setRatingView() {
         Retrofit retrofit = AppHelper.getRetrofit();
         UserAPI userAPI = retrofit.create(UserAPI.class);
@@ -522,8 +548,8 @@ public class DetailsFragment extends Fragment {
             call.enqueue(new Callback<RatingList>() {
                 @Override
                 public void onResponse(Response<RatingList> response, Retrofit retrofit) {
-                    if (response.body() != null) {
-                        ratingList = response.body();
+                    ratingList = response.body();
+                    if (ratingList != null) {
                         if (ratingList.getPage() < ratingList.getTotalPages()) {
                             for (int i = 2; i < ratingList.getTotalPages(); i++) {
                                 UserAPI userAPI = retrofit.create(UserAPI.class);
@@ -576,40 +602,42 @@ public class DetailsFragment extends Fragment {
                 @Override
                 public void onResponse(Response<RatingList> response, Retrofit retrofit) {
                     ratingList = response.body();
-                    if (ratingList.getPage() < ratingList.getTotalPages()) {
-                        for (int i = 2; i < ratingList.getTotalPages(); i++) {
-                            UserAPI userAPI = retrofit.create(UserAPI.class);
+                    if (ratingList != null) {
+                        if (ratingList.getPage() < ratingList.getTotalPages()) {
+                            for (int i = 2; i < ratingList.getTotalPages(); i++) {
+                                UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                            Call<RatingList> call = userAPI.getRatedTvs(User.getSession().getSessionId(), i);
-                            call.enqueue(new Callback<RatingList>() {
-                                @Override
-                                public void onResponse(Response<RatingList> response, Retrofit retrofit) {
-                                    ratingList.getRatingList().addAll(response.body().getRatingList());
-                                    counter++;
-                                    if (counter == ratingList.getTotalPages()) {
-                                        for (Rating rating : ratingList.getRatingList()) {
-                                            if (rating.getId() == tvId) {
-                                                yourRating.setText(String.valueOf(rating.getRating()));
-                                                break;
+                                Call<RatingList> call = userAPI.getRatedTvs(User.getSession().getSessionId(), i);
+                                call.enqueue(new Callback<RatingList>() {
+                                    @Override
+                                    public void onResponse(Response<RatingList> response, Retrofit retrofit) {
+                                        ratingList.getRatingList().addAll(response.body().getRatingList());
+                                        counter++;
+                                        if (counter == ratingList.getTotalPages()) {
+                                            for (Rating rating : ratingList.getRatingList()) {
+                                                if (rating.getId() == tvId) {
+                                                    yourRating.setText(String.valueOf(rating.getRating()));
+                                                    yourRating.setTextSize(24);
+                                                    break;
+                                                }
                                             }
+                                            counter = 1;
                                         }
-                                        counter = 1;
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Throwable t) {
+                                    @Override
+                                    public void onFailure(Throwable t) {
 
+                                    }
+                                });
+                            }
+                        } else {
+                            for (Rating rating : ratingList.getRatingList()) {
+                                if (rating.getId() == tvId) {
+                                    yourRating.setText(String.valueOf(rating.getRating()));
+                                    yourRating.setTextSize(24);
+                                    break;
                                 }
-                            });
-                        }
-                    }
-                    else {
-                        for (Rating rating : ratingList.getRatingList()) {
-                            if (rating.getId() == tvId) {
-                                yourRating.setText(String.valueOf(rating.getRating()));
-                                yourRating.setTextSize(24);
-                                break;
                             }
                         }
                     }

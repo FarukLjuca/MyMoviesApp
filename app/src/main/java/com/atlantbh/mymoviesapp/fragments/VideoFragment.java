@@ -93,17 +93,22 @@ public class VideoFragment extends Fragment {
         ButterKnife.bind(this, getView());
 
         refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srVideoRefresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refresh();
-                ((VideoActivity) getActivity()).getYouTubePlayer().cueVideo(((VideoActivity) getActivity()).getVideoKey());
-            }
-        });
-        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        if (refreshLayout != null) {
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refresh();
+                    VideoActivity videoActivity = (VideoActivity) getActivity();
+                    if (videoActivity != null && videoActivity.getYouTubePlayer() != null) {
+                        videoActivity.getYouTubePlayer().cueVideo(videoActivity.getVideoKey());
+                    }
+                }
+            });
+            refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
 
         refresh();
     }
@@ -161,7 +166,8 @@ public class VideoFragment extends Fragment {
             });
         }
 
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null)
+            refreshLayout.setRefreshing(false);
     }
 
     public void actorClick(final Actor actor) {

@@ -79,6 +79,7 @@ public class MovieList {
                 MovieList movieList = response.body();
                 movieAdapter.addItems(movieList);
                 movieAdapter.notifyDataSetChanged();
+                isLoading = false;
             }
 
             @Override

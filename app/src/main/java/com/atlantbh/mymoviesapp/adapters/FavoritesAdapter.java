@@ -2,6 +2,7 @@ package com.atlantbh.mymoviesapp.adapters;
 
 import android.content.Context;
 import android.media.Rating;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieFavorites;
 import com.atlantbh.mymoviesapp.model.Tv;
 import com.atlantbh.mymoviesapp.model.TvFavorites;
+import com.atlantbh.mymoviesapp.model.User;
 import com.bumptech.glide.Glide;
 
 public class FavoritesAdapter extends BaseExpandableListAdapter {
@@ -27,6 +29,14 @@ public class FavoritesAdapter extends BaseExpandableListAdapter {
     public FavoritesAdapter (Context context, MovieFavorites movieFavorites, TvFavorites tvFavorites) {
         this.context = context;
         this.movieFavorites = movieFavorites;
+        this.tvFavorites = tvFavorites;
+    }
+
+    public void setMovieFavorites(MovieFavorites movieFavorites) {
+        this.movieFavorites = movieFavorites;
+    }
+
+    public void setTvFavorites(TvFavorites tvFavorites) {
         this.tvFavorites = tvFavorites;
     }
 
@@ -90,10 +100,10 @@ public class FavoritesAdapter extends BaseExpandableListAdapter {
     public long getChildId(int groupPosition, int childPosition) {
         long result = 0;
 
-        if (groupPosition == 0) {
+        if (groupPosition == 0 && childPosition < movieFavorites.getMovieList().size()) {
             result = movieFavorites.getMovieList().get(childPosition).getId();
         }
-        else if (groupPosition == 1) {
+        else if (groupPosition == 1 && childPosition < tvFavorites.getTvList().size()) {
             result = tvFavorites.getTvList().get(childPosition).getId();
         }
 
@@ -133,10 +143,10 @@ public class FavoritesAdapter extends BaseExpandableListAdapter {
         }
 
         Detailable detailable = null;
-        if (groupPosition == 0) {
+        if (groupPosition == 0 && childPosition < movieFavorites.getMovieList().size()) {
             detailable = movieFavorites.getMovieList().get(childPosition);
         }
-        else if (groupPosition == 1) {
+        else if (groupPosition == 1 && childPosition < movieFavorites.getMovieList().size()) {
             detailable = tvFavorites.getTvList().get(childPosition);
         }
 
@@ -164,8 +174,9 @@ public class FavoritesAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void refresh() {
+    public void refresh(SwipeRefreshLayout refreshLayout) {
+        User user = User.getInstance();
+        user.getFavorites(refreshLayout, this);
         notifyDataSetChanged();
-
     }
 }

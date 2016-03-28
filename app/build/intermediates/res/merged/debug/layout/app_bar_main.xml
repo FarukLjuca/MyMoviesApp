@@ -34,5 +34,4 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         layout="@layout/content_movie_list" />
-
 </RelativeLayout>

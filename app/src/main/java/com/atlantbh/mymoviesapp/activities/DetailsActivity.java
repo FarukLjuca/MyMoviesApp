@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.R;
@@ -98,6 +97,6 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void rateMovie(View view) {
-        detailsFragment.rateMovie(view);
+        detailsFragment.rateMovieClick(view);
     }
 }

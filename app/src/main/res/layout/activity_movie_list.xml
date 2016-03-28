@@ -13,10 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include
-            layout="@layout/app_bar_main"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/srMoviesRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
+
+            <include
+                layout="@layout/app_bar_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView

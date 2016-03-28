@@ -66,18 +66,20 @@ public class FavoritesFragment extends Fragment {
         super.onResume();
 
         refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srFavoritesRefresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (favoritesAdapter != null) {
-                    favoritesAdapter.refresh();
+        if (refreshLayout != null) {
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    if (favoritesAdapter != null) {
+                        favoritesAdapter.refresh(refreshLayout);
+                    }
                 }
-            }
-        });
-        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+            });
+            refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
 
         setAdapter();
     }
@@ -125,7 +127,5 @@ public class FavoritesFragment extends Fragment {
                 return true;
             }
         });
-
-        refreshLayout.setRefreshing(false);
     }
 }

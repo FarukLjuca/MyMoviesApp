@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,17 +20,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.atlantbh.mymoviesapp.adapters.MoviePagerAdapter;
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
+import com.atlantbh.mymoviesapp.fragments.MoviesFragment;
 import com.atlantbh.mymoviesapp.fragments.VideoFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
-import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.model.User;
 
 import butterknife.Bind;
@@ -102,6 +103,25 @@ public class MovieListActivity extends AppCompatActivity
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
+
+        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.srMoviesRefresh);
+        RelativeLayout detailsContainer = (RelativeLayout) findViewById(R.id.rlDetailsContainer);
+        if (refreshLayout != null && detailsContainer == null) {
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    MoviesFragment moviesFragment = (MoviesFragment) pagerAdapter.getItem(viewPager.getCurrentItem());
+                    moviesFragment.refresh(null, refreshLayout);
+                }
+            });
+            refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
+        else if (refreshLayout != null) {
+            refreshLayout.setEnabled(false);
+        }
     }
 
     @Override
@@ -211,7 +231,7 @@ public class MovieListActivity extends AppCompatActivity
     public void rateMovie(View view) {
         detailsFragment = (DetailsFragment) getSupportFragmentManager().findFragmentByTag(AppString.detailsFragmentTag);
         if (detailsFragment != null) {
-            detailsFragment.rateMovie(view);
+            detailsFragment.rateMovieClick(view);
         }
     }
 

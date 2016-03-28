@@ -2,12 +2,14 @@ package com.atlantbh.mymoviesapp.model;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.MyApplication;
 import com.atlantbh.mymoviesapp.R;
+import com.atlantbh.mymoviesapp.adapters.FavoritesAdapter;
 import com.atlantbh.mymoviesapp.api.TvAPI;
 import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
@@ -218,6 +220,10 @@ public class User {
     }
 
     public void getFavorites() {
+        getFavorites(null, null);
+    }
+
+    public void getFavorites(final SwipeRefreshLayout refreshLayout, final FavoritesAdapter favoritesAdapter) {
         Retrofit retrofit = AppHelper.getRetrofit();
         final UserAPI userAPI = retrofit.create(UserAPI.class);
 
@@ -239,6 +245,11 @@ public class User {
                             if (tvLoadingDone) {
                                 saveToDatabase();
                                 tvLoadingDone = false;
+                                if (refreshLayout != null) {
+                                    refreshLayout.setRefreshing(false);
+                                    favoritesAdapter.setMovieFavorites(movieFavorites);
+                                    favoritesAdapter.setTvFavorites(tvFavorites);
+                                }
                             }
                         }
 
@@ -265,20 +276,27 @@ public class User {
                                         public void onResponse(Response<Tv> response, Retrofit retrofit) {
                                             Tv innerTv = response.body();
 
-                                            for (Tv loopTv : tvFavorites.getTvList()) {
-                                                if (loopTv.getId() == innerTv.getId()) {
-                                                    loopTv.setBasicText(innerTv.getBasicText());
-                                                    break;
+                                            if (innerTv != null) {
+                                                for (Tv loopTv : tvFavorites.getTvList()) {
+                                                    if (loopTv.getId() == innerTv.getId()) {
+                                                        loopTv.setBasicText(innerTv.getBasicText());
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                            sum++;
-                                            if (sum >= index) {
-                                                index = 0;
-                                                sum = 0;
-                                                tvLoadingDone = true;
-                                                if (movieFavorites != null) {
-                                                    saveToDatabase();
-                                                    tvLoadingDone = false;
+                                                sum++;
+                                                if (sum >= index) {
+                                                    index = 0;
+                                                    sum = 0;
+                                                    tvLoadingDone = true;
+                                                    if (movieFavorites != null) {
+                                                        saveToDatabase();
+                                                        tvLoadingDone = false;
+                                                        if (refreshLayout != null) {
+                                                            refreshLayout.setRefreshing(false);
+                                                            favoritesAdapter.setMovieFavorites(movieFavorites);
+                                                            favoritesAdapter.setTvFavorites(tvFavorites);
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
