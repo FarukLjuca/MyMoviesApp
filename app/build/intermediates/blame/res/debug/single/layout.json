@@ -52,6 +52,10 @@
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\layout\\abc_alert_dialog_button_bar_material.xml"
     },
     {
+        "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\fragment_simple_image.xml",
+        "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\src\\main\\res\\layout\\fragment_simple_image.xml"
+    },
+    {
         "merged": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_expanded_menu_layout.xml",
         "source": "C:\\Users\\Faruk\\Documents\\AndroidStudioProjects\\MyMoviesApp\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.2.1\\res\\layout\\abc_expanded_menu_layout.xml"
     },

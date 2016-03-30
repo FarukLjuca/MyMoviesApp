@@ -66,6 +66,9 @@ public class DetailsFragment extends Fragment {
     private int counter = 1;
     private SwipeRefreshLayout refreshLayout;
 
+    private boolean favoriteEnabled = true;
+    private Detailable currentDetailable;
+
     @Bind(R.id.ivDetailsBackdrop)
     ImageView backdrop;
     @Bind(R.id.tvDetailsTitle)
@@ -132,7 +135,8 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        setRatingView();
+        refresh();
+        setFonts();
     }
 
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -160,10 +164,6 @@ public class DetailsFragment extends Fragment {
                     android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
         }
-
-        refresh();
-
-        SetFonts();
     }
 
     private void refresh() {
@@ -180,7 +180,8 @@ public class DetailsFragment extends Fragment {
                     public void onResponse(Response<Movie> response, Retrofit retrofit) {
                         Detailable detailable = response.body();
                         if (detailable != null) {
-                            SetContent(detailable);
+                            currentDetailable = detailable;
+                            setContent(detailable);
 
                             Realm realm = Realm.getInstance(getContext());
                             realm.beginTransaction();
@@ -202,11 +203,11 @@ public class DetailsFragment extends Fragment {
                 if (realmResults.size() == 0) {
                     RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
                     if (realmResultsBasic.size() > 0) {
-                        SetContent(new Movie(realmResultsBasic.get(0)));
+                        setContent(new Movie(realmResultsBasic.get(0)));
                     }
                 } else {
                     Movie movie = new Movie(realmResults.get(0));
-                    SetContent(movie);
+                    setContent(movie);
                 }
                 realm.close();
 
@@ -229,7 +230,7 @@ public class DetailsFragment extends Fragment {
                     final Detailable detailable = response.body();
                     if (detailable != null) {
                         if (AppHelper.isOnline()) {
-                            SetContent(detailable);
+                            setContent(detailable);
                         } else {
                             CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
                             if (coordinator == null) {
@@ -240,7 +241,7 @@ public class DetailsFragment extends Fragment {
                             snackbar.setAction(R.string.refresh, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    SetContent(detailable);
+                                    setContent(detailable);
                                 }
                             });
                             snackbar.show();
@@ -257,7 +258,7 @@ public class DetailsFragment extends Fragment {
         setRatingView();
     }
 
-    private void SetContent(Detailable detailable) {
+    private void setContent(Detailable detailable) {
         Glide.with(getContext())
                 .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
                 .placeholder(R.drawable.backdrop_placeholder)
@@ -365,7 +366,7 @@ public class DetailsFragment extends Fragment {
         return bd;
     }
 
-    private void SetFonts() {
+    private void setFonts() {
         title.setTypeface(FontHelper.getFont(getContext(), FontHelper.AVENIR_REGULAR));
         year.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         subtitle.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));
@@ -394,51 +395,55 @@ public class DetailsFragment extends Fragment {
     }
 
     private void favorite() {
-        if (User.isLoggedIn()) {
-            if (favorite != null) {
-                final User user = User.getInstance();
+        if (favoriteEnabled) {
+            if (User.isLoggedIn()) {
+                favoriteEnabled = false;
+                if (favorite != null) {
+                    final User user = User.getInstance();
 
-                Retrofit retrofit = AppHelper.getRetrofit();
-                UserAPI userAPI = retrofit.create(UserAPI.class);
+                    Retrofit retrofit = AppHelper.getRetrofit();
+                    UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                final boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
-                FavoritePost body = new FavoritePost(isMovie() ? "movie" : "tv", isMovie() ? movieId : tvId, !isFavorite);
+                    final boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
+                    FavoritePost body = new FavoritePost(isMovie() ? "movie" : "tv", isMovie() ? movieId : tvId, !isFavorite);
 
-                Call<com.atlantbh.mymoviesapp.model.Response> call = userAPI.setFavorite(user.getId(), User.getSession().getSessionId(), body);
-                call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
-                    @Override
-                    public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
-                        user.getFavorites();
-                        if (isFavorite) {
-                            favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
-                        } else {
-                            favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
+                    Call<com.atlantbh.mymoviesapp.model.Response> call = userAPI.setFavorite(user.getId(), User.getSession().getSessionId(), body);
+                    call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
+                        @Override
+                        public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
+                            user.getFavorites();
+                            favoriteEnabled = true;
+                            if (isFavorite) {
+                                favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
+                            } else {
+                                favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
+                            }
                         }
-                    }
 
+                        @Override
+                        public void onFailure(Throwable t) {
+
+                        }
+                    });
+                }
+            } else {
+                CoordinatorLayout coordinatorLayout;
+                if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
+                    coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
+                } else {
+                    coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
+                }
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
+                snackbar.setActionTextColor(Color.CYAN);
+                snackbar.setAction(R.string.login, new View.OnClickListener() {
                     @Override
-                    public void onFailure(Throwable t) {
-
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
                     }
                 });
+                snackbar.show();
             }
-        } else {
-            CoordinatorLayout coordinatorLayout;
-            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
-                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
-            } else {
-                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
-            }
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, R.string.you_need_to_be_logged_in, Snackbar.LENGTH_LONG);
-            snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction(R.string.login, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                    startActivity(intent);
-                }
-            });
-            snackbar.show();
         }
     }
 
@@ -478,7 +483,7 @@ public class DetailsFragment extends Fragment {
                         Retrofit retrofit = AppHelper.getRetrofit();
                         UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                        RatingBar ratingBar = (RatingBar) rateView.findViewById(R.id.rbRate);
+                        final RatingBar ratingBar = (RatingBar) rateView.findViewById(R.id.rbRate);
                         final RatingValue ratingValue = new RatingValue();
                         ratingValue.setValue(ratingBar.getRating());
 
@@ -495,8 +500,7 @@ public class DetailsFragment extends Fragment {
                             call.enqueue(new Callback<com.atlantbh.mymoviesapp.model.Response>() {
                                 @Override
                                 public void onResponse(Response<com.atlantbh.mymoviesapp.model.Response> response, Retrofit retrofit) {
-                                    yourRating.setText(String.valueOf(ratingValue.getValue()));
-                                    yourRating.setTextSize(24);
+                                    refresh();
                                 }
 
                                 @Override
@@ -551,24 +555,26 @@ public class DetailsFragment extends Fragment {
                     ratingList = response.body();
                     if (ratingList != null) {
                         if (ratingList.getPage() < ratingList.getTotalPages()) {
-                            for (int i = 2; i < ratingList.getTotalPages(); i++) {
+                            for (int i = 2; i <= ratingList.getTotalPages(); i++) {
                                 UserAPI userAPI = retrofit.create(UserAPI.class);
 
                                 Call<RatingList> call = userAPI.getRatedMovies(User.getSession().getSessionId(), i);
                                 call.enqueue(new Callback<RatingList>() {
                                     @Override
                                     public void onResponse(Response<RatingList> response, Retrofit retrofit) {
-                                        ratingList.getRatingList().addAll(response.body().getRatingList());
-                                        counter++;
-                                        if (counter == ratingList.getTotalPages()) {
-                                            for (Rating rating : ratingList.getRatingList()) {
-                                                if (rating.getId() == movieId) {
-                                                    yourRating.setText(String.valueOf(rating.getRating()));
-                                                    yourRating.setTextSize(24);
-                                                    break;
+                                        if (response.body() != null) {
+                                            ratingList.getRatingList().addAll(response.body().getRatingList());
+                                            counter++;
+                                            if (counter == ratingList.getTotalPages()) {
+                                                for (Rating rating : ratingList.getRatingList()) {
+                                                    if (rating.getId() == movieId) {
+                                                        yourRating.setText(String.valueOf(rating.getRating()));
+                                                        yourRating.setTextSize(24);
+                                                        break;
+                                                    }
                                                 }
+                                                counter = 1;
                                             }
-                                            counter = 1;
                                         }
                                     }
 

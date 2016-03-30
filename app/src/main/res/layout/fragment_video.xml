@@ -98,7 +98,7 @@
         android:layout_below="@id/rvVideoActors"
         android:text="@string/reviews" />
 
-    <com.atlantbh.mymoviesapp.helpers.NonScrollListView
+    <com.atlantbh.mymoviesapp.helpers.ReviewsListView
         android:id="@+id/lvVideoReviews"
         android:divider="@null"
         android:layout_marginLeft="20dp"

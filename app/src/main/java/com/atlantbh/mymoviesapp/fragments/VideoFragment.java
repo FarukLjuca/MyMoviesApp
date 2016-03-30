@@ -31,7 +31,7 @@ import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
-import com.atlantbh.mymoviesapp.helpers.NonScrollListView;
+import com.atlantbh.mymoviesapp.helpers.ReviewsListView;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.RatingValue;
@@ -60,7 +60,7 @@ public class VideoFragment extends Fragment {
     @Bind(R.id.rvVideoActors)
     RecyclerView actors;
     @Bind(R.id.lvVideoReviews)
-    NonScrollListView reviews;
+    ReviewsListView reviews;
 
     private int movieId;
     private SwipeRefreshLayout refreshLayout;

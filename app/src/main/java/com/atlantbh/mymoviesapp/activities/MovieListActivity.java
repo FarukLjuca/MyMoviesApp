@@ -28,6 +28,7 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.fragments.ActorFragment;
 import com.atlantbh.mymoviesapp.fragments.DetailsFragment;
 import com.atlantbh.mymoviesapp.fragments.MoviesFragment;
+import com.atlantbh.mymoviesapp.fragments.SimpleImageFragment;
 import com.atlantbh.mymoviesapp.fragments.VideoFragment;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
@@ -53,6 +54,7 @@ public class MovieListActivity extends AppCompatActivity
     private DetailsFragment detailsFragment;
     private ActorFragment actorFragment;
     private VideoFragment videoFragment;
+    private SwipeRefreshLayout refreshLayout;
 
     public Context getContext() {
         return this;
@@ -104,7 +106,22 @@ public class MovieListActivity extends AppCompatActivity
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
 
-        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.srMoviesRefresh);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                enableDisableSwipeRefresh(state == ViewPager.SCROLL_STATE_IDLE);
+            }
+        });
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.srMoviesRefresh);
         RelativeLayout detailsContainer = (RelativeLayout) findViewById(R.id.rlDetailsContainer);
         if (refreshLayout != null && detailsContainer == null) {
             refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -119,8 +136,18 @@ public class MovieListActivity extends AppCompatActivity
                     android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
         }
-        else if (refreshLayout != null) {
-            refreshLayout.setEnabled(false);
+        if (detailsContainer != null) {
+            SimpleImageFragment fragment = new SimpleImageFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack("demo")
+                    .replace(R.id.rlDetailsContainer, fragment, AppString.actorFragmentTag)
+                    .commit();
+        }
+    }
+
+    private void enableDisableSwipeRefresh(boolean enabled) {
+        if (refreshLayout != null) {
+            refreshLayout.setEnabled(enabled);
         }
     }
 

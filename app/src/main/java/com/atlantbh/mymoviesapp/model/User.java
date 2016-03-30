@@ -255,7 +255,7 @@ public class User {
 
                         @Override
                         public void onFailure(Throwable t) {
-
+                            refreshLayout.setRefreshing(false);
                         }
                     });
 
@@ -303,7 +303,7 @@ public class User {
 
                                         @Override
                                         public void onFailure(Throwable t) {
-
+                                            refreshLayout.setRefreshing(false);
                                         }
                                     });
                                 }

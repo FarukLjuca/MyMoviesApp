@@ -10,14 +10,14 @@ public class MovieListActivity$$ViewBinder<T extends com.atlantbh.mymoviesapp.ac
     View view;
     view = finder.findRequiredView(source, 2131624078, "field 'viewPager'");
     target.viewPager = finder.castView(view, 2131624078, "field 'viewPager'");
-    view = finder.findRequiredView(source, 2131624077, "field 'tabLayout'");
-    target.tabLayout = finder.castView(view, 2131624077, "field 'tabLayout'");
-    view = finder.findRequiredView(source, 2131624076, "field 'toolbar'");
-    target.toolbar = finder.castView(view, 2131624076, "field 'toolbar'");
+    view = finder.findRequiredView(source, 2131624076, "field 'tabLayout'");
+    target.tabLayout = finder.castView(view, 2131624076, "field 'tabLayout'");
+    view = finder.findRequiredView(source, 2131624075, "field 'toolbar'");
+    target.toolbar = finder.castView(view, 2131624075, "field 'toolbar'");
     view = finder.findRequiredView(source, 2131624062, "field 'drawer'");
     target.drawer = finder.castView(view, 2131624062, "field 'drawer'");
-    view = finder.findRequiredView(source, 2131624065, "field 'navigationView'");
-    target.navigationView = finder.castView(view, 2131624065, "field 'navigationView'");
+    view = finder.findRequiredView(source, 2131624064, "field 'navigationView'");
+    target.navigationView = finder.castView(view, 2131624064, "field 'navigationView'");
   }
 
   @Override public void unbind(T target) {

@@ -297,7 +297,9 @@ public abstract class MoviesFragment extends Fragment {
                         // enabling or disabling the refresh layout
                         enable = firstItemVisible && topOfFirstItemVisible && detailsContainer == null;
                     }
-                    refreshLayout.setEnabled(enable);
+                    if (refreshLayout != null) {
+                        refreshLayout.setEnabled(enable);
+                    }
                 }
             });
 
@@ -359,7 +361,9 @@ public abstract class MoviesFragment extends Fragment {
             }
         }
 
-        refreshLayout.setRefreshing(false);
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     private void onMovieScroll(final int firstVisibleItem, final int visibleItemCount, final int totalItemCount, final MovieList movieList) {
