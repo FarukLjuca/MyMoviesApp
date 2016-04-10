@@ -17,17 +17,13 @@ public class RealmMovie extends RealmObject {
     private String posterPath;
     private String overview;
     private String title;
-    private Float voteAverage;
+    private float voteAverage;
     private String backdropPath;
     private int voteCount;
     private Date releaseDate;
     private RealmList<RealmGenre> genres;
     private RealmList<RealmActor> actors;
     private int runtime;
-
-    public void setRuntime(int runtime) {
-        this.runtime = runtime;
-    }
 
     public RealmMovie() {}
 
@@ -37,11 +33,10 @@ public class RealmMovie extends RealmObject {
         overview = movie.getOverview();
         title = movie.getTitle();
         voteAverage = movie.getVoteAverage();
-
-        setBackdropPath(movie.getBackdropPath());
-        setVoteCount(movie.getVoteCount());
-        setReleaseDate(movie.getReleaseDate());
-        setRuntime(movie.getRuntime());
+        backdropPath = movie.getBackdropPath();
+        voteCount = movie.getVoteCount();
+        releaseDate = movie.getReleaseDate();
+        runtime = movie.getRuntime();
 
         genres = new RealmList<>();
         if (movie.getGenres() != null) {
@@ -90,11 +85,11 @@ public class RealmMovie extends RealmObject {
         this.title = title;
     }
 
-    public Float getVoteAverage() {
+    public float getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(Float voteAverage) {
+    public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
     }
 
@@ -140,5 +135,9 @@ public class RealmMovie extends RealmObject {
 
     public int getRuntime() {
         return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
     }
 }

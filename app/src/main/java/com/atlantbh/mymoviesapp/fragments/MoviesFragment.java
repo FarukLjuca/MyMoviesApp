@@ -94,12 +94,12 @@ public abstract class MoviesFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(final Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.srMoviesRefresh);
@@ -116,68 +116,69 @@ public abstract class MoviesFragment extends Fragment {
                 @Override
                 public void onResponse(Response<MovieList> response, Retrofit retrofit) {
                     final MovieList movieList = response.body();
+                    if (movieList != null && movieList.getMovies() != null) {
+                        for (int i = 0; i < movieList.getMovies().size(); i++) {
+                            int index = -1;
+                            for (int j = 0; j < optimizedMovieList.size(); j++) {
+                                if (optimizedMovieList.get(j).getId() == movieList.getMovies().get(i).getId()) {
+                                    index = i;
+                                    break;
+                                }
+                            }
 
-                    for (int i = 0; i < movieList.getMovies().size(); i++) {
-                        int index = -1;
-                        for (int j = 0; j < optimizedMovieList.size(); j++) {
-                            if (optimizedMovieList.get(j).getId() == movieList.getMovies().get(i).getId()) {
-                                index = i;
-                                break;
+                            if (index == -1) {
+                                RealmMovieBasic realmMovie = new RealmMovieBasic(movieList.getMovies().get(i));
+                                realmMovie.setCategory(getCategory());
+
+                                switch (getCategory()) {
+                                    case Movie.POPULAR:
+                                        realmMovie.setIndexPopular(i);
+                                        break;
+                                    case Movie.NOW_PAYING:
+                                        realmMovie.setIndexNowPlaying(i);
+                                        break;
+                                    case Movie.TOP_RATED:
+                                        realmMovie.setIndexTopRated(i);
+                                        break;
+                                }
+
+                                optimizedMovieList.add(realmMovie);
+                            } else {
+                                optimizedMovieList.get(index).setCategory(Movie.mergeCategories(optimizedMovieList.get(index).getCategory(), getCategory()));
+                                switch (getCategory()) {
+                                    case Movie.POPULAR:
+                                        optimizedMovieList.get(index).setIndexPopular(i);
+                                        break;
+                                    case Movie.NOW_PAYING:
+                                        optimizedMovieList.get(index).setIndexNowPlaying(i);
+                                        break;
+                                    case Movie.TOP_RATED:
+                                        optimizedMovieList.get(index).setIndexTopRated(i);
+                                        break;
+                                }
                             }
                         }
 
-                        if (index == -1) {
-                            RealmMovieBasic realmMovie = new RealmMovieBasic(movieList.getMovies().get(i));
-                            realmMovie.setCategory(getCategory());
+                        pass++;
 
-                            switch (getCategory()) {
-                                case Movie.POPULAR:
-                                    realmMovie.setIndexPopular(i);
-                                    break;
-                                case Movie.NOW_PAYING:
-                                    realmMovie.setIndexNowPlaying(i);
-                                    break;
-                                case Movie.TOP_RATED:
-                                    realmMovie.setIndexTopRated(i);
-                                    break;
-                            }
+                        setAdapterViews(savedInstanceState, movieList, refreshLayout);
 
-                            optimizedMovieList.add(realmMovie);
-                        } else {
-                            optimizedMovieList.get(index).setCategory(Movie.mergeCategories(optimizedMovieList.get(index).getCategory(), getCategory()));
-                            switch (getCategory()) {
-                                case Movie.POPULAR:
-                                    optimizedMovieList.get(index).setIndexPopular(i);
-                                    break;
-                                case Movie.NOW_PAYING:
-                                    optimizedMovieList.get(index).setIndexNowPlaying(i);
-                                    break;
-                                case Movie.TOP_RATED:
-                                    optimizedMovieList.get(index).setIndexTopRated(i);
-                                    break;
-                            }
+                        if (pass == 3) {
+                            Runnable runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    Realm realm = Realm.getInstance(getContext());
+
+                                    realm.beginTransaction();
+                                    realm.copyToRealmOrUpdate(optimizedMovieList);
+                                    realm.commitTransaction();
+                                    realm.close();
+                                }
+                            };
+                            Thread thread = new Thread(runnable);
+
+                            thread.start();
                         }
-                    }
-
-                    pass++;
-
-                    setAdapterViews(savedInstanceState, movieList, refreshLayout);
-
-                    if (pass == 3) {
-                        Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                Realm realm = Realm.getInstance(getContext());
-
-                                realm.beginTransaction();
-                                realm.copyToRealmOrUpdate(optimizedMovieList);
-                                realm.commitTransaction();
-                                realm.close();
-                            }
-                        };
-                        Thread thread = new Thread(runnable);
-
-                        thread.start();
                     }
                 }
 

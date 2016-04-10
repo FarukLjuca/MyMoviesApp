@@ -21,9 +21,11 @@ public class SimpleImageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_simple_image, container, false);
-        Glide.with(container.getContext())
-                .load("http://blogs.psychcentral.com/relationships-balance/files/2013/02/movie_and_popcorn.jpg")
-                .into((ImageView) view.findViewById(R.id.ivSimpleImage));
+        if (container.getContext() != null) {
+            Glide.with(container.getContext())
+                    .load("http://blogs.psychcentral.com/relationships-balance/files/2013/02/movie_and_popcorn.jpg")
+                    .into((ImageView) view.findViewById(R.id.ivSimpleImage));
+        }
         return view;
     }
 }

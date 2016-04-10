@@ -183,18 +183,22 @@ public class DetailsFragment extends Fragment {
                             currentDetailable = detailable;
                             setContent(detailable);
 
-                            Realm realm = Realm.getInstance(getContext());
-                            realm.beginTransaction();
-                            RealmMovie realmMovie = new RealmMovie((Movie) detailable);
-                            realm.copyToRealmOrUpdate(realmMovie);
-                            realm.commitTransaction();
-                            realm.close();
+                            if (getContext() != null) {
+                                Realm realm = Realm.getInstance(getContext());
+                                realm.beginTransaction();
+                                RealmMovie realmMovie = new RealmMovie((Movie) detailable);
+                                realm.copyToRealmOrUpdate(realmMovie);
+                                realm.commitTransaction();
+                                realm.close();
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             } else {
@@ -259,68 +263,72 @@ public class DetailsFragment extends Fragment {
     }
 
     private void setContent(Detailable detailable) {
-        Glide.with(getContext())
-                .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
-                .placeholder(R.drawable.backdrop_placeholder)
-                .into(backdrop);
+        if (getContext() != null) {
+            Glide.with(getContext())
+                    .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
+                    .placeholder(R.drawable.backdrop_placeholder)
+                    .into(backdrop);
 
-        Glide.with(getContext())
-                .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
-                .bitmapTransform(new BlurTransformation(getContext(), 25))
-                .into(backdropBlur);
+            Glide.with(getContext())
+                    .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())
+                    .bitmapTransform(new BlurTransformation(getContext(), 25))
+                    .into(backdropBlur);
 
-        if (User.isLoggedIn()) {
-            User user = User.getInstance();
-            boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
-            if (!isFavorite) {
-                favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
-            } else {
-                favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
-            }
-        }
-
-        title.setText(detailable.getTitle());
-        year.setText(detailable.getYear());
-        subtitle.setText(detailable.getSubtitle());
-
-        ImageView poster = (ImageView) getActivity().findViewById(R.id.ivDetailsPoster);
-        Glide.with(getContext())
-                .load("https://image.tmdb.org/t/p/w500" + detailable.getPosterPath())
-                .placeholder(R.drawable.actor_placeholder_curved)
-                .into(poster);
-
-        basicText.setText(detailable.getBasicText());
-        basicText.post(new Runnable() {
-            @Override
-            public void run() {
-                Layout l = basicText.getLayout();
-                if (l != null) {
-                    int lines = l.getLineCount();
-                    if (lines > 0)
-                        if (l.getEllipsisCount(lines - 1) == 0) {
-                            info.setColorFilter(R.color.lightgray);
-                        }
+            if (User.isLoggedIn()) {
+                User user = User.getInstance();
+                boolean isFavorite = user.isFavorite(isMovie() ? movieId : tvId);
+                if (!isFavorite) {
+                    favorite.setImageResource(R.drawable.ic_favorite_border_white_48dp);
+                } else {
+                    favorite.setImageResource(R.drawable.ic_favorite_white_48dp);
                 }
             }
-        });
 
-        rating.setRating(detailable.getVoteAverage() / 2);
-        voteAverage.setText(String.valueOf(round(detailable.getVoteAverage(), 1)));
-        voteCount.setText(Integer.toString(detailable.getVoteCount()));
+            title.setText(detailable.getTitle());
+            year.setText(detailable.getYear());
+            subtitle.setText(detailable.getSubtitle());
 
-        cast.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        cast.setLayoutManager(layoutManager);
-        RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), detailable.getActorList(), new ActorAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Actor actor) {
-                actorClick(actor);
+            ImageView poster = (ImageView) getActivity().findViewById(R.id.ivDetailsPoster);
+            if (poster != null) {
+                Glide.with(getContext())
+                        .load("https://image.tmdb.org/t/p/w500" + detailable.getPosterPath())
+                        .placeholder(R.drawable.actor_placeholder_curved)
+                        .into(poster);
             }
-        });
-        cast.setAdapter(castAdapter);
 
-        if (refreshLayout != null) {
-            refreshLayout.setRefreshing(false);
+            basicText.setText(detailable.getBasicText());
+            basicText.post(new Runnable() {
+                @Override
+                public void run() {
+                    Layout l = basicText.getLayout();
+                    if (l != null) {
+                        int lines = l.getLineCount();
+                        if (lines > 0)
+                            if (l.getEllipsisCount(lines - 1) == 0) {
+                                info.setColorFilter(R.color.lightgray);
+                            }
+                    }
+                }
+            });
+
+            rating.setRating(detailable.getVoteAverage() / 2);
+            voteAverage.setText(String.valueOf(round(detailable.getVoteAverage(), 1)));
+            voteCount.setText(Integer.toString(detailable.getVoteCount()));
+
+            cast.setHasFixedSize(true);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            cast.setLayoutManager(layoutManager);
+            RecyclerView.Adapter castAdapter = new ActorAdapter(getContext(), detailable.getActorList(), new ActorAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Actor actor) {
+                    actorClick(actor);
+                }
+            });
+            cast.setAdapter(castAdapter);
+
+            if (refreshLayout != null) {
+                refreshLayout.setRefreshing(false);
+            }
         }
     }
 

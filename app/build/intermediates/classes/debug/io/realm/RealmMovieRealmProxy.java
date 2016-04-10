@@ -176,21 +176,14 @@ public class RealmMovieRealmProxy extends RealmMovie
 
     @Override
     @SuppressWarnings("cast")
-    public Float getVoteAverage() {
+    public float getVoteAverage() {
         realm.checkIfValid();
-        if (row.isNull(columnInfo.voteAverageIndex)) {
-            return null;
-        }
         return (float) row.getFloat(columnInfo.voteAverageIndex);
     }
 
     @Override
-    public void setVoteAverage(Float value) {
+    public void setVoteAverage(float value) {
         realm.checkIfValid();
-        if (value == null) {
-            row.setNull(columnInfo.voteAverageIndex);
-            return;
-        }
         row.setFloat(columnInfo.voteAverageIndex, value);
     }
 
@@ -328,7 +321,7 @@ public class RealmMovieRealmProxy extends RealmMovie
             table.addColumn(ColumnType.STRING, "posterPath", Table.NULLABLE);
             table.addColumn(ColumnType.STRING, "overview", Table.NULLABLE);
             table.addColumn(ColumnType.STRING, "title", Table.NULLABLE);
-            table.addColumn(ColumnType.FLOAT, "voteAverage", Table.NULLABLE);
+            table.addColumn(ColumnType.FLOAT, "voteAverage", Table.NOT_NULLABLE);
             table.addColumn(ColumnType.STRING, "backdropPath", Table.NULLABLE);
             table.addColumn(ColumnType.INTEGER, "voteCount", Table.NOT_NULLABLE);
             table.addColumn(ColumnType.DATE, "releaseDate", Table.NULLABLE);
@@ -407,10 +400,10 @@ public class RealmMovieRealmProxy extends RealmMovie
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'voteAverage' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
             }
             if (columnTypes.get("voteAverage") != ColumnType.FLOAT) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'Float' for field 'voteAverage' in existing Realm file.");
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'float' for field 'voteAverage' in existing Realm file.");
             }
-            if (!table.isColumnNullable(columnInfo.voteAverageIndex)) {
-                throw new RealmMigrationNeededException(transaction.getPath(),"Field 'voteAverage' does not support null values in the existing Realm file. Either set @Required, use the primitive type for field 'voteAverage' or migrate using io.realm.internal.Table.convertColumnToNullable().");
+            if (table.isColumnNullable(columnInfo.voteAverageIndex)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'voteAverage' does support null values in the existing Realm file. Use corresponding boxed type for field 'voteAverage' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
             }
             if (!columnTypes.containsKey("backdropPath")) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'backdropPath' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
@@ -537,7 +530,7 @@ public class RealmMovieRealmProxy extends RealmMovie
         }
         if (json.has("voteAverage")) {
             if (json.isNull("voteAverage")) {
-                obj.setVoteAverage(null);
+                throw new IllegalArgumentException("Trying to set non-nullable field voteAverage to null.");
             } else {
                 obj.setVoteAverage((float) json.getDouble("voteAverage"));
             }
@@ -640,7 +633,7 @@ public class RealmMovieRealmProxy extends RealmMovie
             } else if (name.equals("voteAverage")) {
                 if (reader.peek() == JsonToken.NULL) {
                     reader.skipValue();
-                    obj.setVoteAverage(null);
+                    throw new IllegalArgumentException("Trying to set non-nullable field voteAverage to null.");
                 } else {
                     obj.setVoteAverage((float) reader.nextDouble());
                 }
@@ -844,7 +837,7 @@ public class RealmMovieRealmProxy extends RealmMovie
         stringBuilder.append("}");
         stringBuilder.append(",");
         stringBuilder.append("{voteAverage:");
-        stringBuilder.append(getVoteAverage() != null ? getVoteAverage() : "null");
+        stringBuilder.append(getVoteAverage());
         stringBuilder.append("}");
         stringBuilder.append(",");
         stringBuilder.append("{backdropPath:");

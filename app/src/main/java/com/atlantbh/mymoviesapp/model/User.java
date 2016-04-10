@@ -155,41 +155,42 @@ public class User {
 
                 final UserAPI userAPI = retrofit.create(UserAPI.class);
 
-                Call<RequestToken> call = userAPI.getUserPermissions(requestToken.getRequestToken(), username, password);
-                call.enqueue(new Callback<RequestToken>() {
-                    @Override
-                    public void onResponse(Response<RequestToken> response, Retrofit retrofit) {
-                        RequestToken requestToken = response.body();
-                        if (requestToken != null && requestToken.getSuccess()) {
-                            Call<Session> innerCall = userAPI.getSession(requestToken.getRequestToken());
-                            innerCall.enqueue(new Callback<Session>() {
-                                @Override
-                                public void onResponse(Response<Session> response, Retrofit retrofit) {
-                                    Session session = response.body();
-                                    if (session.isSuccess()) {
-                                        Toast.makeText(activity, "You are now logged in.", Toast.LENGTH_SHORT).show();
-                                        User.session = session;
-                                        getFavorites();
-                                        activity.finish();
+                if (requestToken != null) {
+                    Call<RequestToken> call = userAPI.getUserPermissions(requestToken.getRequestToken(), username, password);
+                    call.enqueue(new Callback<RequestToken>() {
+                        @Override
+                        public void onResponse(Response<RequestToken> response, Retrofit retrofit) {
+                            RequestToken requestToken = response.body();
+                            if (requestToken != null && requestToken.getSuccess()) {
+                                Call<Session> innerCall = userAPI.getSession(requestToken.getRequestToken());
+                                innerCall.enqueue(new Callback<Session>() {
+                                    @Override
+                                    public void onResponse(Response<Session> response, Retrofit retrofit) {
+                                        Session session = response.body();
+                                        if (session.isSuccess()) {
+                                            Toast.makeText(activity, "You are now logged in.", Toast.LENGTH_SHORT).show();
+                                            User.session = session;
+                                            getFavorites();
+                                            activity.finish();
+                                        }
                                     }
-                                }
 
-                                @Override
-                                public void onFailure(Throwable t) {
+                                    @Override
+                                    public void onFailure(Throwable t) {
 
-                                }
-                            });
+                                    }
+                                });
+                            } else {
+                                error.setText("Invalid username or password!");
+                            }
                         }
-                        else {
-                            error.setText("Invalid username or password!");
+
+                        @Override
+                        public void onFailure(Throwable t) {
+
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-
-                    }
-                });
+                    });
+                }
             }
 
             @Override
@@ -303,7 +304,9 @@ public class User {
 
                                         @Override
                                         public void onFailure(Throwable t) {
-                                            refreshLayout.setRefreshing(false);
+                                            if (refreshLayout != null) {
+                                                refreshLayout.setRefreshing(false);
+                                            }
                                         }
                                     });
                                 }

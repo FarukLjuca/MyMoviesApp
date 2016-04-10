@@ -126,7 +126,7 @@ public class ActorFragment extends Fragment {
                 public void onResponse(Response<Actor> response, Retrofit retrofit) {
                     Actor actor = response.body();
 
-                    if (actor.getImageList().getImages().size() > 0) {
+                    if (actor != null && actor.getImageList() != null && actor.getImageList().getImages().size() > 0) {
                         Glide.with(getContext())
                                 .load("https://image.tmdb.org/t/p/w1280" + actor.getImageList().getImages().get(0).getMovie().getBackdropPath())
                                 .placeholder(R.drawable.backdrop_placeholder)
