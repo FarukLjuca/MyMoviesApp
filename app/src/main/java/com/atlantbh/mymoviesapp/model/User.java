@@ -1,19 +1,15 @@
 package com.atlantbh.mymoviesapp.model;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.MyApplication;
-import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.adapters.FavoritesAdapter;
 import com.atlantbh.mymoviesapp.api.TvAPI;
 import com.atlantbh.mymoviesapp.api.UserAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieFavorites;
 import com.atlantbh.mymoviesapp.model.realm.RealmTvFavorites;
 import com.atlantbh.mymoviesapp.model.realm.RealmUser;
@@ -22,7 +18,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;

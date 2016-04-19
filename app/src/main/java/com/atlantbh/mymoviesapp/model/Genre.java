@@ -1,5 +1,8 @@
 package com.atlantbh.mymoviesapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Genre {

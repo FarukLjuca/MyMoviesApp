@@ -31,7 +31,7 @@ public class Tv implements Detailable {
     @SerializedName("credits")
     private ActorList actorList;
 
-    private boolean favorite;
+    //private boolean favorite;
 
     public Tv() {}
 
@@ -71,6 +71,7 @@ public class Tv implements Detailable {
         return result;
     }
 
+    /*
     @Override
     public boolean getFavorite() {
         return favorite;
@@ -80,6 +81,7 @@ public class Tv implements Detailable {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+    */
 
     public void setBasicText(String basicText) {
         this.overview = basicText;

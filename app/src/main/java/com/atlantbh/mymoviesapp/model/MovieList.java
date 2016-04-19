@@ -6,21 +6,18 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.atlantbh.mymoviesapp.MyApplication;
 import com.atlantbh.mymoviesapp.adapters.MovieAdapter;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
+import com.atlantbh.mymoviesapp.helpers.AppString;
+import com.atlantbh.mymoviesapp.services.CachingService;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -47,6 +44,7 @@ public class MovieList {
         this.page = page;
     }
 
+    /*
     public MovieList() {
         setPage(1);
         setIsLoading(false);
@@ -54,25 +52,21 @@ public class MovieList {
             movies = new ArrayList<>();
         }
     }
+    */
 
-    public MovieList(RealmResults<RealmMovieBasic> realmResults) {
+    public MovieList(List<Movie> movies) {
         setPage(1);
         setIsLoading(false);
-        if (movies == null) {
-            movies = new ArrayList<>();
-            for (RealmMovieBasic movie : realmResults) {
-                movies.add(new Movie(movie));
-            }
-        }
+        this.movies = movies;
     }
 
-    public void LoadData(final Context context, final MovieAdapter movieAdapter, String category) {
+    public void LoadData(final Context context, final MovieAdapter movieAdapter, final int category) {
         page++;
 
         Retrofit retrofit = AppHelper.getRetrofit();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
-        Call<MovieList> call = movieAPI.loadMoviesByPage(category, page);
+        Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(category), page);
         call.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Response<MovieList> response, Retrofit retrofit) {
@@ -80,6 +74,7 @@ public class MovieList {
                 movieAdapter.addItems(movieList);
                 movieAdapter.notifyDataSetChanged();
                 isLoading = false;
+                CachingService.startNext(MyApplication.getContext(), category, page);
             }
 
             @Override
@@ -89,13 +84,13 @@ public class MovieList {
         });
     }
 
-    public void LoadDataToPage(final MovieAdapter movieAdapter, String category, int page, final View view, final int position) {
+    public void LoadDataToPage(final MovieAdapter movieAdapter, int category, int page, final View view, final int position) {
         while (this.page <= page + 1) {
             Retrofit retrofit = AppHelper.getRetrofit();
             MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
             this.page++;
-            Call<MovieList> call = movieAPI.loadMoviesByPage(category, this.page);
+            Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(category), this.page);
             if (this.page == page + 1) {
                 isLast = true;
             }
@@ -133,4 +128,23 @@ public class MovieList {
     public void addMovie(Movie movie) {
         this.movies.add(movie);
     }
+
+    public String getCategoryString(int category) {
+        String result = "";
+
+        switch (category) {
+            case AppString.CATEGORY_POPULAR:
+                result = "popular";
+                break;
+            case AppString.CATEGORY_NOW_PLAYING:
+                result = "now_playing";
+                break;
+            case AppString.CATEGORY_TOP_RATED:
+                result = "top_rated";
+                break;
+        }
+
+        return result;
+    }
+
 }

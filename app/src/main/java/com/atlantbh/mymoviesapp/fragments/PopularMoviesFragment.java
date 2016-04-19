@@ -1,10 +1,10 @@
 package com.atlantbh.mymoviesapp.fragments;
 
+import com.atlantbh.mymoviesapp.helpers.AppString;
+
 public class PopularMoviesFragment extends MoviesFragment {
     @Override
     public int getCategory() {
-        return CATEGORY_POPULAR;
+        return AppString.CATEGORY_POPULAR;
     }
-
-    public PopularMoviesFragment() {}
 }

@@ -24,6 +24,9 @@ public class RealmMovie extends RealmObject {
     private RealmList<RealmGenre> genres;
     private RealmList<RealmActor> actors;
     private int runtime;
+    private int indexPopular;
+    private int indexNowPlaying;
+    private int indexTopRated;
 
     public RealmMovie() {}
 
@@ -37,6 +40,9 @@ public class RealmMovie extends RealmObject {
         voteCount = movie.getVoteCount();
         releaseDate = movie.getReleaseDate();
         runtime = movie.getRuntime();
+        indexNowPlaying = movie.getIndexNowPlaying();
+        indexPopular = movie.getIndexPopular();
+        indexTopRated = movie.getIndexTopRated();
 
         genres = new RealmList<>();
         if (movie.getGenres() != null) {
@@ -139,5 +145,29 @@ public class RealmMovie extends RealmObject {
 
     public void setRuntime(int runtime) {
         this.runtime = runtime;
+    }
+
+    public int getIndexPopular() {
+        return indexPopular;
+    }
+
+    public void setIndexPopular(int indexPopular) {
+        this.indexPopular = indexPopular;
+    }
+
+    public int getIndexNowPlaying() {
+        return indexNowPlaying;
+    }
+
+    public void setIndexNowPlaying(int indexNowPlaying) {
+        this.indexNowPlaying = indexNowPlaying;
+    }
+
+    public int getIndexTopRated() {
+        return indexTopRated;
+    }
+
+    public void setIndexTopRated(int indexTopRated) {
+        this.indexTopRated = indexTopRated;
     }
 }

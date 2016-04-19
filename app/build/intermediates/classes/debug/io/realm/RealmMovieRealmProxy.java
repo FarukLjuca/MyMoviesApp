@@ -42,9 +42,12 @@ public class RealmMovieRealmProxy extends RealmMovie
         public final long genresIndex;
         public final long actorsIndex;
         public final long runtimeIndex;
+        public final long indexPopularIndex;
+        public final long indexNowPlayingIndex;
+        public final long indexTopRatedIndex;
 
         RealmMovieColumnInfo(String path, Table table) {
-            final Map<String, Long> indicesMap = new HashMap<String, Long>(11);
+            final Map<String, Long> indicesMap = new HashMap<String, Long>(14);
             this.idIndex = getValidColumnIndex(path, table, "RealmMovie", "id");
             indicesMap.put("id", this.idIndex);
 
@@ -78,6 +81,15 @@ public class RealmMovieRealmProxy extends RealmMovie
             this.runtimeIndex = getValidColumnIndex(path, table, "RealmMovie", "runtime");
             indicesMap.put("runtime", this.runtimeIndex);
 
+            this.indexPopularIndex = getValidColumnIndex(path, table, "RealmMovie", "indexPopular");
+            indicesMap.put("indexPopular", this.indexPopularIndex);
+
+            this.indexNowPlayingIndex = getValidColumnIndex(path, table, "RealmMovie", "indexNowPlaying");
+            indicesMap.put("indexNowPlaying", this.indexNowPlayingIndex);
+
+            this.indexTopRatedIndex = getValidColumnIndex(path, table, "RealmMovie", "indexTopRated");
+            indicesMap.put("indexTopRated", this.indexTopRatedIndex);
+
             setIndicesMap(indicesMap);
         }
     }
@@ -103,6 +115,9 @@ public class RealmMovieRealmProxy extends RealmMovie
         fieldNames.add("genres");
         fieldNames.add("actors");
         fieldNames.add("runtime");
+        fieldNames.add("indexPopular");
+        fieldNames.add("indexNowPlaying");
+        fieldNames.add("indexTopRated");
         FIELD_NAMES = Collections.unmodifiableList(fieldNames);
     }
 
@@ -314,6 +329,45 @@ public class RealmMovieRealmProxy extends RealmMovie
         row.setLong(columnInfo.runtimeIndex, value);
     }
 
+    @Override
+    @SuppressWarnings("cast")
+    public int getIndexPopular() {
+        realm.checkIfValid();
+        return (int) row.getLong(columnInfo.indexPopularIndex);
+    }
+
+    @Override
+    public void setIndexPopular(int value) {
+        realm.checkIfValid();
+        row.setLong(columnInfo.indexPopularIndex, value);
+    }
+
+    @Override
+    @SuppressWarnings("cast")
+    public int getIndexNowPlaying() {
+        realm.checkIfValid();
+        return (int) row.getLong(columnInfo.indexNowPlayingIndex);
+    }
+
+    @Override
+    public void setIndexNowPlaying(int value) {
+        realm.checkIfValid();
+        row.setLong(columnInfo.indexNowPlayingIndex, value);
+    }
+
+    @Override
+    @SuppressWarnings("cast")
+    public int getIndexTopRated() {
+        realm.checkIfValid();
+        return (int) row.getLong(columnInfo.indexTopRatedIndex);
+    }
+
+    @Override
+    public void setIndexTopRated(int value) {
+        realm.checkIfValid();
+        row.setLong(columnInfo.indexTopRatedIndex, value);
+    }
+
     public static Table initTable(ImplicitTransaction transaction) {
         if (!transaction.hasTable("class_RealmMovie")) {
             Table table = transaction.getTable("class_RealmMovie");
@@ -334,6 +388,9 @@ public class RealmMovieRealmProxy extends RealmMovie
             }
             table.addColumnLink(ColumnType.LINK_LIST, "actors", transaction.getTable("class_RealmActor"));
             table.addColumn(ColumnType.INTEGER, "runtime", Table.NOT_NULLABLE);
+            table.addColumn(ColumnType.INTEGER, "indexPopular", Table.NOT_NULLABLE);
+            table.addColumn(ColumnType.INTEGER, "indexNowPlaying", Table.NOT_NULLABLE);
+            table.addColumn(ColumnType.INTEGER, "indexTopRated", Table.NOT_NULLABLE);
             table.addSearchIndex(table.getColumnIndex("id"));
             table.setPrimaryKey("id");
             return table;
@@ -344,11 +401,11 @@ public class RealmMovieRealmProxy extends RealmMovie
     public static RealmMovieColumnInfo validateTable(ImplicitTransaction transaction) {
         if (transaction.hasTable("class_RealmMovie")) {
             Table table = transaction.getTable("class_RealmMovie");
-            if (table.getColumnCount() != 11) {
-                throw new RealmMigrationNeededException(transaction.getPath(), "Field count does not match - expected 11 but was " + table.getColumnCount());
+            if (table.getColumnCount() != 14) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field count does not match - expected 14 but was " + table.getColumnCount());
             }
             Map<String, ColumnType> columnTypes = new HashMap<String, ColumnType>();
-            for (long i = 0; i < 11; i++) {
+            for (long i = 0; i < 14; i++) {
                 columnTypes.put(table.getColumnName(i), table.getColumnType(i));
             }
 
@@ -466,6 +523,33 @@ public class RealmMovieRealmProxy extends RealmMovie
             }
             if (table.isColumnNullable(columnInfo.runtimeIndex)) {
                 throw new RealmMigrationNeededException(transaction.getPath(), "Field 'runtime' does support null values in the existing Realm file. Use corresponding boxed type for field 'runtime' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
+            }
+            if (!columnTypes.containsKey("indexPopular")) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexPopular' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
+            }
+            if (columnTypes.get("indexPopular") != ColumnType.INTEGER) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexPopular' in existing Realm file.");
+            }
+            if (table.isColumnNullable(columnInfo.indexPopularIndex)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexPopular' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexPopular' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
+            }
+            if (!columnTypes.containsKey("indexNowPlaying")) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexNowPlaying' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
+            }
+            if (columnTypes.get("indexNowPlaying") != ColumnType.INTEGER) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexNowPlaying' in existing Realm file.");
+            }
+            if (table.isColumnNullable(columnInfo.indexNowPlayingIndex)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexNowPlaying' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexNowPlaying' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
+            }
+            if (!columnTypes.containsKey("indexTopRated")) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Missing field 'indexTopRated' in existing Realm file. Either remove field or migrate using io.realm.internal.Table.addColumn().");
+            }
+            if (columnTypes.get("indexTopRated") != ColumnType.INTEGER) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Invalid type 'int' for field 'indexTopRated' in existing Realm file.");
+            }
+            if (table.isColumnNullable(columnInfo.indexTopRatedIndex)) {
+                throw new RealmMigrationNeededException(transaction.getPath(), "Field 'indexTopRated' does support null values in the existing Realm file. Use corresponding boxed type for field 'indexTopRated' or migrate using io.realm.internal.Table.convertColumnToNotNullable().");
             }
             return columnInfo;
         } else {
@@ -592,6 +676,27 @@ public class RealmMovieRealmProxy extends RealmMovie
                 obj.setRuntime((int) json.getInt("runtime"));
             }
         }
+        if (json.has("indexPopular")) {
+            if (json.isNull("indexPopular")) {
+                throw new IllegalArgumentException("Trying to set non-nullable field indexPopular to null.");
+            } else {
+                obj.setIndexPopular((int) json.getInt("indexPopular"));
+            }
+        }
+        if (json.has("indexNowPlaying")) {
+            if (json.isNull("indexNowPlaying")) {
+                throw new IllegalArgumentException("Trying to set non-nullable field indexNowPlaying to null.");
+            } else {
+                obj.setIndexNowPlaying((int) json.getInt("indexNowPlaying"));
+            }
+        }
+        if (json.has("indexTopRated")) {
+            if (json.isNull("indexTopRated")) {
+                throw new IllegalArgumentException("Trying to set non-nullable field indexTopRated to null.");
+            } else {
+                obj.setIndexTopRated((int) json.getInt("indexTopRated"));
+            }
+        }
         return obj;
     }
 
@@ -694,6 +799,27 @@ public class RealmMovieRealmProxy extends RealmMovie
                 } else {
                     obj.setRuntime((int) reader.nextInt());
                 }
+            } else if (name.equals("indexPopular")) {
+                if (reader.peek() == JsonToken.NULL) {
+                    reader.skipValue();
+                    throw new IllegalArgumentException("Trying to set non-nullable field indexPopular to null.");
+                } else {
+                    obj.setIndexPopular((int) reader.nextInt());
+                }
+            } else if (name.equals("indexNowPlaying")) {
+                if (reader.peek() == JsonToken.NULL) {
+                    reader.skipValue();
+                    throw new IllegalArgumentException("Trying to set non-nullable field indexNowPlaying to null.");
+                } else {
+                    obj.setIndexNowPlaying((int) reader.nextInt());
+                }
+            } else if (name.equals("indexTopRated")) {
+                if (reader.peek() == JsonToken.NULL) {
+                    reader.skipValue();
+                    throw new IllegalArgumentException("Trying to set non-nullable field indexTopRated to null.");
+                } else {
+                    obj.setIndexTopRated((int) reader.nextInt());
+                }
             } else {
                 reader.skipValue();
             }
@@ -771,6 +897,9 @@ public class RealmMovieRealmProxy extends RealmMovie
         }
 
         realmObject.setRuntime(newObject.getRuntime());
+        realmObject.setIndexPopular(newObject.getIndexPopular());
+        realmObject.setIndexNowPlaying(newObject.getIndexNowPlaying());
+        realmObject.setIndexTopRated(newObject.getIndexTopRated());
         return realmObject;
     }
 
@@ -811,6 +940,9 @@ public class RealmMovieRealmProxy extends RealmMovie
             }
         }
         realmObject.setRuntime(newObject.getRuntime());
+        realmObject.setIndexPopular(newObject.getIndexPopular());
+        realmObject.setIndexNowPlaying(newObject.getIndexNowPlaying());
+        realmObject.setIndexTopRated(newObject.getIndexTopRated());
         return realmObject;
     }
 
@@ -862,6 +994,18 @@ public class RealmMovieRealmProxy extends RealmMovie
         stringBuilder.append(",");
         stringBuilder.append("{runtime:");
         stringBuilder.append(getRuntime());
+        stringBuilder.append("}");
+        stringBuilder.append(",");
+        stringBuilder.append("{indexPopular:");
+        stringBuilder.append(getIndexPopular());
+        stringBuilder.append("}");
+        stringBuilder.append(",");
+        stringBuilder.append("{indexNowPlaying:");
+        stringBuilder.append(getIndexNowPlaying());
+        stringBuilder.append("}");
+        stringBuilder.append(",");
+        stringBuilder.append("{indexTopRated:");
+        stringBuilder.append(getIndexTopRated());
         stringBuilder.append("}");
         stringBuilder.append("]");
         return stringBuilder.toString();

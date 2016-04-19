@@ -3,12 +3,12 @@ package com.atlantbh.mymoviesapp;
 import android.app.Application;
 import android.content.Context;
 
+import com.atlantbh.mymoviesapp.services.CachingService;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import io.fabric.sdk.android.Fabric;
-import io.realm.RealmConfiguration;
 
 public class MyApplication extends Application {
     private static Context context;

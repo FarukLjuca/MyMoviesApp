@@ -44,7 +44,7 @@ import com.atlantbh.mymoviesapp.model.RatingValue;
 import com.atlantbh.mymoviesapp.model.Tv;
 import com.atlantbh.mymoviesapp.model.User;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
+import com.atlantbh.mymoviesapp.services.CachingService;
 import com.bumptech.glide.Glide;
 
 import java.math.BigDecimal;
@@ -178,19 +178,11 @@ public class DetailsFragment extends Fragment {
                 call.enqueue(new Callback<Movie>() {
                     @Override
                     public void onResponse(Response<Movie> response, Retrofit retrofit) {
-                        Detailable detailable = response.body();
-                        if (detailable != null) {
-                            currentDetailable = detailable;
-                            setContent(detailable);
-
-                            if (getContext() != null) {
-                                Realm realm = Realm.getInstance(getContext());
-                                realm.beginTransaction();
-                                RealmMovie realmMovie = new RealmMovie((Movie) detailable);
-                                realm.copyToRealmOrUpdate(realmMovie);
-                                realm.commitTransaction();
-                                realm.close();
-                            }
+                        Movie movie = response.body();
+                        if (movie != null) {
+                            currentDetailable = movie;
+                            setContent(movie);
+                            CachingService.startMovie(getContext(), movieId);
                         }
                     }
 
@@ -204,14 +196,8 @@ public class DetailsFragment extends Fragment {
             } else {
                 Realm realm = Realm.getInstance(getContext());
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
-                if (realmResults.size() == 0) {
-                    RealmResults<RealmMovieBasic> realmResultsBasic = realm.where(RealmMovieBasic.class).equalTo("id", movieId).findAll();
-                    if (realmResultsBasic.size() > 0) {
-                        setContent(new Movie(realmResultsBasic.get(0)));
-                    }
-                } else {
-                    Movie movie = new Movie(realmResults.get(0));
-                    setContent(movie);
+                if (realmResults.size() != 0) {
+                    setContent(new Movie(realmResults.get(0)));
                 }
                 realm.close();
 
@@ -333,38 +319,20 @@ public class DetailsFragment extends Fragment {
     }
 
     public void actorClick(final Actor actor) {
-        if (AppHelper.isOnline()) {
-            RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
-            if (detailsContainer != null) {
-                ActorFragment fragment = new ActorFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(AppString.ACTOR_ID, actor.getId());
-                fragment.setArguments(bundle);
-                getFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.rlDetailsContainer, fragment, AppString.actorFragmentTag)
-                        .commit();
-            } else {
-                Intent intent = new Intent(getContext(), ActorActivity.class);
-                intent.putExtra(AppString.ACTOR_ID, actor.getId());
-                startActivity(intent);
-            }
+        RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
+        if (detailsContainer != null) {
+            ActorFragment fragment = new ActorFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(AppString.ACTOR_ID, actor.getId());
+            fragment.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.rlDetailsContainer, fragment, AppString.actorFragmentTag)
+                    .commit();
         } else {
-            CoordinatorLayout coordinatorLayout;
-            if (getActivity().findViewById(R.id.clDetailsCoordinator) != null) {
-                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clDetailsCoordinator);
-            } else {
-                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.clMovieCoordinator);
-            }
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Check your internet connection", Snackbar.LENGTH_LONG);
-            snackbar.setActionTextColor(Color.CYAN);
-            snackbar.setAction(R.string.refresh, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actorClick(actor);
-                }
-            });
-            snackbar.show();
+            Intent intent = new Intent(getContext(), ActorActivity.class);
+            intent.putExtra(AppString.ACTOR_ID, actor.getId());
+            startActivity(intent);
         }
     }
 
@@ -609,8 +577,7 @@ public class DetailsFragment extends Fragment {
 
                 }
             });
-        }
-        else if (tvId > 0) {
+        } else if (tvId > 0) {
             Call<RatingList> call = userAPI.getRatedTvs(User.getSession().getSessionId(), 1);
             call.enqueue(new Callback<RatingList>() {
                 @Override

@@ -1,19 +1,23 @@
 package com.atlantbh.mymoviesapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.atlantbh.mymoviesapp.model.realm.RealmGenre;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
-import com.atlantbh.mymoviesapp.model.realm.RealmMovieBasic;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieFavorites;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Movie implements Detailable {
+    /*
     public static final int POPULAR = 0;
     public static final int NOW_PAYING = 1;
     public static final int TOP_RATED = 2;
@@ -21,6 +25,7 @@ public class Movie implements Detailable {
     public static final int POPULAR_AND_TOP_RATED = 4;
     public static final int NOW_PLAYING_AND_TOP_RATED = 5;
     public static final int POPULAR_AND_NOW_PLAYING_AND_TOP_RATED = 6;
+    */
 
     @SerializedName("id")
     private int id;
@@ -49,15 +54,11 @@ public class Movie implements Detailable {
     @SerializedName("reviews")
     private ReviewList reviewList;
 
+    private int indexPopular;
+    private int indexNowPlaying;
+    private int indexTopRated;
     private boolean favorite;
-
-    public Movie(RealmMovieBasic movie) {
-        setId(movie.getId());
-        setOverview(movie.getOverview());
-        setVoteAverage(movie.getVoteAverage());
-        setTitle(movie.getTitle());
-        setPosterPath(movie.getPosterPath());
-    }
+    private float rating;
 
     public Movie(RealmMovie movie) {
         setId(movie.getId());
@@ -70,6 +71,9 @@ public class Movie implements Detailable {
         setVoteCount(movie.getVoteCount());
         setReleaseDate(movie.getReleaseDate());
         setRuntime(movie.getRuntime());
+        setIndexPopular(movie.getIndexPopular());
+        setIndexNowPlaying(movie.getIndexNowPlaying());
+        setIndexTopRated(movie.getIndexTopRated());
 
         ActorList actorList = new ActorList();
         for (RealmActor actor : movie.getActors()) {
@@ -223,6 +227,7 @@ public class Movie implements Detailable {
         return result.toString();
     }
 
+    /*
     public static int mergeCategories(int oldCategory, int newCategory) {
         int result;
         if (oldCategory == POPULAR && newCategory == NOW_PAYING) {
@@ -240,6 +245,7 @@ public class Movie implements Detailable {
 
         return result;
     }
+    */
 
     public VideoList getVideoList() {
         return videoList;
@@ -249,6 +255,31 @@ public class Movie implements Detailable {
         this.videoList = videoList;
     }
 
+    public int getIndexPopular() {
+        return indexPopular;
+    }
+
+    public void setIndexPopular(int indexPopular) {
+        this.indexPopular = indexPopular;
+    }
+
+    public int getIndexNowPlaying() {
+        return indexNowPlaying;
+    }
+
+    public void setIndexNowPlaying(int indexNowPlaying) {
+        this.indexNowPlaying = indexNowPlaying;
+    }
+
+    public int getIndexTopRated() {
+        return indexTopRated;
+    }
+
+    public void setIndexTopRated(int indexTopRated) {
+        this.indexTopRated = indexTopRated;
+    }
+
+    /*
     @Override
     public boolean getFavorite() {
         return favorite;
@@ -258,4 +289,5 @@ public class Movie implements Detailable {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
+    */
 }

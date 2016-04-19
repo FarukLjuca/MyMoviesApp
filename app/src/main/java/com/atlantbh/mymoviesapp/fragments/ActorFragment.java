@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
-import com.atlantbh.mymoviesapp.activities.ActorActivity;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
 import com.atlantbh.mymoviesapp.adapters.MovieCreditsAdapter;
 import com.atlantbh.mymoviesapp.adapters.TvCreditsAdapter;
@@ -32,10 +31,14 @@ import com.atlantbh.mymoviesapp.helpers.AppString;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
+import com.atlantbh.mymoviesapp.model.realm.RealmActor;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
 import com.bumptech.glide.Glide;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -111,92 +114,104 @@ public class ActorFragment extends Fragment {
         }
 
         refresh();
-
-        SetFonts();
+        setFonts();
     }
 
     private void refresh() {
         if (actorId > 0) {
-            Retrofit retrofit = AppHelper.getRetrofit();
-            ActorAPI actorAPI = retrofit.create(ActorAPI.class);
-
-            Call<Actor> call = actorAPI.loadActorById(actorId);
-            call.enqueue(new Callback<Actor>() {
-                @Override
-                public void onResponse(Response<Actor> response, Retrofit retrofit) {
-                    Actor actor = response.body();
-
-                    if (actor != null && actor.getImageList() != null && actor.getImageList().getImages().size() > 0) {
-                        Glide.with(getContext())
-                                .load("https://image.tmdb.org/t/p/w1280" + actor.getImageList().getImages().get(0).getMovie().getBackdropPath())
-                                .placeholder(R.drawable.backdrop_placeholder)
-                                .into(actorBackdrop);
-                    }
-                    else {
-                        Glide.with(getContext())
-                                .load(R.drawable.backdrop_placeholder)
-                                .into(actorBackdrop);
+            if (AppHelper.isOnline()) {
+                Retrofit retrofit = AppHelper.getRetrofit();
+                ActorAPI actorAPI = retrofit.create(ActorAPI.class);
+                Call<Actor> call = actorAPI.loadActorById(actorId);
+                call.enqueue(new Callback<Actor>() {
+                    @Override
+                    public void onResponse(Response<Actor> response, Retrofit retrofit) {
+                        Actor actor = response.body();
+                        setContent(actor);
                     }
 
-                    Glide.with(getContext())
-                            .load("https://image.tmdb.org/t/p/w500" + actor.getProfilePath())
-                            .placeholder(R.drawable.actor_placeholder_curved)
-                            .into(actorPoster);
-
-                    actorName.setText(actor.getName());
-                    actorSubtitle.setText(actor.getFrequentJobs());
-                    if (actor.getBiography() != null) {
-                        actorBiography.setText(actor.getBiography().replace("\n", " "));
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
-                    actorBiography.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Layout l = actorBiography.getLayout();
-                            if (l != null) {
-                                int lines = l.getLineCount();
-                                if (lines > 0)
-                                    if (l.getEllipsisCount(lines-1) == 0) {
-                                        actorInfo.setColorFilter(R.color.lightgray);
-                                    }
-                            }
-                        }
-                    });
-
-                    actorMovies.setHasFixedSize(true);
-                    RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                    actorMovies.setLayoutManager(movieCreditsLayoutManager);
-                    RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Credits credits) {
-                            detailableClick(credits.getId(), -1);
-                        }
-                    });
-                    actorMovies.setAdapter(movieCreditsAdapter);
-
-                    actorTv.setHasFixedSize(true);
-                    RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-                    actorTv.setLayoutManager(tvCreditsLayoutManager);
-                    RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Credits credits) {
-                            detailableClick(-1, credits.getId());
-                        }
-                    });
-                    actorTv.setAdapter(tvCreditsAdapter);
+                });
+            }
+            else {
+                Realm realm = Realm.getInstance(getContext());
+                RealmResults<RealmActor> realmResults = realm.where(RealmActor.class).equalTo("id", actorId).findAll();
+                if (realmResults.size() == 1) {
+                    setContent(new Actor(realmResults.get(0)));
                 }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(getContext(), "There was a problem, please refresh page.", Toast.LENGTH_SHORT).show();
                 }
-            });
+            }
         }
 
         if (refreshLayout != null)
             refreshLayout.setRefreshing(false);
     }
 
-    private void SetFonts() {
+    private void setContent(Actor actor) {
+        if (actor.getImageList() != null && actor.getImageList().getImages().size() > 0) {
+            Glide.with(getContext())
+                    .load("https://image.tmdb.org/t/p/w1280" + actor.getImageList().getImages().get(0).getMovie().getBackdropPath())
+                    .placeholder(R.drawable.backdrop_placeholder)
+                    .into(actorBackdrop);
+        } else {
+            Glide.with(getContext())
+                    .load(R.drawable.backdrop_placeholder)
+                    .into(actorBackdrop);
+        }
+
+        Glide.with(getContext())
+                .load("https://image.tmdb.org/t/p/w500" + actor.getProfilePath())
+                .placeholder(R.drawable.actor_placeholder_curved)
+                .into(actorPoster);
+
+        actorName.setText(actor.getName());
+        actorSubtitle.setText(actor.getFrequentJobs());
+        if (actor.getBiography() != null) {
+            actorBiography.setText(actor.getBiography().replace("\n", " "));
+        }
+        actorBiography.post(new Runnable() {
+            @Override
+            public void run() {
+                Layout l = actorBiography.getLayout();
+                if (l != null) {
+                    int lines = l.getLineCount();
+                    if (lines > 0)
+                        if (l.getEllipsisCount(lines - 1) == 0) {
+                            actorInfo.setColorFilter(R.color.lightgray);
+                        }
+                }
+            }
+        });
+
+        actorMovies.setHasFixedSize(true);
+        RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        actorMovies.setLayoutManager(movieCreditsLayoutManager);
+        RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Credits credits) {
+                detailableClick(credits.getId(), -1);
+            }
+        });
+        actorMovies.setAdapter(movieCreditsAdapter);
+
+        actorTv.setHasFixedSize(true);
+        RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        actorTv.setLayoutManager(tvCreditsLayoutManager);
+        RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Credits credits) {
+                detailableClick(-1, credits.getId());
+            }
+        });
+        actorTv.setAdapter(tvCreditsAdapter);
+    }
+
+    private void setFonts() {
         actorName.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         actorSubtitle.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_MEDIUM));
         actorBiography.setTypeface(FontHelper.getFont(getContext(), FontHelper.ROBOTO_REGULAR));

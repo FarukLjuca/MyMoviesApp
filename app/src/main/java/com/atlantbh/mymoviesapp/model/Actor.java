@@ -29,13 +29,33 @@ public class Actor {
         profilePath = actor.getProfilePath();
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
-    public String getProfilePath() { return profilePath; }
-    public String getBiography() { return biography; }
-    public ImageList getImageList() { return imageList; }
-    public MovieCredits getMovieCredits() { return movieCredits; }
-    public TvCredits getTvCredits() { return tvCredits; }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getProfilePath() {
+        return profilePath;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public ImageList getImageList() {
+        return imageList;
+    }
+
+    public MovieCredits getMovieCredits() {
+        return movieCredits;
+    }
+
+    public TvCredits getTvCredits() {
+        return tvCredits;
+    }
 
     public String getFrequentJobs() {
         ArrayList<String> jobTitles = new ArrayList<>();
@@ -49,8 +69,7 @@ public class Actor {
             String currentJobTitle = movieCredits.getCreditsMovieCrew().get(i).getJob();
             if (jobTitles.contains(currentJobTitle)) {
                 jobCount.set(jobTitles.indexOf(currentJobTitle), jobCount.get(jobTitles.indexOf(currentJobTitle)) + 1);
-            }
-            else {
+            } else {
                 jobTitles.add(currentJobTitle);
                 jobCount.add(1);
             }
@@ -60,8 +79,7 @@ public class Actor {
             String currentJobTitle = tvCredits.getCreditsTvCrew().get(i).getJob();
             if (jobTitles.contains(currentJobTitle)) {
                 jobCount.set(jobTitles.indexOf(currentJobTitle), jobCount.get(jobTitles.indexOf(currentJobTitle)) + 1);
-            }
-            else {
+            } else {
                 jobTitles.add(currentJobTitle);
                 jobCount.add(1);
             }
@@ -71,14 +89,14 @@ public class Actor {
         while (swaped) {
             swaped = false;
             for (int i = 0; i < jobCount.size() - 1; i++) {
-                if (jobCount.get(i) < jobCount.get(i+1)) {
+                if (jobCount.get(i) < jobCount.get(i + 1)) {
                     Integer tempInt = jobCount.get(i);
-                    jobCount.set(i, jobCount.get(i+1));
-                    jobCount.set(i+1, tempInt);
+                    jobCount.set(i, jobCount.get(i + 1));
+                    jobCount.set(i + 1, tempInt);
 
                     String tempString = jobTitles.get(i);
-                    jobTitles.set(i, jobTitles.get(i+1));
-                    jobTitles.set(i+1, tempString);
+                    jobTitles.set(i, jobTitles.get(i + 1));
+                    jobTitles.set(i + 1, tempString);
 
                     swaped = true;
                 }
@@ -94,5 +112,15 @@ public class Actor {
         }
 
         return result.toString();
+    }
+
+    public void copy(Actor actor) {
+        id = actor.getId();
+        name = actor.getName();
+        profilePath = actor.getProfilePath();
+        biography = actor.getBiography();
+        imageList = actor.getImageList();
+        movieCredits = actor.getMovieCredits();
+        tvCredits = actor.getTvCredits();
     }
 }
