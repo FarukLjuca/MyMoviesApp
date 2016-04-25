@@ -17,15 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Movie implements Detailable {
-    /*
-    public static final int POPULAR = 0;
-    public static final int NOW_PAYING = 1;
-    public static final int TOP_RATED = 2;
-    public static final int POPULAR_AND_NOW_PLAYING = 3;
-    public static final int POPULAR_AND_TOP_RATED = 4;
-    public static final int NOW_PLAYING_AND_TOP_RATED = 5;
-    public static final int POPULAR_AND_NOW_PLAYING_AND_TOP_RATED = 6;
-    */
 
     @SerializedName("id")
     private int id;
@@ -94,6 +85,10 @@ public class Movie implements Detailable {
         posterPath = movie.getPosterPath();
         title = movie.getTitle();
         voteAverage = movie.getVoteAverage();
+    }
+
+    public Movie(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 
     public ReviewList getReviewList() {

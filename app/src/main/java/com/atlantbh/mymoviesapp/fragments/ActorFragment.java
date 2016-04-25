@@ -17,13 +17,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
 import com.atlantbh.mymoviesapp.adapters.MovieCreditsAdapter;
+import com.atlantbh.mymoviesapp.adapters.RealmMovieCreditsAdapter;
+import com.atlantbh.mymoviesapp.adapters.RealmTvCreditsAdapter;
 import com.atlantbh.mymoviesapp.adapters.TvCreditsAdapter;
 import com.atlantbh.mymoviesapp.api.ActorAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
@@ -33,6 +37,7 @@ import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
 import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.atlantbh.mymoviesapp.model.realm.RealmTvCredits;
 import com.bumptech.glide.Glide;
 
 import butterknife.Bind;
@@ -61,6 +66,10 @@ public class ActorFragment extends Fragment {
     RecyclerView actorTv;
     @Bind(R.id.ivActorInfo)
     ImageView actorInfo;
+    @Bind(R.id.pbActorLoading)
+    ProgressBar loading;
+    @Bind(R.id.svActorContent)
+    ScrollView content;
 
     private int actorId;
     private SwipeRefreshLayout refreshLayout;
@@ -126,13 +135,17 @@ public class ActorFragment extends Fragment {
                 call.enqueue(new Callback<Actor>() {
                     @Override
                     public void onResponse(Response<Actor> response, Retrofit retrofit) {
-                        Actor actor = response.body();
-                        setContent(actor);
+                        if (response.body() != null) {
+                            setContent(response.body());
+                        }
+                        else {
+                            refresh();
+                        }
                     }
 
                     @Override
                     public void onFailure(Throwable t) {
-                        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        refresh();
                     }
                 });
             }
@@ -153,6 +166,8 @@ public class ActorFragment extends Fragment {
     }
 
     private void setContent(Actor actor) {
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.VISIBLE);
         if (actor.getImageList() != null && actor.getImageList().getImages().size() > 0) {
             Glide.with(getContext())
                     .load("https://image.tmdb.org/t/p/w1280" + actor.getImageList().getImages().get(0).getMovie().getBackdropPath())
@@ -188,27 +203,59 @@ public class ActorFragment extends Fragment {
             }
         });
 
-        actorMovies.setHasFixedSize(true);
-        RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        actorMovies.setLayoutManager(movieCreditsLayoutManager);
-        RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Credits credits) {
-                detailableClick(credits.getId(), -1);
-            }
-        });
-        actorMovies.setAdapter(movieCreditsAdapter);
+        if (AppHelper.isOnline()) {
+            actorMovies.setHasFixedSize(true);
+            RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            actorMovies.setLayoutManager(movieCreditsLayoutManager);
+            RecyclerView.Adapter movieCreditsAdapter = new MovieCreditsAdapter(getContext(), actor.getMovieCredits(), new MovieCreditsAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Credits credits) {
+                    detailableClick(credits.getId(), -1);
+                }
+            });
+            actorMovies.setAdapter(movieCreditsAdapter);
 
-        actorTv.setHasFixedSize(true);
-        RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        actorTv.setLayoutManager(tvCreditsLayoutManager);
-        RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Credits credits) {
-                detailableClick(-1, credits.getId());
+            actorTv.setHasFixedSize(true);
+            RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+            actorTv.setLayoutManager(tvCreditsLayoutManager);
+            RecyclerView.Adapter tvCreditsAdapter = new TvCreditsAdapter(getContext(), actor.getTvCredits(), new TvCreditsAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Credits credits) {
+                    detailableClick(-1, credits.getId());
+                }
+            });
+            actorTv.setAdapter(tvCreditsAdapter);
+        }
+        else {
+            if (actor.getRealmMovieCredits() != null) {
+                actorMovies.setHasFixedSize(true);
+                RecyclerView.LayoutManager movieCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                actorMovies.setLayoutManager(movieCreditsLayoutManager);
+                RecyclerView.Adapter realmMovieCreditsAdapter = new RealmMovieCreditsAdapter(getContext(), actor.getRealmMovieCredits(), new RealmMovieCreditsAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int id) {
+                        Realm realm = Realm.getInstance(getContext());
+                        RealmResults<RealmMovie> realmMovies = realm.where(RealmMovie.class).equalTo("id", id).findAll();
+                        if (realmMovies.size() == 1) {
+                            detailableClick(id, -1);
+                        }
+                        else {
+                            Toast.makeText(getContext(), "Movie is not saved offline.", Toast.LENGTH_SHORT).show();
+                        }
+                        realm.close();
+                    }
+                });
+                actorMovies.setAdapter(realmMovieCreditsAdapter);
             }
-        });
-        actorTv.setAdapter(tvCreditsAdapter);
+
+            if (actor.getRealmTvCredits() != null) {
+                actorTv.setHasFixedSize(true);
+                RecyclerView.LayoutManager tvCreditsLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+                actorTv.setLayoutManager(tvCreditsLayoutManager);
+                RecyclerView.Adapter realmTvCreditsAdapter = new RealmTvCreditsAdapter(getContext(), actor.getRealmTvCredits(), null);
+                actorTv.setAdapter(realmTvCreditsAdapter);
+            }
+        }
     }
 
     private void setFonts() {
@@ -236,7 +283,7 @@ public class ActorFragment extends Fragment {
     }
 
     public void detailableClick(final int movieId, final int tvId) {
-        if (AppHelper.isOnline()) {
+        //if (AppHelper.isOnline()) {
             RelativeLayout detailsContainer = (RelativeLayout) getActivity().findViewById(R.id.rlDetailsContainer);
             if (detailsContainer != null) {
                 DetailsFragment fragment = new DetailsFragment();
@@ -262,6 +309,7 @@ public class ActorFragment extends Fragment {
                 }
                 startActivity(intent);
             }
+        /*
         }
         else {
             CoordinatorLayout coordinatorLayout;
@@ -281,5 +329,6 @@ public class ActorFragment extends Fragment {
             });
             snackbar.show();
         }
+        */
     }
 }

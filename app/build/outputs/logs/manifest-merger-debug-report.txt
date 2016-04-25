@@ -74,10 +74,10 @@ MERGED from [com.android.support:support-v4:23.2.1] C:\Users\Faruk\Documents\And
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:15:9-40
 	android:name
 		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:9:9-38
-activity#com.atlantbh.mymoviesapp.activities.MovieListActivity
+activity#com.atlantbh.mymoviesapp.activities.MoviesActivity
 ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:16:9-26:20
 	android:name
-		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:16:19-63
+		ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:16:19-60
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
 ADDED from C:\Users\Faruk\Documents\AndroidStudioProjects\MyMoviesApp\app\src\main\AndroidManifest.xml:17:13-21:29
 action#android.intent.action.MAIN

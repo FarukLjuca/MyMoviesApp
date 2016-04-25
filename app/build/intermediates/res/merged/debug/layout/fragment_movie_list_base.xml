@@ -5,11 +5,21 @@
     android:background="@color/gray"
     tools:context=".fragments.MoviesFragment">
 
+    <ProgressBar
+        android:id="@+id/ivLoading"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
     <ListView
         android:id="@+id/lvContainer"
         android:scrollbars="none"
+        android:layout_above="@id/ivLoading"
         android:divider="@android:color/transparent"
         android:dividerHeight="5.0dp"
+        android:fastScrollEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </RelativeLayout>

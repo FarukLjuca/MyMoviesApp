@@ -54,7 +54,7 @@ public class RealmMovie extends RealmObject {
         actors = new RealmList<>();
         if (movie.getActorList() != null && movie.getActorList().getActors() != null) {
             for (Actor actor : movie.getActorList().getActors()) {
-                actors.add(new RealmActor(actor.getId(), actor.getName(), actor.getProfilePath()));
+                actors.add(new RealmActor(actor));
             }
         }
     }

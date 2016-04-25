@@ -28,11 +28,6 @@ public class MovieAdapter extends BaseAdapter {
         return movieList;
     }
 
-    public void setMovieList(MovieList movieList) {
-        this.movieList = movieList;
-        notifyDataSetChanged();
-    }
-
     public MovieAdapter(Context context, MovieList movieList) {
         this.movieList = movieList;
         this.context = context;

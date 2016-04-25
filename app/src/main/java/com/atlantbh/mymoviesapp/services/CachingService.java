@@ -1,34 +1,38 @@
 package com.atlantbh.mymoviesapp.services;
 
-import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.atlantbh.mymoviesapp.MyApplication;
 import com.atlantbh.mymoviesapp.api.ActorAPI;
 import com.atlantbh.mymoviesapp.api.MovieAPI;
 import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.helpers.AppString;
+import com.atlantbh.mymoviesapp.helpers.MyIntentService;
 import com.atlantbh.mymoviesapp.model.Actor;
 import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.model.Tv;
-import com.atlantbh.mymoviesapp.model.realm.RealmActor;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovie;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class CachingService extends IntentService {
+public class CachingService extends MyIntentService {
     private static List<Movie> movies;
     private static List<Tv> tvs;
     private static List<Actor> actors;
@@ -46,6 +50,13 @@ public class CachingService extends IntentService {
     private int[] movieActorsMax;
     private int[] movieActorsCounters;
 
+    private int numberOfRequests = 6;
+
+    private final int WAIT_TIME = 9000;
+    private final int MAX_NUMBER_OF_REQUESTS = 35;
+
+    private static Retrofit retrofit;
+
     public CachingService() {
         super("CachingService");
         if (movies == null) {
@@ -55,6 +66,23 @@ public class CachingService extends IntentService {
 
     public Context getContext() {
         return MyApplication.getContext();
+    }
+
+    public static Retrofit getRetrofit() {
+        if (retrofit == null) {
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd")
+                    .create();
+
+            // We need to receive callbacks in separate thread because request number needs to be less than
+            // 40 requests per 10 seconds -> we need to put thread to sleep
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org")
+                    .callbackExecutor(Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2 + 1))
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
+        return retrofit;
     }
 
     public static void startFirst(Context context) {
@@ -72,10 +100,12 @@ public class CachingService extends IntentService {
     }
 
     public static void startMovie(Context context, int movieId) {
+        /*
         Intent intent = new Intent(context, CachingService.class);
         intent.setAction(AppString.ACTION_MOVIE);
         intent.putExtra("movieId", movieId);
         context.startService(intent);
+        */
     }
 
     @Override
@@ -114,37 +144,51 @@ public class CachingService extends IntentService {
     }
 
     private void get20Movies(final int category) {
-        Retrofit retrofit = AppHelper.getRetrofit();
+        Retrofit retrofit = getRetrofit();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-        Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(category), 1);
+        Call<MovieList> call = movieAPI.loadMoviesByPage(AppHelper.getCategoryString(category), 1);
+
         call.enqueue(new Callback<MovieList>() {
             @Override
             public void onResponse(Response<MovieList> response, Retrofit retrofit) {
                 MovieList movieList = response.body();
                 if (movieList != null) {
                     addMovies(movieList.getMovies(), category);
-                }
-                else {
+                } else {
                     get20Movies(category);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-                get20Movies(category);
+                Toast.makeText(MyApplication.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void addMovies(List<Movie> movieList, int category) {
-        for (Movie movie : movieList) {
-            int index = indexOf(movie, movies);
+        for (int i = 0; i < movieList.size(); i++) {
+            int index = indexOf(movieList.get(i), movies);
+
             if (index == -1) {
-                movies.add(movie);
+                movieList.get(i).setIndexPopular(-1);
+                movieList.get(i).setIndexNowPlaying(-1);
+                movieList.get(i).setIndexTopRated(-1);
+
+                if (category == AppString.CATEGORY_POPULAR) movieList.get(i).setIndexPopular(i);
+                else if (category == AppString.CATEGORY_NOW_PLAYING) movieList.get(i).setIndexNowPlaying(i);
+                else if (category == AppString.CATEGORY_TOP_RATED) movieList.get(i).setIndexTopRated(i);
+
+                movies.add(movieList.get(i));
             }
             else {
-                // Here I will later wory with indexes
+                if (category == AppString.CATEGORY_POPULAR) movies.get(index).setIndexPopular(i);
+                else if (category == AppString.CATEGORY_NOW_PLAYING) movies.get(index).setIndexNowPlaying(i);
+                else if (category == AppString.CATEGORY_TOP_RATED) movies.get(index).setIndexTopRated(i);
             }
+
+            //TODO: Remove (this is for faster testing)
+            if (i == 2) break;
         }
 
         if (category == AppString.CATEGORY_POPULAR) popular = true;
@@ -160,9 +204,20 @@ public class CachingService extends IntentService {
     }
 
     private void getMovieDetails(final int movieId, final int index) {
-        Retrofit retrofit = AppHelper.getRetrofit();
+        Retrofit retrofit = getRetrofit();
         MovieAPI movieAPI = retrofit.create(MovieAPI.class);
         Call<Movie> call = movieAPI.loadMovieById(movieId);
+
+        numberOfRequests++;
+        if (numberOfRequests >= MAX_NUMBER_OF_REQUESTS) {
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            numberOfRequests = 0;
+        }
+
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Response<Movie> response, Retrofit retrofit) {
@@ -178,7 +233,6 @@ public class CachingService extends IntentService {
 
                     // This is the moment when all moves finished loading and populated exstra information
                     if (movieDetailsCounter == movieDetailsMax) {
-                        Log.e("Message", "Finished with movie details.");
                         movieActorsMax = new int[movies.size()];
                         movieActorsCounters = new int[movies.size()];
                         for (int i = 0; i < movies.size(); i++) {
@@ -188,8 +242,7 @@ public class CachingService extends IntentService {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     getMovieDetails(movieId, index);
                 }
             }
@@ -202,16 +255,37 @@ public class CachingService extends IntentService {
     }
 
     private void getActorDetails(final int actorId, final int indexMovie, final int indexActor) {
-        Retrofit retrofit = AppHelper.getRetrofit();
+        Retrofit retrofit = getRetrofit();
         ActorAPI actorAPI = retrofit.create(ActorAPI.class);
         Call<Actor> call = actorAPI.loadActorById(actorId);
+
+        numberOfRequests++;
+        if (numberOfRequests >= MAX_NUMBER_OF_REQUESTS) {
+            try {
+                Thread.sleep(WAIT_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            numberOfRequests = 0;
+        }
+
         call.enqueue(new Callback<Actor>() {
             @Override
             public void onResponse(Response<Actor> response, Retrofit retrofit) {
                 Actor actor = response.body();
                 if (actor != null) {
                     movies.get(indexMovie).getActorList().getActors().get(indexActor).copy(actor);
-
+  /*                  try {
+                        Glide.with(MyApplication.getContext())
+                                .load("https://image.tmdb.org/t/p/w500" + actor.getProfilePath())
+                                .downloadOnly(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                                .get();
+                    } catch (InterruptedException e) {
+                        Toast.makeText(MyApplication.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (ExecutionException e) {
+                        Toast.makeText(MyApplication.getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+*/
                     movieActorsCounters[indexMovie]++;
 
                     // If current list of actors is same, there is a chance that they all are
@@ -240,8 +314,7 @@ public class CachingService extends IntentService {
                             realm.close();
                         }
                     }
-                }
-                else {
+                } else {
                     getActorDetails(actorId, indexMovie, indexActor);
                 }
             }
@@ -269,14 +342,13 @@ public class CachingService extends IntentService {
                 realmResults.get(i).setIndexTopRated(-1);
                 realmResults.get(i).setIndexPopular(-1);
             }
-
             movies.add(new Movie(realmResults.get(i)));
         }
-
         realm.commitTransaction();
         realm.close();
     }
 
+    /*
     public void addMovies(final int category, final int page) {
         Retrofit retrofit = AppHelper.getRetrofit();
         final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
@@ -320,7 +392,7 @@ public class CachingService extends IntentService {
 
                             thread.start();
                         }
-                        */
+
                 }
             }
 
@@ -329,24 +401,6 @@ public class CachingService extends IntentService {
 
             }
         });
-    }
-
-    public String getCategoryString(int category) {
-        String result = "";
-
-        switch (category) {
-            case AppString.CATEGORY_POPULAR:
-                result = "popular";
-                break;
-            case AppString.CATEGORY_NOW_PLAYING:
-                result = "now_playing";
-                break;
-            case AppString.CATEGORY_TOP_RATED:
-                result = "top_rated";
-                break;
-        }
-
-        return result;
     }
 
     public void addMoviesHelper (List<Movie> movies) {
@@ -468,6 +522,7 @@ public class CachingService extends IntentService {
             realm.close();
         }
     }
+    */
 
     // Method that gets indes of element in list or returns -1 if there is no that element in list
     // Criteria is id
@@ -495,5 +550,25 @@ public class CachingService extends IntentService {
         }
 
         return index;
+    }
+
+    public static List<Movie> getMoviesByCategory(int category) {
+        movies = new ArrayList<>();
+
+        Realm realm = Realm.getInstance(MyApplication.getContext());
+        RealmResults<RealmMovie> realmResults = null;
+        if (category == AppString.CATEGORY_POPULAR) realmResults = realm.where(RealmMovie.class).notEqualTo("indexPopular", -1).findAllSorted("indexPopular");
+        else if (category == AppString.CATEGORY_NOW_PLAYING) realmResults = realm.where(RealmMovie.class).notEqualTo("indexNowPlaying", -1).findAllSorted("indexNowPlaying");
+        else if (category == AppString.CATEGORY_TOP_RATED) realmResults = realm.where(RealmMovie.class).notEqualTo("indexTopRated", -1).findAllSorted("indexTopRated");
+
+        List<Movie> result = new ArrayList<>();
+        if (realmResults != null) {
+            for (int i = 0; i < realmResults.size(); i++) {
+                result.add(new Movie(realmResults.get(i)));
+            }
+        }
+        realm.close();
+
+        return result;
     }
 }

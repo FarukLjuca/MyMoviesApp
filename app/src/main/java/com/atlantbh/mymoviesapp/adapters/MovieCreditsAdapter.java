@@ -12,9 +12,11 @@ import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.helpers.FontHelper;
 import com.atlantbh.mymoviesapp.model.credits.Credits;
 import com.atlantbh.mymoviesapp.model.credits.MovieCredits;
+import com.atlantbh.mymoviesapp.model.realm.RealmMovieCredits;
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 

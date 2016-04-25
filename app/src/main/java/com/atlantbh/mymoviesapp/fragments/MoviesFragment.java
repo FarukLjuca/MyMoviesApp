@@ -7,15 +7,19 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.atlantbh.mymoviesapp.R;
 import com.atlantbh.mymoviesapp.activities.DetailsActivity;
@@ -27,6 +31,8 @@ import com.atlantbh.mymoviesapp.model.Movie;
 import com.atlantbh.mymoviesapp.model.MovieList;
 import com.atlantbh.mymoviesapp.services.CachingService;
 
+import java.io.IOException;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -34,6 +40,7 @@ import retrofit.Retrofit;
 
 public abstract class MoviesFragment extends Fragment {
     private Context currentContext;
+    private View currentView;
 
     private MovieAdapter movieAdapter;
 
@@ -49,37 +56,14 @@ public abstract class MoviesFragment extends Fragment {
 
     public abstract int getCategory();
 
-    public String getCategoryString() {
-        String result = "";
-
-        switch (getCategory()) {
-            case AppString.CATEGORY_POPULAR:
-                result = "popular";
-                break;
-            case AppString.CATEGORY_NOW_PLAYING:
-                result = "now_playing";
-                break;
-            case AppString.CATEGORY_TOP_RATED:
-                result = "top_rated";
-                break;
-        }
-
-        return result;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         currentContext = container.getContext();
-        View currentView = inflater.inflate(R.layout.fragment_movie_list_base, container, false);
+        currentView = inflater.inflate(R.layout.fragment_movie_list_base, container, false);
         listView = (ListView) currentView.findViewById(R.id.lvContainer);
         gridView = (GridView) currentView.findViewById(R.id.gvContainer);
 
         return currentView;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -95,69 +79,36 @@ public abstract class MoviesFragment extends Fragment {
             Retrofit retrofit = AppHelper.getRetrofit();
             final MovieAPI movieAPI = retrofit.create(MovieAPI.class);
 
-            Call<MovieList> call = movieAPI.loadMoviesByPage(getCategoryString(), 1);
+            Call<MovieList> call = movieAPI.loadMoviesByPage(AppHelper.getCategoryString(getCategory()), 1);
+            Log.e("AAAAAAAAAAAAAAAAAAA", "Enqueued");
             call.enqueue(new Callback<MovieList>() {
                 @Override
                 public void onResponse(Response<MovieList> response, Retrofit retrofit) {
-                    final MovieList movieList = response.body();
-                    if (movieList != null && movieList.getMovies() != null) {
-                        setAdapterViews(savedInstanceState, movieList, refreshLayout);
+                    Log.e("AAAAAAAAAAAAAAAAAAA", "Response came");
+                    if (response.code() == 200) {
+                        setAdapterViews(savedInstanceState, response.body(), refreshLayout);
 
-                        switch (getCategory()) {
-                            case AppString.CATEGORY_NOW_PLAYING:
-                                nowPlaying = true;
-                                break;
-                            case AppString.CATEGORY_POPULAR:
-                                popular = true;
-                                break;
-                            case AppString.CATEGORY_TOP_RATED:
-                                topRated = true;
-                                break;
-                        }
+                        if (getCategory() == AppString.CATEGORY_POPULAR) popular = true;
+                        else if (getCategory() == AppString.CATEGORY_NOW_PLAYING) nowPlaying = true;
+                        else if (getCategory() == AppString.CATEGORY_TOP_RATED) topRated = true;
+
                         if (nowPlaying && popular && topRated) {
                             CachingService.startFirst(getContext());
-                            nowPlaying = false;
-                            popular = false;
-                            topRated = false;
+                            popular = nowPlaying = topRated = false;
                         }
-                        /*
-                        if (pass == 3) {
-                            Runnable runnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    Realm realm = Realm.getInstance(getContext());
-
-                                    realm.beginTransaction();
-                                    realm.copyToRealmOrUpdate(optimizedMovieList);
-                                    realm.commitTransaction();
-                                    realm.close();
-                                }
-                            };
-                            Thread thread = new Thread(runnable);
-
-                            thread.start();
-                        }
-                        */
+                    }
+                    else {
+                        refresh(savedInstanceState, refreshLayout);
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Toast.makeText(currentContext, t.getMessage(), Toast.LENGTH_LONG).show();
+                    t.printStackTrace();
                 }
             });
         } else {
-            /* Todo: I need here to write this again because I am stupido
-            Cacher cacher = Cacher.getInstance();
-            setAdapterViews(savedInstanceState, new MovieList(cacher.getMoviesByCategory(getCategory())), refreshLayout);
-            */
-        }
-
-        if (listView != null) {
-            listView.setSelection(0);
-        }
-        else if (gridView != null) {
-            gridView.setSelection(0);
+            setAdapterViews(savedInstanceState, new MovieList(CachingService.getMoviesByCategory(getCategory())), refreshLayout);
         }
     }
 
@@ -281,9 +232,9 @@ public abstract class MoviesFragment extends Fragment {
                 public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                     if (gridView.getAdapter() != null && gridView.getAdapter().getCount() > 0) {
                         int l = visibleItemCount + firstVisibleItem;
-                        if (l >= totalItemCount && !movieList.getIsLoading()) {
-                            movieList.setIsLoading(true);
-                            movieList.LoadData(getContext(), movieAdapter, getCategory());
+                        if (l >= totalItemCount && !MovieList.isLoading) {
+                            MovieList.isLoading = true;
+                            movieList.LoadData(movieAdapter, getCategory(), null, null);
                         }
                     }
 
@@ -314,17 +265,14 @@ public abstract class MoviesFragment extends Fragment {
     }
 
     private void onMovieScroll(final int firstVisibleItem, final int visibleItemCount, final int totalItemCount, final MovieList movieList) {
-        if (listView.getAdapter() == null)
-            return;
-
-        if (listView.getAdapter().getCount() == 0)
-            return;
-
         int l = visibleItemCount + firstVisibleItem;
-        if (l >= totalItemCount && !movieList.getIsLoading()) {
+        if (l >= totalItemCount && !MovieList.isLoading) {
             if (AppHelper.isOnline()) {
-                movieList.setIsLoading(true);
-                movieList.LoadData(getContext(), movieAdapter, getCategory());
+                MovieList.isLoading = true;
+                ProgressBar loading = (ProgressBar) currentView.findViewById(R.id.ivLoading);
+                loading.setVisibility(View.VISIBLE);
+
+                movieList.LoadData(movieAdapter, getCategory(), loading, listView);
             } else {
                 Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.clMovieCoordinator), R.string.check_your_internet_connection, Snackbar.LENGTH_LONG);
                 snackbar.setActionTextColor(Color.CYAN);
@@ -336,8 +284,6 @@ public abstract class MoviesFragment extends Fragment {
                 });
                 snackbar.show();
             }
-
         }
-
     }
 }

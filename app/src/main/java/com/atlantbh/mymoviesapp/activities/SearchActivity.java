@@ -77,7 +77,7 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent intent = new Intent(SearchActivity.this, MovieListActivity.class);
+                Intent intent = new Intent(SearchActivity.this, MoviesActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 return true;
@@ -99,7 +99,7 @@ public class SearchActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response<SearchResult> response, Retrofit retrofit) {
                     SearchResult searchResult = response.body();
-                    if (searchResult.getSearchList().size() > 0) {
+                    if (searchResult != null && searchResult.getSearchList().size() > 0) {
                         final SearchAdapter searchAdapter = new SearchAdapter(getContext(), searchResult.getSearchList());
                         listView.setAdapter(searchAdapter);
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

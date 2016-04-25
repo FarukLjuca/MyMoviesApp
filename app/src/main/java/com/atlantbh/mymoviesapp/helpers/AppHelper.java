@@ -55,4 +55,22 @@ public class AppHelper {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    public static String getCategoryString(int category) {
+        String result = "";
+
+        switch (category) {
+            case AppString.CATEGORY_POPULAR:
+                result = "popular";
+                break;
+            case AppString.CATEGORY_NOW_PLAYING:
+                result = "now_playing";
+                break;
+            case AppString.CATEGORY_TOP_RATED:
+                result = "top_rated";
+                break;
+        }
+
+        return result;
+    }
 }

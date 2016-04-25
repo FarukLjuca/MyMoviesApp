@@ -14,12 +14,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,6 +105,10 @@ public class DetailsFragment extends Fragment {
     ImageView favorite;
     @Bind(R.id.tvDetailsRating)
     TextView yourRating;
+    @Bind(R.id.svDetailsContent)
+    ScrollView content;
+    @Bind(R.id.pbDetailsLoading)
+    ProgressBar loading;
 
     public DetailsFragment() {
     }
@@ -164,6 +172,19 @@ public class DetailsFragment extends Fragment {
                     android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
         }
+
+        content.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                boolean enable = false;
+
+                if (content.getScrollY() == 0) {
+                    enable = true;
+                }
+
+                refreshLayout.setEnabled(enable);
+            }
+        });
     }
 
     private void refresh() {
@@ -171,28 +192,7 @@ public class DetailsFragment extends Fragment {
         user.getFavorites();
         if (movieId > 0) {
             if (AppHelper.isOnline()) {
-                Retrofit retrofit = AppHelper.getRetrofit();
-                MovieAPI movieAPI = retrofit.create(MovieAPI.class);
-
-                Call<Movie> call = movieAPI.loadMovieById(movieId);
-                call.enqueue(new Callback<Movie>() {
-                    @Override
-                    public void onResponse(Response<Movie> response, Retrofit retrofit) {
-                        Movie movie = response.body();
-                        if (movie != null) {
-                            currentDetailable = movie;
-                            setContent(movie);
-                            CachingService.startMovie(getContext(), movieId);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
+                getMovie();
             } else {
                 Realm realm = Realm.getInstance(getContext());
                 RealmResults<RealmMovie> realmResults = realm.where(RealmMovie.class).equalTo("id", movieId).findAll();
@@ -241,14 +241,42 @@ public class DetailsFragment extends Fragment {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+
                 }
             });
         }
         setRatingView();
     }
 
+    private void getMovie() {
+        Retrofit retrofit = AppHelper.getRetrofit();
+        MovieAPI movieAPI = retrofit.create(MovieAPI.class);
+
+        Call<Movie> call = movieAPI.loadMovieById(movieId);
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Response<Movie> response, Retrofit retrofit) {
+                Movie movie = response.body();
+                if (movie != null) {
+                    currentDetailable = movie;
+                    setContent(movie);
+                    CachingService.startMovie(getContext(), movieId);
+                }
+                else {
+                    getMovie();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                getMovie();
+            }
+        });
+    }
+
     private void setContent(Detailable detailable) {
+        loading.setVisibility(View.GONE);
+        content.setVisibility(View.VISIBLE);
         if (getContext() != null) {
             Glide.with(getContext())
                     .load("https://image.tmdb.org/t/p/w1280" + detailable.getBackdropPath())

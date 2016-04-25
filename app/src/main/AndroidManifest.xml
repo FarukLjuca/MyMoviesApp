@@ -13,7 +13,7 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.MovieListActivity">
+        <activity android:name=".activities.MoviesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

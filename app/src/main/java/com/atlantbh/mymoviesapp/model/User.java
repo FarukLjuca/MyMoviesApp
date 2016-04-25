@@ -13,8 +13,6 @@ import com.atlantbh.mymoviesapp.helpers.AppHelper;
 import com.atlantbh.mymoviesapp.model.realm.RealmMovieFavorites;
 import com.atlantbh.mymoviesapp.model.realm.RealmTvFavorites;
 import com.atlantbh.mymoviesapp.model.realm.RealmUser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -26,7 +24,6 @@ import io.realm.RealmResults;
 import io.realm.exceptions.RealmMigrationNeededException;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -89,12 +86,14 @@ public class User {
         Realm realm = null;
 
         try {
-            realm = Realm.getInstance(realmConfiguration);
+            realm = Realm.getInstance(MyApplication.getContext());
         } catch (RealmMigrationNeededException e){
             try {
                 Realm.deleteRealm(realmConfiguration);
-                realm = Realm.getInstance(realmConfiguration);
-            } catch (Exception ex){}
+                realm = Realm.getInstance(MyApplication.getContext());
+            } catch (Exception ignored){
+
+            }
         }
 
         if (realm != null) {
@@ -130,16 +129,7 @@ public class User {
     }
 
     public void login(final String username, final String password, final Activity activity, final TextView error) {
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
+        Retrofit retrofit = AppHelper.getRetrofit();
         UserAPI userAPI = retrofit.create(UserAPI.class);
 
         Call<RequestToken> call = userAPI.getRequestToken();
@@ -196,7 +186,7 @@ public class User {
     }
 
     public static boolean isLoggedIn() {
-        return session != null && session.getSessionId() != "";
+        return session != null && !session.getSessionId().equals("");
     }
 
     public int getId() {
@@ -220,107 +210,109 @@ public class User {
     }
 
     public void getFavorites(final SwipeRefreshLayout refreshLayout, final FavoritesAdapter favoritesAdapter) {
-        Retrofit retrofit = AppHelper.getRetrofit();
-        final UserAPI userAPI = retrofit.create(UserAPI.class);
+        if (AppHelper.isOnline()) {
+            Retrofit retrofit = AppHelper.getRetrofit();
+            final UserAPI userAPI = retrofit.create(UserAPI.class);
 
-        Call<User> call = userAPI.getGeneralUserInfo(User.getSession().getSessionId());
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Response<User> response, Retrofit retrofit) {
-                if (response.body() != null) {
-                    User responseUser = response.body();
-                    User user = User.getInstance();
-                    user.setId(responseUser.getId());
-                    user.setName(responseUser.getName());
+            Call<User> call = userAPI.getGeneralUserInfo(User.getSession().getSessionId());
+            call.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Response<User> response, Retrofit retrofit) {
+                    if (response.body() != null) {
+                        User responseUser = response.body();
+                        User user = User.getInstance();
+                        user.setId(responseUser.getId());
+                        user.setName(responseUser.getName());
 
-                    Call<MovieFavorites> moviesCall = userAPI.getMovieFavorites(user.getId(), User.getSession().getSessionId());
-                    moviesCall.enqueue(new Callback<MovieFavorites>() {
-                        @Override
-                        public void onResponse(Response<MovieFavorites> response, Retrofit retrofit) {
-                            movieFavorites = response.body();
-                            if (tvLoadingDone) {
-                                saveToDatabase();
-                                tvLoadingDone = false;
-                                if (refreshLayout != null) {
-                                    refreshLayout.setRefreshing(false);
-                                    favoritesAdapter.setMovieFavorites(movieFavorites);
-                                    favoritesAdapter.setTvFavorites(tvFavorites);
+                        Call<MovieFavorites> moviesCall = userAPI.getMovieFavorites(user.getId(), User.getSession().getSessionId());
+                        moviesCall.enqueue(new Callback<MovieFavorites>() {
+                            @Override
+                            public void onResponse(Response<MovieFavorites> response, Retrofit retrofit) {
+                                movieFavorites = response.body();
+                                if (tvLoadingDone) {
+                                    saveToDatabase();
+                                    tvLoadingDone = false;
+                                    if (refreshLayout != null) {
+                                        refreshLayout.setRefreshing(false);
+                                        favoritesAdapter.setMovieFavorites(movieFavorites);
+                                        favoritesAdapter.setTvFavorites(tvFavorites);
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Throwable t) {
-                            refreshLayout.setRefreshing(false);
-                        }
-                    });
+                            @Override
+                            public void onFailure(Throwable t) {
+                                refreshLayout.setRefreshing(false);
+                            }
+                        });
 
-                    Call<TvFavorites> tvCall = userAPI.getTvFavorites(user.getId(), User.getSession().getSessionId());
-                    tvCall.enqueue(new Callback<TvFavorites>() {
-                        @Override
-                        public void onResponse(Response<TvFavorites> response, Retrofit retrofit) {
-                            if (response.body() != null) {
-                                tvFavorites = response.body();
+                        Call<TvFavorites> tvCall = userAPI.getTvFavorites(user.getId(), User.getSession().getSessionId());
+                        tvCall.enqueue(new Callback<TvFavorites>() {
+                            @Override
+                            public void onResponse(Response<TvFavorites> response, Retrofit retrofit) {
+                                if (response.body() != null) {
+                                    tvFavorites = response.body();
 
-                                for (Tv tv : tvFavorites.getTvList()) {
-                                    index++;
+                                    for (Tv tv : tvFavorites.getTvList()) {
+                                        index++;
 
-                                    TvAPI tvAPI = retrofit.create(TvAPI.class);
-                                    final Call<Tv> innerCall = tvAPI.loadTvById(tv.getId());
-                                    innerCall.enqueue(new Callback<Tv>() {
-                                        @Override
-                                        public void onResponse(Response<Tv> response, Retrofit retrofit) {
-                                            Tv innerTv = response.body();
+                                        TvAPI tvAPI = retrofit.create(TvAPI.class);
+                                        final Call<Tv> innerCall = tvAPI.loadTvById(tv.getId());
+                                        innerCall.enqueue(new Callback<Tv>() {
+                                            @Override
+                                            public void onResponse(Response<Tv> response, Retrofit retrofit) {
+                                                Tv innerTv = response.body();
 
-                                            if (innerTv != null) {
-                                                for (Tv loopTv : tvFavorites.getTvList()) {
-                                                    if (loopTv.getId() == innerTv.getId()) {
-                                                        loopTv.setBasicText(innerTv.getBasicText());
-                                                        break;
+                                                if (innerTv != null) {
+                                                    for (Tv loopTv : tvFavorites.getTvList()) {
+                                                        if (loopTv.getId() == innerTv.getId()) {
+                                                            loopTv.setBasicText(innerTv.getBasicText());
+                                                            break;
+                                                        }
                                                     }
-                                                }
-                                                sum++;
-                                                if (sum >= index) {
-                                                    index = 0;
-                                                    sum = 0;
-                                                    tvLoadingDone = true;
-                                                    if (movieFavorites != null) {
-                                                        saveToDatabase();
-                                                        tvLoadingDone = false;
-                                                        if (refreshLayout != null) {
-                                                            refreshLayout.setRefreshing(false);
-                                                            favoritesAdapter.setMovieFavorites(movieFavorites);
-                                                            favoritesAdapter.setTvFavorites(tvFavorites);
+                                                    sum++;
+                                                    if (sum >= index) {
+                                                        index = 0;
+                                                        sum = 0;
+                                                        tvLoadingDone = true;
+                                                        if (movieFavorites != null) {
+                                                            saveToDatabase();
+                                                            tvLoadingDone = false;
+                                                            if (refreshLayout != null) {
+                                                                refreshLayout.setRefreshing(false);
+                                                                favoritesAdapter.setMovieFavorites(movieFavorites);
+                                                                favoritesAdapter.setTvFavorites(tvFavorites);
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onFailure(Throwable t) {
-                                            if (refreshLayout != null) {
-                                                refreshLayout.setRefreshing(false);
+                                            @Override
+                                            public void onFailure(Throwable t) {
+                                                if (refreshLayout != null) {
+                                                    refreshLayout.setRefreshing(false);
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Throwable t) {
+                            @Override
+                            public void onFailure(Throwable t) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
+                @Override
+                public void onFailure(Throwable t) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     public MovieFavorites getMovieFavorites() {

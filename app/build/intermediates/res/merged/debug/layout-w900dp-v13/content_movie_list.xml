@@ -6,7 +6,7 @@
     android:weightSum="5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MovieListActivity">
+    tools:context=".activities.MoviesActivity">
 
     <android.support.v4.view.ViewPager
         android:layout_weight="2"
